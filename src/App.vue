@@ -1,15 +1,7 @@
 <template>
   <div id="app">
-    <header class="header">
-      <div style="display: flex; gap: 0.5rem; align-items: center;">
-        <div><img :src="require('@/assets/VTFK.svg')" style="width: 2.5rem"/></div>
-        <div class="typography heading-two">Masseutsendelse</div>
-      </div>
-      <div style="display: flex; gap: 0.5rem; align-items: center;">
-        <div class="typography paragraph">Noen André</div>
-        <div>Avatar</div>
-        <div>...</div>
-      </div>
+    <header class="container">
+      <Header />
     </header>
     <div class="container">
       <!-- Informasjonstekst -->
@@ -42,6 +34,7 @@
 import { Button } from '@vtfk/components'
 
 // Prosjektkomponenter
+import Header from './components/Header.vue'
 import GuideBtnModal from './components/GuideBtnModal.vue'
 import UploadField from './components/UploadField.vue'
 import Map from './components/Map.vue'
@@ -49,6 +42,7 @@ import Map from './components/Map.vue'
 export default {
   name: 'App',
   components: {
+    Header,
     'VTFKButton': Button,
     GuideBtnModal,
     UploadField,
@@ -76,22 +70,19 @@ export default {
     height: 100vh;
     text-align: center;
     background: rgba(190,218,202,.3);
+    overflow: hidden;
   }
 
   .container {
     display: flex;
     justify-content: center;
     padding-top: 4rem;
-    padding-left: var(--side-padding);
-    padding-right: var(--side-padding);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    max-width: 1100px;
+    margin: 0 auto;
   }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 2rem;
-    padding-left: var(--side-padding);
-    padding-right: var(--side-padding);
-  }
+
 
 </style>
