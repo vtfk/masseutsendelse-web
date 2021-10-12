@@ -10,7 +10,9 @@
   "dependencies": {
     "@vtfk/components": "^0.2.1",
     "core-js": "^3.6.5",
+    "leaflet": "^1.7.1",
     "vue": "^2.6.11",
+    "vue2-leaflet": "^2.7.1",
     "vuera": "^0.2.7"
   },
   "devDependencies": {

@@ -14,12 +14,17 @@
             Ett verktøy utviklet for Samferdesel og mobilitets sektoren.<br/>
             Verktøyet lar deg laste opp en polygon fil, gjøre oppslag i Matrikkelen og varsle alle eiere som befinner seg innenfor polygonet.
           </p>
-          <GuideBtnModal class="centered" style="margin-top: 1rem;"/>
+          <GuideBtnModal style="margin-top: 1rem;"/>
         </div>
         
         <!-- Upload felt -->
         <div v-if="!hasLoadedFile">
           <UploadField v-on:uploaded="() => hasLoadedFile = true"/>
+            <div style="padding-top: 2rem;" class="center-content">
+              <div>
+                <Map />
+              </div>
+            </div>
         </div>
         <div v-else>
           <!-- Kart komponent -->
@@ -84,6 +89,13 @@ export default {
     padding-right: 1rem;
     max-width: 1100px;
     margin: 0 auto;
+  }
+
+  .center-content {
+    width: 100%;
+    text-align:center;
+    display: flex;
+    justify-content: center;
   }
 
   .centered {
