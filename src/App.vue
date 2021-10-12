@@ -1,39 +1,35 @@
 <template>
   <div id="app">
-    <header class="header">
-      <div style="display: flex; gap: 0.5rem; align-items: center;">
-        <div><img :src="require('@/assets/VTFK.svg')" style="width: 2.5rem"/></div>
-        <div class="typography heading-two">Masseutsendelse</div>
-      </div>
-      <div style="display: flex; gap: 0.5rem; align-items: center;">
-        <div class="typography paragraph">Noen André</div>
-        <div>Avatar</div>
-        <div>...</div>
+    <header>
+      <div class="container">
+      <Header />
       </div>
     </header>
-    <div class="container">
-      <!-- Informasjonstekst -->
-      <div>
-        <div class="typography heading-two header-title">Header</div>
-        <div class="typography paragraph">
-          Her blir det
-          noe
-          tekst
+    <main style="height: 100%">
+      <div class="container">
+        <!-- Informasjonstekst -->
+        <div style="display: flex; align-items: center; flex-direction: column;">
+          <div class="typography heading-two header-title">Masseutsendelse</div>
+          <p class="typography paragraph header-description" style="margin-top: 1rem;">
+            Ett verktøy utviklet for Samferdesel og mobilitets sektoren.<br/>
+            Verktøyet lar deg laste opp en polygon fil, gjøre oppslag i Matrikkelen og varsle alle eiere som befinner seg innenfor polygonet.
+          </p>
+          <GuideBtnModal class="centered" style="margin-top: 1rem;"/>
         </div>
-        <GuideBtnModal />
+        
+        <!-- Upload felt -->
+        <div v-if="!hasLoadedFile">
+          <UploadField v-on:uploaded="() => hasLoadedFile = true"/>
+        </div>
+        <div v-else>
+          <!-- Kart komponent -->
+          <Map />
+          <!-- Cards som viser stats om informasjonen -->
+          <!-- Angreknapp -->
+          <VTFKButton>Angre</VTFKButton>
+        </div>
       </div>
-      <!-- Upload felt -->
-      <div v-if="!hasLoadedFile">
-        <UploadField v-on:uploaded="() => hasLoadedFile = true"/>
-      </div>
-      <div v-else>
-        <!-- Kart komponent -->
-        <Map />
-        <!-- Cards som viser stats om informasjonen -->
-        <!-- Angreknapp -->
-        <VTFKButton>Angre</VTFKButton>
-      </div>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -42,6 +38,7 @@
 import { Button } from '@vtfk/components'
 
 // Prosjektkomponenter
+import Header from './components/Header.vue'
 import GuideBtnModal from './components/GuideBtnModal.vue'
 import UploadField from './components/UploadField.vue'
 import Map from './components/Map.vue'
@@ -49,6 +46,7 @@ import Map from './components/Map.vue'
 export default {
   name: 'App',
   components: {
+    Header,
     'VTFKButton': Button,
     GuideBtnModal,
     UploadField,
@@ -76,22 +74,22 @@ export default {
     height: 100vh;
     text-align: center;
     background: rgba(190,218,202,.3);
+    overflow: hidden;
   }
 
   .container {
-    display: flex;
-    justify-content: center;
+
     padding-top: 4rem;
-    padding-left: var(--side-padding);
-    padding-right: var(--side-padding);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    max-width: 1100px;
+    margin: 0 auto;
   }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 2rem;
-    padding-left: var(--side-padding);
-    padding-right: var(--side-padding);
+  .centered {
+    margin: 0 auto;
   }
+
+
 
 </style>
