@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="map-wrapper">
     <l-map style="height: 400px; width: 750px; max-width: 800px;" :zoom="zoom" :center="center">
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
       <l-marker :lat-lng="markerLatLng"></l-marker>
@@ -47,5 +47,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .map-wrapper {
+    box-shadow: 0px 1px 5px 1px #888888;
+  }
 </style>
