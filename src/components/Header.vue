@@ -1,5 +1,6 @@
 <template>
   <div class="header">
+    <a href="https://masseutsendelse.vtfk.dev/" style="color: inherit; text-decoration: inherit;">
     <div style="display: flex; gap: 0.5rem; align-items: center;">
       <div class="header-part">
         <img :src="require('@/assets/VTFK.svg')" style="height: 3rem"/>
@@ -8,6 +9,7 @@
         Masseutsendelse
       </div>
     </div>
+    </a>
     <div style="display: flex; gap: 0.75rem; align-items: center;">
       <div class="header-part typography paragraph">Noen André</div>
       <div class="header-part swansDown user-image"><VTFKInitialsBadge firstName="Noen" lastName="André"/></div>

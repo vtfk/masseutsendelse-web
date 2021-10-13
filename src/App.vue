@@ -2,7 +2,7 @@
   <div id="app">
     <header>
       <div class="container">
-      <Header />
+        <Header />
       </div>
     </header>
     <main>
