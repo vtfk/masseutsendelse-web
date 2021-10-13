@@ -27,7 +27,7 @@
           <!-- Cards som viser stats om informasjonen -->
           <StatCards style="margin-top: 1rem"/>
           <!-- Angreknapp -->
-          <VTFKButton style="margin-top: 1rem">Angre</VTFKButton>
+          <VTFKButton style="margin-top: 1rem" :passedProps="{ onClick: () => { this.hasLoadedFile = false; }}">Angre</VTFKButton>
         </div>
       </div>
     </main>
@@ -82,7 +82,6 @@ export default {
   }
 
   .container {
-
     padding-top: 4rem;
     padding-left: 1rem;
     padding-right: 1rem;

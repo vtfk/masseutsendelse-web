@@ -1,63 +1,121 @@
 <template>
-<div class="container">
-      <form enctype="multipart/form-data" novalidate v-if="isInitial">
-        <h2>Last opp polygonet</h2>
-        <div class="dropbox">
-          <input type="file" 
-          :name="uploadFieldName"
-             class="input-file">
-            <p v-if="isInitial">
-              Dra filen og slipp den i feltet<br> eller trykk i feltet for å laste opp
-            </p>
-        </div>
-          <div v-if="isSuccess">
-          <h2>Filen er lastet opp</h2>
-          <p>
-          <a href="javascript:void(0)" @click="reset()">Last opp en ny fil.</a>
-        </p>
+  <div class="container">
+    <h2>Last opp polygonet</h2>
+    <div :class="dropboxClasses" @click="(e) => onAddFileFromButton(e)" @drop.prevent="onAddFileFromDaD" @dragover.prevent="isDropAreaDraggedOver = true" @dragleave.prevent="isDropAreaDraggedOver = false">
+      <input type="file" id="fileInput" ref="filesfrombutton" style="display: none" multiple @change="onFilesChanged">
+      <p v-if="error !== undefined" class="typography paragraph error" role="alert" aria-live="assertive">
+        En feil har skjedd<br>
+        {{error}}
+      </p>
+      <p v-else-if="files.length == 0">
+        Dra filen og slipp den i feltet<br> eller trykk i feltet for å laste opp
+      </p>
+      <div v-else style="height: 100%;">
+        <h2>Filen er lastet opp</h2>
+        <VTFKButton style="flex: 0 1 auto;" id="resetBtn" :passedProps="{onClick: (e) => {reset(e)}}">Reset</VTFKButton>
       </div>
-      </form>
-</div>
+    </div>
+  </div>
 </template>
 
 <script>
+// VTFK komponenter
+import { Button } from '@vtfk/components'
 
-
-const STATUS_INITIAL = 0, STATUS_SUCCESS = 1
 export default {
   name: 'UploadField',
+  components: {
+    'VTFKButton': Button
+  },
   data() {
     return {
-      uploadedFiles: [],
+      files: [],
       currentStatus: null,
       uploadFieldName: 'file',
+      isUploading: true,
+      error: undefined,
+      isDropAreaDraggedOver: false
     }
   },
   computed: {
-      isInitial() {
-        return this.currentStatus === STATUS_INITIAL;
-      },
-      isSuccess() {
-        return this.currentStatus === STATUS_SUCCESS;
-      },
+    dropboxClasses() {
+      var classes = {}
+      if(this.isDropAreaDraggedOver) {
+        classes['dropbox'] = true;
+        classes['dropbox-dragged-over'] = true;
+      } else {
+        classes['dropbox'] = true;
+        classes['dropbox-dragged-over'] = false;
+      }
+      return classes;
     },
-    methods: {
-      reset() {
-        // reset form to initial state
-        this.currentStatus = STATUS_INITIAL;
-        this.uploadedFiles = [];
-        this.uploadError = null;
-      },
+  },
+  methods: {
+    reset() {
+      this.files = [];
+      this.error = undefined;
     },
-    mounted() {
-      this.reset();
+    AddFiles(files) {
+      if(!files) return;
+
+      let foundError = false;
+      ([...files]).forEach(file => {
+        // Check if the file is already added to the array
+        this.files.forEach(existingFile => {
+          if(existingFile.name == file.name && existingFile.size == file.size) {
+            alert("The file is already added");
+            foundError = true;
+          }
+        })
+        if(foundError) { return; }
+          var fileObject = {
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            lastModified: file.lastModified,
+            lastModifiedDate: file.lastModifiedDate,
+            progress: 0,
+            data: file
+          }
+          this.files.push(fileObject);
+      })
+
+      // Emit the uploaded filedata to the parent
+      this.$emit('uploaded', this.files);
     },
+    onAddFileFromButton(e) {
+      if(!e) { return; }
+      if(!e.target) { return;}
+      if(e.target.id == 'resetBtn' || e.target.id == 'fileInput') { return; }
+      console.log(e)
+      // Find input and click it to start the file upload
+      let input = document.getElementById('fileInput');
+      if(input) {
+        input.click();
+      }
+    },
+    onAddFileFromDaD(e) {
+    // this.isDropAreaDraggedOver = false;
+      if(!e) { return; }
+      if(!e.dataTransfer) { return;}
+      if(!e.dataTransfer.files) { return;}
+
+      this.AddFiles(e.dataTransfer.files);
+    },
+    onFilesChanged(e) {
+      if(!e) { return; }
+      if(!e.target) { return;}
+      if(!e.target.files) { return;}
+
+      this.AddFiles(e.target.files);
+    }
+  }
 }
 
 </script>
 
 <style scoped>
-.dropbox {
+  .dropbox {
     outline: 2px dashed grey; /* dash box */
     outline-offset: -10px;
     background: #D1EAE9;
@@ -66,20 +124,10 @@ export default {
     min-height: 200px; 
     position: relative;
     cursor: pointer;
+    border-radius: 20px;
   }
 
-  .input-file {
-    opacity: 0; 
-    width: 100%;
-    height: 200px;
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    
-  }
-
-  .dropbox:hover {
+  .dropbox-dragged-over {
     background: lightblue; 
   }
 
