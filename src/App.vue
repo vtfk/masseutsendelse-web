@@ -18,7 +18,7 @@
         </div>
         
         <!-- Upload felt -->
-        <div style="margin-top: 2rem;">
+        <div style="margin-top: 1rem;">
           <div v-if="!hasLoadedFile">
             <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
           </div>

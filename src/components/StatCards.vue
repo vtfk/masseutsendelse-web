@@ -47,6 +47,8 @@ export default {
     width: 200px;
     background-color: #CFEBF2;
     padding: 1rem 1rem;
+    box-shadow: 0px 1px 2px 1px #888888;
+    border-radius: 10px;
   }
 
   .card-header {
