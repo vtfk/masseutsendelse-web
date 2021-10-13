@@ -1,16 +1,13 @@
 <template>
 <div class="container">
-      <!--UPLOAD-->
       <form enctype="multipart/form-data" novalidate v-if="isInitial">
         <h2>Last opp polygonet</h2>
         <div class="dropbox">
-          <input type="file" :name="uploadFieldName" :disabled="isSaving" @change="filesChange($event.target.name, $event.target.files);"
+          <input type="file" 
+          :name="uploadFieldName"
              class="input-file">
-            <p v-if="!isInitial">
+            <p v-if="isInitial">
               Dra filen og slipp den i feltet<br> eller trykk i feltet for å laste opp
-            </p>
-            <p v-if="isSaving">
-              Laster opp {{ uploadFieldName }} fil...
             </p>
         </div>
           <div v-if="isSuccess">
@@ -18,17 +15,6 @@
           <p>
           <a href="javascript:void(0)" @click="reset()">Last opp en ny fil.</a>
         </p>
-        <ul class="list-unstyled">
-            <img :src="item.url" class="img-responsive img-thumbnail" :alt="item.originalName">
-        </ul>
-      </div>
-      <!--FAILED-->
-      <div v-if="isFailed">
-        <h2>Obs noe gikk galt :(</h2>
-        <p>
-          <a href="javascript:void(0)" @click="reset()">Prøv igjen</a>
-        </p>
-        <pre>{{ uploadError }}</pre>
       </div>
       </form>
 </div>
@@ -42,6 +28,9 @@ export default {
   name: 'UploadField',
   data() {
     return {
+      uploadedFiles: [],
+      currentStatus: null,
+      uploadFieldName: 'file',
     }
   },
   computed: {
@@ -57,11 +46,8 @@ export default {
         // reset form to initial state
         this.currentStatus = STATUS_INITIAL;
         this.uploadedFiles = [];
+        this.uploadError = null;
       },
-      showFile() {
-        console.log(this.currentStatus)
-        this.currentStatus = STATUS_SUCCESS
-      }
     },
     mounted() {
       this.reset();
