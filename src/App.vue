@@ -18,16 +18,22 @@
         </div>
         
         <!-- Upload felt -->
-        <div v-if="!hasLoadedFile">
-          <UploadField v-on:uploaded="() => hasLoadedFile = true"/>
-        </div>
-        <div v-else class="center-content">
-          <!-- Kart komponent -->
-          <Map style="margin-top: 2rem;"/>
-          <!-- Cards som viser stats om informasjonen -->
-          <StatCards style="margin-top: 1rem"/>
-          <!-- Angreknapp -->
-          <VTFKButton style="margin-top: 1rem" :passedProps="{ onClick: () => { this.hasLoadedFile = false; }}">Angre</VTFKButton>
+        <div style="margin-top: 2rem;">
+          <div v-if="!hasLoadedFile">
+            <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
+          </div>
+          <div v-else-if="isParsingFile">
+            <p class="typography heading-two">Her jobbas det!<p/>
+            <VTFKSpinner size="xlarge"/>
+          </div>
+          <div v-else class="center-content">
+            <!-- Kart komponent -->
+            <Map style="margin-top: 2rem;"/>
+            <!-- Cards som viser stats om informasjonen -->
+            <StatCards style="margin-top: 1rem"/>
+            <!-- Angreknapp -->
+            <VTFKButton style="margin-top: 1rem" :passedProps="{ onClick: () => { this.hasLoadedFile = false; }}">Angre</VTFKButton>
+          </div>
         </div>
       </div>
     </main>
@@ -36,7 +42,7 @@
 
 <script>
 // VTFK komponenter
-import { Button } from '@vtfk/components'
+import { Button, Spinner } from '@vtfk/components'
 
 // Prosjektkomponenter
 import Header from './components/Header.vue'
@@ -50,6 +56,7 @@ export default {
   components: {
     Header,
     'VTFKButton': Button,
+    'VTFKSpinner': Spinner,
     GuideBtnModal,
     UploadField,
     Map,
@@ -59,10 +66,21 @@ export default {
     return {
       isSpinning: false,
       isShowModal: false,
-      hasLoadedFile: false
+      hasLoadedFile: false,
+      isParsingFile: false
     }
   },
   methods: {
+    parseFiles(e) {
+      console.log(e);
+      this.hasLoadedFile = true;
+      this.isParsingFile = true;
+
+      setTimeout(() => {
+        this.isParsingFile = false;
+      }, 2000)
+
+    }
   }
 }
 </script>

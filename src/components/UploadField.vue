@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <h2>Last opp polygonet</h2>
     <div :class="dropboxClasses" @click="(e) => onAddFileFromButton(e)" @drop.prevent="onAddFileFromDaD" @dragover.prevent="isDropAreaDraggedOver = true" @dragleave.prevent="isDropAreaDraggedOver = false">
       <input type="file" id="fileInput" ref="filesfrombutton" style="display: none" multiple @change="onFilesChanged">
