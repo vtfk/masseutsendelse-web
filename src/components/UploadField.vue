@@ -23,7 +23,7 @@
 <script>
 
 
-const STATUS_INITIAL = 0, STATUS_SUCCESS = 2
+const STATUS_INITIAL = 0, STATUS_SUCCESS = 1
 export default {
   name: 'UploadField',
   data() {
