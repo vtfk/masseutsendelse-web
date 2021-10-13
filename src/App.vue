@@ -5,7 +5,7 @@
       <Header />
       </div>
     </header>
-    <main style="height: 100%">
+    <main>
       <div class="container">
         <!-- Informasjonstekst -->
         <div style="display: flex; align-items: center; flex-direction: column;">
@@ -20,18 +20,14 @@
         <!-- Upload felt -->
         <div v-if="!hasLoadedFile">
           <UploadField v-on:uploaded="() => hasLoadedFile = true"/>
-            <div style="padding-top: 2rem;" class="center-content">
-              <div>
-                <Map />
-              </div>
-            </div>
         </div>
-        <div v-else>
+        <div v-else class="center-content">
           <!-- Kart komponent -->
-          <Map />
+          <Map style="margin-top: 2rem;"/>
           <!-- Cards som viser stats om informasjonen -->
+          <StatCards style="margin-top: 1rem"/>
           <!-- Angreknapp -->
-          <VTFKButton>Angre</VTFKButton>
+          <VTFKButton style="margin-top: 1rem">Angre</VTFKButton>
         </div>
       </div>
     </main>
@@ -47,6 +43,7 @@ import Header from './components/Header.vue'
 import GuideBtnModal from './components/GuideBtnModal.vue'
 import UploadField from './components/UploadField.vue'
 import Map from './components/Map.vue'
+import StatCards from './components/StatCards.vue'
 
 export default {
   name: 'App',
@@ -55,7 +52,8 @@ export default {
     'VTFKButton': Button,
     GuideBtnModal,
     UploadField,
-    Map
+    Map,
+    StatCards
   },
   data() {
     return {
@@ -80,6 +78,7 @@ export default {
     text-align: center;
     background: rgba(190,218,202,.3);
     overflow: hidden;
+    overflow-y: auto;
   }
 
   .container {
@@ -96,12 +95,11 @@ export default {
     text-align:center;
     display: flex;
     justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
 
   .centered {
     margin: 0 auto;
   }
-
-
-
 </style>
