@@ -46,6 +46,12 @@
     },
     "rules": {}
   },
+  "size-limit": [
+    {
+      "path": "./dist",
+      "webpack": false
+    }
+  ],
   "browserslist": [
     "> 1%",
     "last 2 versions",
