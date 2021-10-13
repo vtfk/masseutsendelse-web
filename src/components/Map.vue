@@ -1,6 +1,6 @@
 <template>
   <div class="map-wrapper">
-    <l-map style="height: 400px; width: 750px; max-width: 800px;" :zoom="mapZoom" :center="mapCenter">
+    <l-map style="height: 400px; width: 750px; max-width: 800px; z-index: 1;" :zoom="mapZoom" :center="mapCenter">
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
       <l-marker :lat-lng="mapMarker"></l-marker>
       <l-polygon :lat-lngs="polygon.coordinates" :fillColor="polygon.fillColor" :color="polygon.color"></l-polygon>
