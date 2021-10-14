@@ -24,6 +24,8 @@
         <div v-else class="center-content">
           <!-- Kart komponent -->
           <Map style="margin-top: 2rem;"/>
+          <!-- Knapp for å hente data fra API -->
+          <VTFKButton style="margin-top: 1rem" :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
           <!-- Cards som viser stats om informasjonen -->
           <StatCards style="margin-top: 1rem"/>
           <!-- Angreknapp -->
@@ -45,6 +47,9 @@ import UploadField from './components/UploadField.vue'
 import Map from './components/Map.vue'
 import StatCards from './components/StatCards.vue'
 
+// Import libraries
+import MatrikkelProxyClient from './lib/matrikkelProxyClient'
+
 export default {
   name: 'App',
   components: {
@@ -59,10 +64,64 @@ export default {
     return {
       isSpinning: false,
       isShowModal: false,
-      hasLoadedFile: false
+      hasLoadedFile: true,
+      error: '',
     }
   },
   methods: {
+    async getDataFromMatrikkelAPI(polygon) {
+      if(!polygon) {
+        polygon = [
+          {
+              x: 9.061226825863429,
+              y: 59.417888839303345,
+              z: 0
+          },
+          {
+              x: 9.06059789499838,
+              y: 59.41877340387384,
+              z: 0
+          },
+          {
+              x: 9.062418554835972,
+              y: 59.41876773278693,
+              z: 0
+          },
+          {
+              x: 9.062615483212653,
+              y: 59.418047496800966,
+              z: 0
+          },
+          {
+              x: 9.061226825863429,
+              y: 59.417888839303345,
+              z: 0
+          }
+        ]
+      }
+
+      let matrikkelClient = new MatrikkelProxyClient();
+
+      // Hent ut alle MatrikkelEnhet-IDer innenfor polygonet
+      let matrikkelEnhetIds = await matrikkelClient.getMatrikkelEnheter(polygon, { query: { flatten: true, metadata: false } });
+      if(!matrikkelEnhetIds && matrikkelEnhetIds.length) { this.error = 'Kunne ikke laste inn noen matrikkelenheter innenfor dette polygonet. '; return; }
+
+      // Lag ett request for å kontakte store-service for informasjon om enhetene
+      let matrikkelEnhetItems = [];
+      matrikkelEnhetIds.forEach((item) => {
+        matrikkelEnhetItems.push({
+          type: 'MatrikkelenhetId',
+          namespace: 'http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet',
+          value: item
+        })
+      })
+
+      let matrikkelEnheter = await matrikkelClient.getStoreItems(matrikkelEnhetItems, { query: { flatten: true, metadata: false } });
+      if(!matrikkelEnheter && matrikkelEnheter.length) { this.error = 'Kunne ikke laste inn noen matrikkelenheter innenfor dette polygonet. '; return; }
+
+      console.log('Returned:')
+      console.log(matrikkelEnheter);
+    }
   }
 }
 </script>
