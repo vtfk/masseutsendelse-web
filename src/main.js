@@ -9,7 +9,6 @@ Vue.prototype.$config = Config;
 
 // Use Vuera to use react components in Vue
 Vue.use(VuePlugin)
-
 Vue.config.productionTip = false
 
 new Vue({
