@@ -73,7 +73,7 @@ export default {
     TableBtnModal,
     UploadField,
     Map,
-    StatCards
+    StatCards, 
   },
   data() {
     return {
