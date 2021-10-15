@@ -68,16 +68,16 @@ export default {
           }
         })
         if(foundError) { return; }
-          var fileObject = {
-            name: file.name,
-            type: file.type,
-            size: file.size,
-            lastModified: file.lastModified,
-            lastModifiedDate: file.lastModifiedDate,
-            progress: 0,
-            data: file
-          }
-          this.files.push(fileObject);
+        var fileObject = {
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          lastModified: file.lastModified,
+          lastModifiedDate: file.lastModifiedDate,
+          progress: 0,
+          data: file
+        }
+        this.files.push(fileObject);
       })
 
       // Emit the uploaded filedata to the parent

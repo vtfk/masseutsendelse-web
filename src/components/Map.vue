@@ -2,7 +2,7 @@
   <div class="map-wrapper">
     <l-map style="height: 400px; width: 750px; max-width: 800px; z-index: 1;" :zoom="mapZoom" :center="mapCenter">
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-      <l-marker :lat-lng="mapMarker"></l-marker>
+      <l-marker :lat-lng="mapCenter"></l-marker>
       <l-polygon :lat-lngs="polygon.coordinates" :fillColor="polygon.fillColor" :color="polygon.color"></l-polygon>
     </l-map>
   </div>
@@ -48,7 +48,7 @@ export default {
     },
     zoom: {
       type: Number,
-      default: 16.5
+      default: 14
     },
     coordinates: {
       type: Array,

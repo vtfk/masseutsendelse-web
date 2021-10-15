@@ -1,12 +1,12 @@
 <template>
   <div class="card-container">
-    <div v-for="item in $props.items" :key="item.title" class="card">
+    <div v-for="item in $props.items" :key="item.text" class="card">
       <div class="card-header">
-        <div class="typography heading-two">{{item.title}}</div>
+        <div class="typography heading-two">{{item.text}}</div>
       </div>
       <div class="card-body">
         <div class="typography heading-three">
-          {{item.text}}
+          {{item.value}}
         </div>
       </div>
     </div>
@@ -19,7 +19,7 @@ export default {
   props: {
     items: {
       type: Array,
-      default: () => [{title: 'Private', text: '100'}, { title: 'Bedrifter', text: '79' }, { title: 'Borettslag', text: '3' },]
+      default: () => [{text: 'Private', value: '100'}, { text: 'Bedrifter', value: '79' }, { text: 'Borettslag', value: '3' },]
     }
   },
   data() {
@@ -47,7 +47,6 @@ export default {
     width: 200px;
     background-color: #CFEBF2;
     padding: 1rem 1rem;
-    box-shadow: 0px 1px 2px 1px #888888;
     border-radius: 10px;
   }
 
