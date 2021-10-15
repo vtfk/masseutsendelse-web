@@ -18,10 +18,9 @@
             <div style="margin-right: 2rem;">
               <GuideBtnModal style="margin-top: 1rem;"/>
             </div>
-          <TableBtnModal style="margin-top: 1rem;"/>
+            <TableBtnModal style="margin-top: 1rem;"/>
           </div>
         </div>
-        
         <!-- Upload felt -->
         <div style="margin-top: 1rem;">
           <div v-if="!hasLoadedFile">
@@ -34,10 +33,12 @@
           <div v-else class="center-content">
             <!-- Kart komponent -->
             <Map style="margin-top: 2rem;" :coordinates="polygon" :center="mapCenter"/>
+            <!-- Knapp for å hente data fra API -->
+            <VTFKButton style="margin-top: 1rem" :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
             <!-- Cards som viser stats om informasjonen -->
-            <StatCards style="margin-top: 1rem"/>
+            <StatCards style="margin-top: 1rem" :items="statItems"/>
             <!-- Angreknapp -->
-            <VTFKButton style="margin-top: 1rem" :passedProps="{ onClick: () => { this.hasLoadedFile = false; }}">Angre</VTFKButton>
+            <VTFKButton style="margin-top: 1rem">Angre</VTFKButton>
           </div>
         </div>
       </div>
@@ -82,6 +83,7 @@ export default {
       isParsingFile: false,
       mapCenter: [],
       polygon: [],
+      statItems: [],
       error: '',
     }
   },
@@ -132,6 +134,8 @@ export default {
           value: item
         })
       })
+
+      this.statItems.push({ text: 'Enheter', value: matrikkelEnhetItems.length })
 
       let matrikkelEnheter = await matrikkelClient.getStoreItems(matrikkelEnhetItems, { query: { flatten: true, metadata: false } });
       if(!matrikkelEnheter && matrikkelEnheter.length) { this.error = 'Kunne ikke laste inn noen matrikkelenheter innenfor dette polygonet. '; return; }
