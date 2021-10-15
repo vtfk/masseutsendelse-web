@@ -23,7 +23,17 @@
         </div>
         <!-- Upload felt -->
         <div style="margin-top: 1rem;">
-          <div v-if="!hasLoadedFile">
+          <div v-if="error" class="error-card">
+            <h1>En feil har oppstått</h1>
+            <h3 v-if="error.title">{{error.title}}</h3>
+            <p v-if="error.message">{{error.message}}</p>
+            <strong>Stack:</strong>
+            <p style="text-align: left;">{{error.stack}}</p>
+            <div style="display: flex; justify-content: center;">
+              <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {reset(true)}}">Start på nytt</VTFKButton>
+            </div>
+          </div>
+          <div v-else-if="!hasLoadedFile">
             <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
           </div>
           <div v-else-if="isParsingFile">
@@ -32,13 +42,13 @@
           </div>
           <div v-else class="center-content">
             <!-- Kart komponent -->
-            <Map style="margin-top: 2rem;" :coordinates="polygon" :center="mapCenter"/>
+            <Map style="margin-top: 2rem;" :coordinates="polygon" :center="mapCenter" :markers="markers"/>
             <!-- Knapp for å hente data fra API -->
             <VTFKButton style="margin-top: 1rem" :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
             <!-- Cards som viser stats om informasjonen -->
             <StatCards style="margin-top: 1rem" :items="statItems"/>
             <!-- Angreknapp -->
-            <VTFKButton style="margin-top: 1rem">Angre</VTFKButton>
+            <VTFKButton style="margin-top: 1rem" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
           </div>
         </div>
       </div>
@@ -63,6 +73,15 @@ import MatrikkelProxyClient from './lib/matrikkelProxyClient'
 import DxfParser from 'dxf-parser'
 import proj4 from 'proj4';
 
+// Error klasse
+class AppError extends Error {
+  constructor(title, message) {
+    super(message);
+    Error.captureStackTrace(this, this.constructor);
+    this.title = title;
+  }
+}
+
 export default {
   name: 'App',
   components: {
@@ -82,12 +101,36 @@ export default {
       hasLoadedFile: false,
       isParsingFile: false,
       mapCenter: [],
+      markers: [],
       polygon: [],
       statItems: [],
-      error: '',
+      error: undefined,
     }
   },
   methods: {
+    setError(error) {
+      this.error = error;
+    },
+    reset(force = false) {
+      if(force === false) {
+        if(!confirm('Er du helt sikker på at du vil starte på nytt?')) {
+          return;
+        }
+      }
+
+      // Action states
+      this.state = 'initial';
+      this.isShowModal = false;
+      this.hasLoadedFile = false;
+      this.isParsingFile = false;
+
+      // Data
+      this.markers = [];
+      this.mapCenter = [];
+      this.polygon = [];
+      this.statItems = [];
+      this.error = undefined;
+    },
     async getDataFromMatrikkelAPI(polygon) {
       if(!polygon) {
         polygon = [
@@ -162,80 +205,104 @@ export default {
       });
     },
     async parseFiles(files) {
-      // let dxf_files = files.filter((f) => f.name.toLowerCase().endsWith('.dxf'));
-      this.hasLoadedFile = true;
-      this.isParsingFile = true;
-      let dxf_files = files;
+      try {
+        if(!files || files.length == 0) {
+          throw new AppError('Filopplastings feil', 'Det ble påkallet en filopplasting, men ingen fil ble lastet opp')
+        }
+        let dxf_files = files.filter((f) => f.name.toLowerCase().endsWith('.dxf'));
+        if(!dxf_files || dxf_files.length === 0) {
+          throw new AppError('Feil filtype', 'Filen som ble lastet opp er av feil filtype. Filen må være av typen .dxf')
+        }
 
-      if(dxf_files.length <= 0) { return; } //TODO: Throw feil
+        this.hasLoadedFile = true;
+        this.isParsingFile = true;
 
-      let file = dxf_files[0];
-      if(!file) { return } // TODO: Throw feil
-      let fileData = await this.readFile(file.data);
+        let file = dxf_files[0];
+        let fileData = await this.readFile(file.data);
 
-      var parser = new DxfParser();
-      let parsed = parser.parseSync(fileData);
+        if(!fileData || fileData.length === 0) { throw new AppError('Filen er tom', 'Den opplastede .dxf-filen inneholder ingen data') }
 
-      // TODO: Sjekk at entities kun har ett item
-      // Sjekk også at typen er LWPOLYLINE
+        var parser = new DxfParser();
+        let parsed = parser.parseSync(fileData);
 
-      let vertices = parsed.entities[0].vertices;
-      // console.log('Polygon før transformasjon')
-      // console.log(vertices);
-      // // console.log(parsed.enteties[0]);
-      
-      // Define the coordinate translations
-      proj4.defs([
-        [
-          'EPSG:4326',
-          '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees'],
-        [
-          'EPSG:25832',
-          '+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs'
-        ]
-      ]);
+        if(!parsed.entities) { throw new AppError('Fil inneholder ingen former', 'Filen inneholder ingen former') }
 
-      // let transformed = proj4('EPSG:25832', 'EPSG:4326', vertices[0]);
-      // let lowX = null;
-      // let highX = null;
-      // let highY = null;
-      // let lowY = null;
-      let sumX = null;
-      let sumY = null;
-      let transformedVertices = [];
-      vertices.forEach((vertice) => {
-        // Make a copy of the vertice to not modify the source object
-        let vCopy = JSON.parse(JSON.stringify(vertice))
-        // Transform the coordinates
-        let transformed = proj4('EPSG:25832', 'EPSG:4326', vCopy);
+        let polygons = parsed.entities.filter((i => i.type === 'LWPOLYLINE'));
+        if(polygons.length == 0) { throw new AppError('Fil inneholder ingen polygoner', 'Filen inneholder ingen polygoner') }
+        else if(polygons.length > 1) { throw new AppError('Fil inneholder ingen polygoner', ('Filen må kun inneholde ett polygon, men det inne holder ' + polygons.length))  }
 
-        // if(vertice.x > highX) { highX = vertice.x }
-        // else if(vertice.x < lowX) { lowX = vertice.x }
-        // if(vertice.y > highY) { highY = vertice.y }
-        // else if(vertice.y < lowY) { lowY = vertice.y }
+        const polygon = polygons[0];
+        if(!polygon || !polygon.vertices || polygon.vertices.length === 0) {
+          throw new AppError('Polygonet mangler linjesegmenter', ('Polygonet i filen inneholder ingen linjesegmenter'))
+        }
+ 
+        let vertices = polygons[0].vertices;
 
-        // Add 
-        sumX += vertice.x;
-        sumY += vertice.y;
+        // Define the coordinate translations
+        proj4.defs([
+          [
+            'EPSG:4326',
+            '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees'],
+          [
+            'EPSG:25832',
+            '+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs'
+          ]
+        ]);
 
-        transformedVertices.push([transformed.y, transformed.x]);
-      })
+        let lowX = vertices[0].x;
+        let highX = vertices[0].x;
+        let lowY = vertices[0].y;
+        let highY = vertices[0].y;
+        
+        let northPoint = undefined;
+        let westPoint = undefined;
+        let eastPoint = undefined;
+        let southPoint = undefined;
 
-      // Calculate midpoint
-      let transformedCenter = proj4('EPSG:25832', 'EPSG:4326', {x: sumX / transformedVertices.length, y: sumY / transformedVertices.length});
-      // let transformedCenter = proj4('EPSG:25832', 'EPSG:4326', { x: (lowX + highX) / 2, y: (lowY + highY) / 2 });
+        let transformedVertices = [];
+        // let firstLatitude = vertices[0].y;
+        vertices.forEach((vertice) => {
+          // Make a copy of the vertice to not modify the source object
+          let vCopy = JSON.parse(JSON.stringify(vertice))
+          // Transform the coordinates
+          let transformed = proj4('EPSG:25832', 'EPSG:4326', vCopy);
+          // Find the outermost points, used for calculating the center of the polygon
+          if(vertice.x > highX) { westPoint = vertice; highX = vertice.x; }
+          else if(vertice.x < lowX) { eastPoint = vertice; lowX = vertice.x; }
+          if(vertice.y > highY) { northPoint = vertice; highY = vertice.y; }
+          else if(vertice.y < lowY) { southPoint = vertice; lowY = vertice.y }
+          // Add the transformed points to the transformed array
+          transformedVertices.push([transformed.y, transformed.x]);
+        })
 
-      this.mapCenter = [transformedCenter.y, transformedCenter.x];
+        // Calculate midpoint
+        let transformedCenter = proj4('EPSG:25832', 'EPSG:4326', {x: (lowX + highX) / 2, y: (lowY + highY) / 2});
 
-      this.polygon = transformedVertices;
+        // Calculate the coordinates for the outmost points
+        let translatedNorth = proj4('EPSG:25832', 'EPSG:4326', {x: northPoint.x , y: northPoint.y});
+        let translatedWest = proj4('EPSG:25832', 'EPSG:4326', {x: westPoint.x , y: westPoint.y});
+        let translatedEast = proj4('EPSG:25832', 'EPSG:4326', {x: eastPoint.x , y: eastPoint.y});
+        let translatedSouth = proj4('EPSG:25832', 'EPSG:4326', {x: southPoint.x , y: southPoint.y});
 
-      this.isParsingFile = false;
-      
+        // Set the center of the map
+        this.mapCenter = [transformedCenter.y, transformedCenter.x];
 
-      // TODO: Sjekk at antall transformerte er samme som input antall
+        // Add markers for the outermost points
+        this.markers.push([transformedCenter.y, transformedCenter.x]);
+        this.markers.push([translatedNorth.y, translatedNorth.x]);
+        this.markers.push([translatedWest.y, translatedWest.x]);
+        this.markers.push([translatedEast.y, translatedEast.x]);
+        this.markers.push([translatedSouth.y, translatedSouth.x]);
 
-      // console.log(transformedVertices);
+        // Set the polygon the be the transformed vertices
+        this.polygon = transformedVertices;
 
+        // Set that the file has been parsed
+        this.isParsingFile = false;
+      } catch (err) {
+        this.setError(err);
+        console.error(err.stack);
+      }
     }
   },
   created() {
@@ -277,5 +344,13 @@ export default {
 
   .centered {
     margin: 0 auto;
+  }
+
+  .error-card {
+    width: 100%;
+    min-height: 250px;
+    background-color: #F8D3D1;
+    border-radius: 10px; 
+    padding: 1rem 1rem;
   }
 </style>
