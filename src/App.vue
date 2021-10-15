@@ -14,7 +14,12 @@
             Ett verktøy utviklet for Samferdesel og mobilitets sektoren.<br/>
             Verktøyet lar deg laste opp en polygon fil, gjøre oppslag i Matrikkelen og varsle alle eiere som befinner seg innenfor polygonet.
           </p>
-          <GuideBtnModal style="margin-top: 1rem;"/>
+          <div style="display: flex; flex-direction: row;">
+            <div style="margin-right: 2rem;">
+              <GuideBtnModal style="margin-top: 1rem;"/>
+            </div>
+          <TableBtnModal style="margin-top: 1rem;"/>
+          </div>
         </div>
         
         <!-- Upload felt -->
@@ -47,6 +52,7 @@ import { Button, Spinner } from '@vtfk/components'
 // Prosjektkomponenter
 import Header from './components/Header.vue'
 import GuideBtnModal from './components/GuideBtnModal.vue'
+import TableBtnModal from './components/TableBtnModal.vue'
 import UploadField from './components/UploadField.vue'
 import Map from './components/Map.vue'
 import StatCards from './components/StatCards.vue'
@@ -58,6 +64,7 @@ export default {
     'VTFKButton': Button,
     'VTFKSpinner': Spinner,
     GuideBtnModal,
+    TableBtnModal,
     UploadField,
     Map,
     StatCards

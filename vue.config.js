@@ -1,7 +1,7 @@
 module.exports = {
   configureWebpack: {
     performance: {
-      hints: false
+      hints: false,
     },
     optimization: {
       splitChunks: {
@@ -21,6 +21,13 @@ module.exports = {
               plugins: ['transform-react-jsx']
             }
           }
+        },
+        {
+          test: /\.s[ac]ss$/i,
+          use: [
+            // Compiles Sass to CSS
+            "sass-loader",
+          ],
         },
       ]
     }
