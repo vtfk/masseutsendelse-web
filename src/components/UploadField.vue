@@ -87,7 +87,6 @@ export default {
       if(!e) { return; }
       if(!e.target) { return;}
       if(e.target.id == 'resetBtn' || e.target.id == 'fileInput') { return; }
-      console.log(e)
       // Find input and click it to start the file upload
       let input = document.getElementById('fileInput');
       if(input) {
