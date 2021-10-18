@@ -241,6 +241,42 @@ export default {
       // Parse the matrikkelenhet data
       let parsedMatrikkelEnheter = this.parseMatrikkelEnheter(matrikkelEnheter);
 
+      // Hent ut alle eiere fra dataene
+      let eiere = [];
+      parsedMatrikkelEnheter.forEach((enhet) => {
+        enhet.eiere.forEach((eier) => {
+          if(!eiere.find((e) => e.eierId === eier.eierId && e.type === eier.type)) {
+            eiere.push(eier);
+          }
+        })
+      })
+
+      // Legg ut ett stat-card for hver av de unike eierne
+      this.statItems.push({ text: 'Unike eiere', value: eiere.length })
+
+      let antallJuridiskeEiere = eiere.filter((e) => e.type.toLowerCase().includes('juridisk'));
+      this.statItems.push({ text: 'Juridiske eiere', value: antallJuridiskeEiere.length })
+      this.statItems.push({ text: 'Private eiere', value: eiere.length - antallJuridiskeEiere.length })
+
+      // Kontakt matrikkelen og hent ut alle eiere
+      let ownerRequest = [];
+      eiere.forEach((eier) => {
+        ownerRequest.push({
+          type: 'PersonId',
+          namespace: 'http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person',
+          value: eier.eierId
+        })
+      })
+
+      const matrikkelEiere = await matrikkelClient.getStoreItems(ownerRequest, { query: { flatten: true, metadata: false } });
+      console.log('Matrikkel eiere');
+      console.log(matrikkelEiere);
+
+      // Match eiere og matrikkelEiere
+      if(ownerRequest.length !== matrikkelEiere.length) {
+        throw new AppError('Mismatch i mellom antall forespurte eiere og motatte eiere', 'Vi spurte matrikkel APIet om informasjon om ' + ownerRequest.length + ' eiere, men fikk svar på ' + matrikkelEiere.length + ' eiere.')
+      }
+
       this.parsedItems = parsedMatrikkelEnheter;
 
       console.log('Returned:')
@@ -386,7 +422,7 @@ export default {
       if(!Array.isArray(Enheter)) { Enheter = [Enheter]; }
 
       let parsed = [];
-
+      
       Enheter.forEach((enhet) => {
         let item = {}
 
