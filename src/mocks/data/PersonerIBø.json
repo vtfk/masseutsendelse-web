@@ -119,8 +119,8 @@
         "versjonId": "4",
         "oppdatertAv": "smatmynd",
         "versjon": "1592252733808",
-        "nummer": "03066936278",
-        "navn": "BERGSKÅS TONJE VEDVIK",
+        "nummer": "FJERNET",
+        "navn": "HOVET TOMMY",
         "postadresse": {
             "metadata": {
                 "item": [
@@ -144,8 +144,8 @@
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "0ec6e13f-9a01-55b2-93c2-f9035ac06fed"
         },
-        "etternavn": "BERGSKÅS",
-        "fornavn": "TONJE VEDVIK",
+        "etternavn": "HOVET",
+        "fornavn": "TOMMY",
         "spesifisertRegTypeKodeId": {
             "value": "1"
         },
@@ -379,8 +379,8 @@
         "versjonId": "4",
         "oppdatertAv": "smatmynd",
         "versjon": "1592270900431",
-        "nummer": "30067147525",
-        "navn": "BERGSKÅS TROND",
+        "nummer": "FJERNET",
+        "navn": "BEIDER VEGARD",
         "postadresse": {
             "metadata": {
                 "item": [
@@ -404,8 +404,8 @@
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "3daad4f5-97e7-5e32-8ed6-75dc40f1cafa"
         },
-        "etternavn": "BERGSKÅS",
-        "fornavn": "TROND",
+        "etternavn": "BEIDER",
+        "fornavn": "VEGARD",
         "spesifisertRegTypeKodeId": {
             "value": "1"
         },
@@ -475,8 +475,8 @@
         "versjonId": "6",
         "oppdatertAv": "smatmynd",
         "versjon": "1592261445885",
-        "nummer": "17038929275",
-        "navn": "NYHUS LILL-KATRIN",
+        "nummer": "FJERNET",
+        "navn": "STOL LENE",
         "postadresse": {
             "metadata": {
                 "item": [
@@ -500,8 +500,8 @@
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "678b8386-b0f2-56b8-88fc-167989b1404f"
         },
-        "etternavn": "NYHUS",
-        "fornavn": "LILL-KATRIN",
+        "etternavn": "STOL",
+        "fornavn": "LENE",
         "spesifisertRegTypeKodeId": {
             "value": "1"
         },
@@ -571,8 +571,8 @@
         "versjonId": "8",
         "oppdatertAv": "eksternregister1",
         "versjon": "1625026558357",
-        "nummer": "20018949742",
-        "navn": "KNATTERUD EIRIK IDLAND",
+        "nummer": "FJERNET",
+        "navn": "LUTH TRUDE",
         "postadresse": {
             "metadata": {
                 "item": [
@@ -596,8 +596,8 @@
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "4008ffca-4c96-5e2d-b3c8-5f2431190499"
         },
-        "etternavn": "KNATTERUD",
-        "fornavn": "EIRIK IDLAND",
+        "etternavn": "LUTH",
+        "fornavn": "TRUDE",
         "spesifisertRegTypeKodeId": {
             "value": "10"
         },
@@ -750,7 +750,7 @@
         "oppdatertAv": "smatmynd",
         "versjon": "1592260382202",
         "nummer": "15093647944",
-        "navn": "HOLTA BJØRN",
+        "navn": "EVEN ODD",
         "postadresse": {
             "metadata": {
                 "item": [
@@ -774,8 +774,8 @@
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "ef8ab403-1f6d-53d6-a94d-b5642f40dd27"
         },
-        "etternavn": "HOLTA",
-        "fornavn": "BJØRN",
+        "etternavn": "EVEN",
+        "fornavn": "ODD",
         "spesifisertRegTypeKodeId": {
             "value": "1"
         },
@@ -845,8 +845,8 @@
         "versjonId": "5",
         "oppdatertAv": "smatmynd",
         "versjon": "1592256211579",
-        "nummer": "09098539120",
-        "navn": "SANDA TORSTEIN",
+        "nummer": "FJERNET",
+        "navn": "SKALLE TOM",
         "postadresse": {
             "metadata": {
                 "item": [
@@ -870,8 +870,8 @@
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "04cac8de-3f59-5690-9895-3090e908f1b0"
         },
-        "etternavn": "SANDA",
-        "fornavn": "TORSTEIN",
+        "etternavn": "SKALLE",
+        "fornavn": "TOM",
         "spesifisertRegTypeKodeId": {
             "value": "1"
         },
@@ -1023,7 +1023,7 @@
         "oppdatertAv": "smatmynd",
         "versjon": "1592251115043",
         "nummer": "01063448032",
-        "navn": "HOLTA KARI MARIE VREIM",
+        "navn": "LEM HANS-TORE",
         "postadresse": {
             "metadata": {
                 "item": [
@@ -1047,8 +1047,8 @@
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "c76789b7-b7d6-50aa-86da-d2f06d070a0c"
         },
-        "etternavn": "HOLTA",
-        "fornavn": "KARI MARIE VREIM",
+        "etternavn": "LEM",
+        "fornavn": "HANS-TORE",
         "spesifisertRegTypeKodeId": {
             "value": "1"
         },
