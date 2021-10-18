@@ -45,6 +45,7 @@
             <Map style="margin-top: 2rem;" :coordinates="polygon" :center="mapCenter" :markers="markers"/>
             <!-- Knapp for å hente data fra API -->
             <VTFKButton style="margin-top: 1rem" :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
+            <Loading v-if="statItems.length == 0 && isContactingMatrikkel" title="Kontaker matrikkelen" message="Henter enheter innenfor polygon"/>
             <!-- Cards som viser stats om informasjonen -->
             <StatCards style="margin-top: 1rem" :items="statItems"/>
             <table class="tmpTable">
@@ -115,6 +116,7 @@ import TableBtnModal from './components/TableBtnModal.vue'
 import UploadField from './components/UploadField.vue'
 import Map from './components/Map.vue'
 import StatCards from './components/StatCards.vue'
+import Loading from './components/Loadig.vue'
 
 // Import libraries
 import MatrikkelProxyClient from './lib/matrikkelProxyClient'
@@ -140,7 +142,8 @@ export default {
     TableBtnModal,
     UploadField,
     Map,
-    StatCards
+    StatCards,
+    Loading
   },
   data() {
     return {
@@ -148,6 +151,7 @@ export default {
       isShowModal: false,
       hasLoadedFile: false,
       isParsingFile: false,
+      isContactingMatrikkel: false,
       mapCenter: [],
       markers: [],
       polygon: [],
@@ -172,6 +176,7 @@ export default {
       this.isShowModal = false;
       this.hasLoadedFile = false;
       this.isParsingFile = false;
+      this.isContactingMatrikkel = false;
 
       // Data
       this.markers = [];
@@ -210,7 +215,7 @@ export default {
           }
         ]
       }
-
+      this.isContactingMatrikkel = true;
       let matrikkelClient = new MatrikkelProxyClient();
 
       // Hent ut alle MatrikkelEnhet-IDer innenfor polygonet
@@ -240,6 +245,7 @@ export default {
 
       console.log('Returned:')
       console.log(matrikkelEnheter);
+      this.isContactingMatrikkel = false;
     },
     async readFile(file) {
       // Always return a Promise
