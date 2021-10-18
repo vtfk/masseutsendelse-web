@@ -1,0 +1,2613 @@
+[
+    {
+        "$": {
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xsi:type": "ns6:Grunneiendom"
+        },
+        "id": {
+            "$": {
+                "xsi:type": "ns6:GrunneiendomId"
+            },
+            "value": "68581735"
+        },
+        "metadata": {
+            "item": [
+                "harAktiveFestegrunner",
+                "stedsnummer",
+                "oppmalingIkkeFullfort",
+                "uuid",
+                "oppdatertAv",
+                "mangelMatrikkelforingsKrav",
+                "tinglyst",
+                "harRegistrertJordskifteKrevd",
+                "avsluttetAv",
+                "historiskArealkildeId",
+                "sluttdato",
+                "fristOppmaling",
+                "underSammenslaingBestar",
+                "harRegistrertGrunnerverv",
+                "skyld",
+                "fristGrensepunktmerking",
+                "eierforhold",
+                "grensepunktmerkingMangler",
+                "harGrunnforurensing",
+                "etterML9BTilH",
+                "etableringsDato",
+                "teigerForMatrikkelenhet",
+                "matrikkelnummer",
+                "historiskOppgittAreal",
+                "versjonId",
+                "harKulturminne",
+                "versjon",
+                "underSammenslaingUtgar",
+                "kommunalTilleggsdel",
+                "id",
+                "nymatrikulert",
+                "fristMatrikkelforingsKrav",
+                "erSeksjonert",
+                "utgatt",
+                "harAnmerketKlage",
+                "inngarISamlaFastEiendom",
+                "bruksnavn",
+                "harAvtaleStedbundenRettighet",
+                "oppdateringsdato",
+                "harAvtaleGrensePunktfeste"
+            ]
+        },
+        "oppdateringsdato": {
+            "timestamp": "2020-06-15T20:26:34.378000000+02:00"
+        },
+        "versjonId": "6",
+        "oppdatertAv": "smatmynd",
+        "versjon": "1592245594378",
+        "matrikkelnummer": {
+            "metadata": {
+                "item": [
+                    "seksjonsnummer",
+                    "kommuneId",
+                    "bruksnummer",
+                    "festenummer",
+                    "gardsnummer"
+                ]
+            },
+            "kommuneId": {
+                "value": "3817"
+            },
+            "gardsnummer": "53",
+            "bruksnummer": "270",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+        },
+        "etableringsdato": {
+            "date": "2007-03-01"
+        },
+        "historiskOppgittAreal": "496.5",
+        "historiskArealkildeId": {
+            "value": "1"
+        },
+        "tinglyst": "true",
+        "skyld": "0.0",
+        "bruksnavn": "Parkeringsareal til Bø bedehus",
+        "teigerForMatrikkelenhet": {
+            "item": {
+                "metadata": {
+                    "item": [
+                        "uuid",
+                        "oppdatertAv",
+                        "oppdateringsdato",
+                        "teigId",
+                        "sluttdato",
+                        "id",
+                        "avsluttetAv",
+                        "versjonId",
+                        "hovedteig"
+                    ]
+                },
+                "oppdateringsdato": {
+                    "timestamp": "2020-06-18T01:40:27.676000000+02:00"
+                },
+                "versjonId": "2",
+                "oppdatertAv": "smatmynd",
+                "id": "68915781",
+                "hovedteig": "true",
+                "teigId": {
+                    "value": "68915529"
+                },
+                "uuid": {
+                    "navnerom": "https://data.geonorge.no/matrikkel",
+                    "uuid": "7de2390b-8712-5b99-9981-7b720f70acde"
+                }
+            }
+        },
+        "eierforhold": {
+            "item": {
+                "$": {
+                    "xsi:type": "ns6:JuridiskPersonTinglystEierforhold"
+                },
+                "metadata": {
+                    "item": [
+                        "andelsnr",
+                        "eierId",
+                        "id",
+                        "versjonId",
+                        "uuid",
+                        "eierforholdKodeId",
+                        "sluttdato",
+                        "datofra",
+                        "oppdatertAv",
+                        "oppdateringsdato",
+                        "andel",
+                        "avsluttetAv",
+                        "kommuneId"
+                    ]
+                },
+                "oppdateringsdato": {
+                    "timestamp": "2020-06-17T22:54:03.024000000+02:00"
+                },
+                "versjonId": "3",
+                "oppdatertAv": "smatmynd",
+                "id": "68581949",
+                "kommuneId": {
+                    "value": "3817"
+                },
+                "eierforholdKodeId": {
+                    "value": "0"
+                },
+                "uuid": {
+                    "navnerom": "https://data.geonorge.no/matrikkel",
+                    "uuid": "407d4e29-670b-5e5e-8ca6-d58b58edaf25"
+                },
+                "andel": {
+                    "teller": "1",
+                    "nevner": "1"
+                },
+                "datoFra": {
+                    "date": "2007-11-19"
+                },
+                "eierId": {
+                    "value": "10520065"
+                },
+                "andelsnummer": "2"
+            }
+        },
+        "erSeksjonert": "false",
+        "harAktiveFestegrunner": "false",
+        "harAnmerketKlage": "false",
+        "harRegistrertGrunnerverv": "false",
+        "harRegistrertJordskifteKrevd": "false",
+        "inngarISamlaFastEiendom": "false",
+        "harGrunnforurensing": "false",
+        "harKulturminne": "false",
+        "harAvtaleGrensePunktfeste": "false",
+        "harAvtaleStedbundenRettighet": "false",
+        "utgatt": "false",
+        "underSammenslaingBestar": "false",
+        "underSammenslaingUtgar": "false",
+        "oppmalingIkkeFullfort": "false",
+        "grensepunktmerkingMangler": "false",
+        "mangelMatrikkelforingskrav": "false",
+        "nymatrikulert": "false",
+        "etterML9BTilH": "false",
+        "kommunalTilleggsdel": {
+            "metadata": {
+                "item": [
+                    "kommentarer",
+                    "kartblader",
+                    "undereiendommerIds",
+                    "brukAvGrunnKodeId",
+                    "matrikkelenhetReferanser"
+                ]
+            },
+            "kartblader": "",
+            "brukAvGrunnKodeId": {
+                "value": "0"
+            },
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+        },
+        "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "2137e10a-8910-515a-b188-ff7629537a23"
+        }
+    },
+    {
+        "$": {
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xsi:type": "ns6:Festegrunn"
+        },
+        "id": {
+            "$": {
+                "xsi:type": "ns6:FestegrunnId"
+            },
+            "value": "68575189"
+        },
+        "metadata": {
+            "item": [
+                "harAvtaleGrensePunktfeste",
+                "harAvtaleStedbundenRettighet",
+                "etterML9BTilH",
+                "erSeksjonert",
+                "oppmalingIkkeFullfort",
+                "etableringsDato",
+                "harKulturminne",
+                "versjonId",
+                "historiskOppgittAreal",
+                "harAktiveFestegrunner",
+                "harGrunnforurensing",
+                "matrikkelnummer",
+                "underSammenslaingUtgar",
+                "harRegistrertGrunnerverv",
+                "kommunalTilleggsdel",
+                "uuid",
+                "punktfeste",
+                "oppdatertAv",
+                "sluttdato",
+                "mangelMatrikkelforingsKrav",
+                "avsluttetAv",
+                "festetMatrikkelenhetIds",
+                "fristMatrikkelforingsKrav",
+                "underSammenslaingBestar",
+                "id",
+                "oppdateringsdato",
+                "bruksnavn",
+                "inngarISamlaFastEiendom",
+                "harAnmerketKlage",
+                "versjon",
+                "utgatt",
+                "fristOppmaling",
+                "tinglyst",
+                "historiskArealkildeId",
+                "harRegistrertJordskifteKrevd",
+                "nymatrikulert",
+                "teigerForMatrikkelenhet",
+                "eierforhold",
+                "skyld",
+                "fristGrensepunktmerking",
+                "grensepunktmerkingMangler",
+                "stedsnummer"
+            ]
+        },
+        "oppdateringsdato": {
+            "timestamp": "2020-06-15T20:24:05.913000000+02:00"
+        },
+        "versjonId": "4",
+        "oppdatertAv": "smatmynd",
+        "versjon": "1592245445913",
+        "matrikkelnummer": {
+            "metadata": {
+                "item": [
+                    "seksjonsnummer",
+                    "kommuneId",
+                    "bruksnummer",
+                    "festenummer",
+                    "gardsnummer"
+                ]
+            },
+            "kommuneId": {
+                "value": "3817"
+            },
+            "gardsnummer": "53",
+            "bruksnummer": "1",
+            "festenummer": "57",
+            "seksjonsnummer": "0"
+        },
+        "etableringsdato": {
+            "date": "1954-09-08"
+        },
+        "historiskOppgittAreal": "35920.0",
+        "historiskArealkildeId": {
+            "value": "5"
+        },
+        "tinglyst": "true",
+        "skyld": "0.0",
+        "bruksnavn": "BØ VIDAREGÅANDE SKULE",
+        "teigerForMatrikkelenhet": {
+            "item": {
+                "metadata": {
+                    "item": [
+                        "uuid",
+                        "oppdatertAv",
+                        "oppdateringsdato",
+                        "teigId",
+                        "sluttdato",
+                        "id",
+                        "avsluttetAv",
+                        "versjonId",
+                        "hovedteig"
+                    ]
+                },
+                "oppdateringsdato": {
+                    "timestamp": "2020-06-18T01:48:08.492000000+02:00"
+                },
+                "versjonId": "2",
+                "oppdatertAv": "smatmynd",
+                "id": "68906502",
+                "hovedteig": "true",
+                "teigId": {
+                    "value": "68905751"
+                },
+                "uuid": {
+                    "navnerom": "https://data.geonorge.no/matrikkel",
+                    "uuid": "14282609-59a7-502b-9243-4919005ac03c"
+                }
+            }
+        },
+        "eierforhold": {
+            "item": {
+                "$": {
+                    "xsi:type": "ns6:JuridiskPersonTinglystEierforhold"
+                },
+                "metadata": {
+                    "item": [
+                        "andelsnr",
+                        "eierId",
+                        "id",
+                        "versjonId",
+                        "uuid",
+                        "eierforholdKodeId",
+                        "sluttdato",
+                        "datofra",
+                        "oppdatertAv",
+                        "oppdateringsdato",
+                        "andel",
+                        "avsluttetAv",
+                        "kommuneId"
+                    ]
+                },
+                "oppdateringsdato": {
+                    "timestamp": "2020-06-17T23:57:19.245000000+02:00"
+                },
+                "versjonId": "2",
+                "oppdatertAv": "smatmynd",
+                "id": "6365450054",
+                "kommuneId": {
+                    "value": "3817"
+                },
+                "eierforholdKodeId": {
+                    "value": "1"
+                },
+                "uuid": {
+                    "navnerom": "https://data.geonorge.no/matrikkel",
+                    "uuid": "282d541a-cb35-5fb9-a337-99073539e7a0"
+                },
+                "andel": {
+                    "teller": "1",
+                    "nevner": "1"
+                },
+                "datoFra": {
+                    "date": "1954-09-08"
+                },
+                "eierId": {
+                    "value": "6257903605"
+                },
+                "andelsnummer": "1"
+            }
+        },
+        "erSeksjonert": "false",
+        "harAktiveFestegrunner": "false",
+        "harAnmerketKlage": "false",
+        "harRegistrertGrunnerverv": "false",
+        "harRegistrertJordskifteKrevd": "false",
+        "inngarISamlaFastEiendom": "false",
+        "harGrunnforurensing": "false",
+        "harKulturminne": "false",
+        "harAvtaleGrensePunktfeste": "false",
+        "harAvtaleStedbundenRettighet": "false",
+        "utgatt": "false",
+        "underSammenslaingBestar": "false",
+        "underSammenslaingUtgar": "false",
+        "oppmalingIkkeFullfort": "false",
+        "grensepunktmerkingMangler": "false",
+        "mangelMatrikkelforingskrav": "false",
+        "nymatrikulert": "false",
+        "etterML9BTilH": "false",
+        "kommunalTilleggsdel": {
+            "metadata": {
+                "item": [
+                    "kommentarer",
+                    "kartblader",
+                    "undereiendommerIds",
+                    "brukAvGrunnKodeId",
+                    "matrikkelenhetReferanser"
+                ]
+            },
+            "kartblader": "",
+            "brukAvGrunnKodeId": {
+                "value": "0"
+            },
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+        },
+        "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "c3c6a32c-c6c4-5688-a429-a60d70c6a815"
+        },
+        "festetMatrikkelenhetIds": {
+            "item": {
+                "value": "68575132"
+            }
+        },
+        "punktfeste": "false"
+    },
+    {
+        "$": {
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xsi:type": "ns6:Grunneiendom"
+        },
+        "id": {
+            "$": {
+                "xsi:type": "ns6:GrunneiendomId"
+            },
+            "value": "525222618"
+        },
+        "metadata": {
+            "item": [
+                "harAktiveFestegrunner",
+                "stedsnummer",
+                "oppmalingIkkeFullfort",
+                "uuid",
+                "oppdatertAv",
+                "mangelMatrikkelforingsKrav",
+                "tinglyst",
+                "harRegistrertJordskifteKrevd",
+                "avsluttetAv",
+                "historiskArealkildeId",
+                "sluttdato",
+                "fristOppmaling",
+                "underSammenslaingBestar",
+                "harRegistrertGrunnerverv",
+                "skyld",
+                "fristGrensepunktmerking",
+                "eierforhold",
+                "grensepunktmerkingMangler",
+                "harGrunnforurensing",
+                "etterML9BTilH",
+                "etableringsDato",
+                "teigerForMatrikkelenhet",
+                "matrikkelnummer",
+                "historiskOppgittAreal",
+                "versjonId",
+                "harKulturminne",
+                "versjon",
+                "underSammenslaingUtgar",
+                "kommunalTilleggsdel",
+                "id",
+                "nymatrikulert",
+                "fristMatrikkelforingsKrav",
+                "erSeksjonert",
+                "utgatt",
+                "harAnmerketKlage",
+                "inngarISamlaFastEiendom",
+                "bruksnavn",
+                "harAvtaleStedbundenRettighet",
+                "oppdateringsdato",
+                "harAvtaleGrensePunktfeste"
+            ]
+        },
+        "oppdateringsdato": {
+            "timestamp": "2020-06-15T22:30:53.865000000+02:00"
+        },
+        "versjonId": "9",
+        "oppdatertAv": "smatmynd",
+        "versjon": "1592253053865",
+        "matrikkelnummer": {
+            "metadata": {
+                "item": [
+                    "seksjonsnummer",
+                    "kommuneId",
+                    "bruksnummer",
+                    "festenummer",
+                    "gardsnummer"
+                ]
+            },
+            "kommuneId": {
+                "value": "3817"
+            },
+            "gardsnummer": "53",
+            "bruksnummer": "314",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+        },
+        "etableringsdato": {
+            "date": "2015-09-28"
+        },
+        "historiskOppgittAreal": "0.0",
+        "historiskArealkildeId": {
+            "value": "0"
+        },
+        "tinglyst": "true",
+        "skyld": "0.0",
+        "bruksnavn": "Gymnasbakken 39-41, tomt 6",
+        "teigerForMatrikkelenhet": {
+            "item": {
+                "metadata": {
+                    "item": [
+                        "uuid",
+                        "oppdatertAv",
+                        "oppdateringsdato",
+                        "teigId",
+                        "sluttdato",
+                        "id",
+                        "avsluttetAv",
+                        "versjonId",
+                        "hovedteig"
+                    ]
+                },
+                "oppdateringsdato": {
+                    "timestamp": "2020-06-18T02:29:17.812000000+02:00"
+                },
+                "versjonId": "2",
+                "oppdatertAv": "smatmynd",
+                "id": "525222651",
+                "hovedteig": "true",
+                "teigId": {
+                    "value": "525222617"
+                },
+                "uuid": {
+                    "navnerom": "https://data.geonorge.no/matrikkel",
+                    "uuid": "dfa51e47-3958-5711-ae08-9b47bc93d89d"
+                }
+            }
+        },
+        "eierforhold": {
+            "item": [
+                {
+                    "$": {
+                        "xsi:type": "ns6:JuridiskPersonIkkeTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "uuid",
+                            "sluttdato",
+                            "id",
+                            "oppdatertAv",
+                            "datotil",
+                            "eierforholdKodeId",
+                            "versjonId",
+                            "andel",
+                            "oppdateringsdato",
+                            "kommuneId",
+                            "eierId",
+                            "datofra",
+                            "avsluttetAv"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T23:26:42.648000000+02:00"
+                    },
+                    "versjonId": "5",
+                    "oppdatertAv": "smatmynd",
+                    "id": "525222652",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "11"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "1db9aadd-e45b-56a0-8585-9bb18352bfec"
+                    },
+                    "datoTil": {
+                        "date": "2015-10-01"
+                    },
+                    "eierId": {
+                        "value": "9278455"
+                    }
+                },
+                {
+                    "$": {
+                        "xsi:type": "ns6:JuridiskPersonTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "andelsnr",
+                            "eierId",
+                            "id",
+                            "versjonId",
+                            "uuid",
+                            "eierforholdKodeId",
+                            "sluttdato",
+                            "datofra",
+                            "oppdatertAv",
+                            "oppdateringsdato",
+                            "andel",
+                            "avsluttetAv",
+                            "kommuneId"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T23:35:45.518000000+02:00"
+                    },
+                    "versjonId": "3",
+                    "oppdatertAv": "smatmynd",
+                    "id": "591510487",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "0"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "d67affd9-acae-5f11-8240-6b8953e313d5"
+                    },
+                    "andel": {
+                        "teller": "1",
+                        "nevner": "1"
+                    },
+                    "datoFra": {
+                        "date": "2017-06-08"
+                    },
+                    "eierId": {
+                        "value": "585795431"
+                    },
+                    "andelsnummer": "3"
+                }
+            ]
+        },
+        "erSeksjonert": "false",
+        "harAktiveFestegrunner": "false",
+        "harAnmerketKlage": "false",
+        "harRegistrertGrunnerverv": "false",
+        "harRegistrertJordskifteKrevd": "false",
+        "inngarISamlaFastEiendom": "false",
+        "harGrunnforurensing": "false",
+        "harKulturminne": "false",
+        "harAvtaleGrensePunktfeste": "false",
+        "harAvtaleStedbundenRettighet": "false",
+        "utgatt": "false",
+        "underSammenslaingBestar": "false",
+        "underSammenslaingUtgar": "false",
+        "oppmalingIkkeFullfort": "false",
+        "grensepunktmerkingMangler": "false",
+        "mangelMatrikkelforingskrav": "false",
+        "nymatrikulert": "false",
+        "etterML9BTilH": "false",
+        "kommunalTilleggsdel": {
+            "metadata": {
+                "item": [
+                    "kommentarer",
+                    "kartblader",
+                    "undereiendommerIds",
+                    "brukAvGrunnKodeId",
+                    "matrikkelenhetReferanser"
+                ]
+            },
+            "kartblader": "",
+            "brukAvGrunnKodeId": {
+                "value": "0"
+            },
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+        },
+        "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "d9cd6824-c306-59c3-bf8a-fe3aac5ec525"
+        }
+    },
+    {
+        "$": {
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xsi:type": "ns6:Grunneiendom"
+        },
+        "id": {
+            "$": {
+                "xsi:type": "ns6:GrunneiendomId"
+            },
+            "value": "525217531"
+        },
+        "metadata": {
+            "item": [
+                "harAktiveFestegrunner",
+                "stedsnummer",
+                "oppmalingIkkeFullfort",
+                "uuid",
+                "oppdatertAv",
+                "mangelMatrikkelforingsKrav",
+                "tinglyst",
+                "harRegistrertJordskifteKrevd",
+                "avsluttetAv",
+                "historiskArealkildeId",
+                "sluttdato",
+                "fristOppmaling",
+                "underSammenslaingBestar",
+                "harRegistrertGrunnerverv",
+                "skyld",
+                "fristGrensepunktmerking",
+                "eierforhold",
+                "grensepunktmerkingMangler",
+                "harGrunnforurensing",
+                "etterML9BTilH",
+                "etableringsDato",
+                "teigerForMatrikkelenhet",
+                "matrikkelnummer",
+                "historiskOppgittAreal",
+                "versjonId",
+                "harKulturminne",
+                "versjon",
+                "underSammenslaingUtgar",
+                "kommunalTilleggsdel",
+                "id",
+                "nymatrikulert",
+                "fristMatrikkelforingsKrav",
+                "erSeksjonert",
+                "utgatt",
+                "harAnmerketKlage",
+                "inngarISamlaFastEiendom",
+                "bruksnavn",
+                "harAvtaleStedbundenRettighet",
+                "oppdateringsdato",
+                "harAvtaleGrensePunktfeste"
+            ]
+        },
+        "oppdateringsdato": {
+            "timestamp": "2020-06-15T22:30:53.865000000+02:00"
+        },
+        "versjonId": "9",
+        "oppdatertAv": "smatmynd",
+        "versjon": "1592253053865",
+        "matrikkelnummer": {
+            "metadata": {
+                "item": [
+                    "seksjonsnummer",
+                    "kommuneId",
+                    "bruksnummer",
+                    "festenummer",
+                    "gardsnummer"
+                ]
+            },
+            "kommuneId": {
+                "value": "3817"
+            },
+            "gardsnummer": "53",
+            "bruksnummer": "313",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+        },
+        "etableringsdato": {
+            "date": "2015-09-28"
+        },
+        "historiskOppgittAreal": "0.0",
+        "historiskArealkildeId": {
+            "value": "0"
+        },
+        "tinglyst": "true",
+        "skyld": "0.0",
+        "bruksnavn": "Gymnasbakken 47, tomt 5",
+        "teigerForMatrikkelenhet": {
+            "item": {
+                "metadata": {
+                    "item": [
+                        "uuid",
+                        "oppdatertAv",
+                        "oppdateringsdato",
+                        "teigId",
+                        "sluttdato",
+                        "id",
+                        "avsluttetAv",
+                        "versjonId",
+                        "hovedteig"
+                    ]
+                },
+                "oppdateringsdato": {
+                    "timestamp": "2020-06-18T02:29:17.812000000+02:00"
+                },
+                "versjonId": "2",
+                "oppdatertAv": "smatmynd",
+                "id": "525217542",
+                "hovedteig": "true",
+                "teigId": {
+                    "value": "525217530"
+                },
+                "uuid": {
+                    "navnerom": "https://data.geonorge.no/matrikkel",
+                    "uuid": "6b55edb8-f0ae-585b-829f-ab6fffb5f595"
+                }
+            }
+        },
+        "eierforhold": {
+            "item": [
+                {
+                    "$": {
+                        "xsi:type": "ns6:PersonTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "oppdateringsdato",
+                            "id",
+                            "andel",
+                            "versjonId",
+                            "kommuneId",
+                            "andelsnr",
+                            "oppdatertAv",
+                            "avsluttetAv",
+                            "datofra",
+                            "sluttdato",
+                            "eierId",
+                            "eierforholdKodeId",
+                            "uuid"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T23:27:58.412000000+02:00"
+                    },
+                    "versjonId": "3",
+                    "oppdatertAv": "smatmynd",
+                    "id": "556589508",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "0"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "c2a348ac-fb3a-5170-b1f0-3e6240f9017e"
+                    },
+                    "andel": {
+                        "teller": "1",
+                        "nevner": "2"
+                    },
+                    "datoFra": {
+                        "date": "2016-06-06"
+                    },
+                    "eierId": {
+                        "value": "4581299"
+                    },
+                    "andelsnummer": "3"
+                },
+                {
+                    "$": {
+                        "xsi:type": "ns6:JuridiskPersonIkkeTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "uuid",
+                            "sluttdato",
+                            "id",
+                            "oppdatertAv",
+                            "datotil",
+                            "eierforholdKodeId",
+                            "versjonId",
+                            "andel",
+                            "oppdateringsdato",
+                            "kommuneId",
+                            "eierId",
+                            "datofra",
+                            "avsluttetAv"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T23:26:27.475000000+02:00"
+                    },
+                    "versjonId": "5",
+                    "oppdatertAv": "smatmynd",
+                    "id": "525217543",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "11"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "8f4f9ded-d49a-5e48-8e67-e1ea8e23f2a9"
+                    },
+                    "datoTil": {
+                        "date": "2015-10-01"
+                    },
+                    "eierId": {
+                        "value": "9278455"
+                    }
+                },
+                {
+                    "$": {
+                        "xsi:type": "ns6:PersonTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "oppdateringsdato",
+                            "id",
+                            "andel",
+                            "versjonId",
+                            "kommuneId",
+                            "andelsnr",
+                            "oppdatertAv",
+                            "avsluttetAv",
+                            "datofra",
+                            "sluttdato",
+                            "eierId",
+                            "eierforholdKodeId",
+                            "uuid"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T23:27:58.412000000+02:00"
+                    },
+                    "versjonId": "3",
+                    "oppdatertAv": "smatmynd",
+                    "id": "556589507",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "0"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "cc8fe84f-0533-583d-bc30-3d0323cb07c7"
+                    },
+                    "andel": {
+                        "teller": "1",
+                        "nevner": "2"
+                    },
+                    "datoFra": {
+                        "date": "2016-06-06"
+                    },
+                    "eierId": {
+                        "value": "1131404"
+                    },
+                    "andelsnummer": "4"
+                }
+            ]
+        },
+        "erSeksjonert": "false",
+        "harAktiveFestegrunner": "false",
+        "harAnmerketKlage": "false",
+        "harRegistrertGrunnerverv": "false",
+        "harRegistrertJordskifteKrevd": "false",
+        "inngarISamlaFastEiendom": "false",
+        "harGrunnforurensing": "false",
+        "harKulturminne": "false",
+        "harAvtaleGrensePunktfeste": "false",
+        "harAvtaleStedbundenRettighet": "false",
+        "utgatt": "false",
+        "underSammenslaingBestar": "false",
+        "underSammenslaingUtgar": "false",
+        "oppmalingIkkeFullfort": "false",
+        "grensepunktmerkingMangler": "false",
+        "mangelMatrikkelforingskrav": "false",
+        "nymatrikulert": "false",
+        "etterML9BTilH": "false",
+        "kommunalTilleggsdel": {
+            "metadata": {
+                "item": [
+                    "kommentarer",
+                    "kartblader",
+                    "undereiendommerIds",
+                    "brukAvGrunnKodeId",
+                    "matrikkelenhetReferanser"
+                ]
+            },
+            "kartblader": "",
+            "brukAvGrunnKodeId": {
+                "value": "0"
+            },
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+        },
+        "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "1d61ad9a-17f0-5c37-b201-d1291f07af55"
+        }
+    },
+    {
+        "$": {
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xsi:type": "ns6:Grunneiendom"
+        },
+        "id": {
+            "$": {
+                "xsi:type": "ns6:GrunneiendomId"
+            },
+            "value": "525213751"
+        },
+        "metadata": {
+            "item": [
+                "harAktiveFestegrunner",
+                "stedsnummer",
+                "oppmalingIkkeFullfort",
+                "uuid",
+                "oppdatertAv",
+                "mangelMatrikkelforingsKrav",
+                "tinglyst",
+                "harRegistrertJordskifteKrevd",
+                "avsluttetAv",
+                "historiskArealkildeId",
+                "sluttdato",
+                "fristOppmaling",
+                "underSammenslaingBestar",
+                "harRegistrertGrunnerverv",
+                "skyld",
+                "fristGrensepunktmerking",
+                "eierforhold",
+                "grensepunktmerkingMangler",
+                "harGrunnforurensing",
+                "etterML9BTilH",
+                "etableringsDato",
+                "teigerForMatrikkelenhet",
+                "matrikkelnummer",
+                "historiskOppgittAreal",
+                "versjonId",
+                "harKulturminne",
+                "versjon",
+                "underSammenslaingUtgar",
+                "kommunalTilleggsdel",
+                "id",
+                "nymatrikulert",
+                "fristMatrikkelforingsKrav",
+                "erSeksjonert",
+                "utgatt",
+                "harAnmerketKlage",
+                "inngarISamlaFastEiendom",
+                "bruksnavn",
+                "harAvtaleStedbundenRettighet",
+                "oppdateringsdato",
+                "harAvtaleGrensePunktfeste"
+            ]
+        },
+        "oppdateringsdato": {
+            "timestamp": "2020-06-15T22:30:53.865000000+02:00"
+        },
+        "versjonId": "10",
+        "oppdatertAv": "smatmynd",
+        "versjon": "1592253053865",
+        "matrikkelnummer": {
+            "metadata": {
+                "item": [
+                    "seksjonsnummer",
+                    "kommuneId",
+                    "bruksnummer",
+                    "festenummer",
+                    "gardsnummer"
+                ]
+            },
+            "kommuneId": {
+                "value": "3817"
+            },
+            "gardsnummer": "53",
+            "bruksnummer": "311",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+        },
+        "etableringsdato": {
+            "date": "2015-09-28"
+        },
+        "historiskOppgittAreal": "0.0",
+        "historiskArealkildeId": {
+            "value": "0"
+        },
+        "tinglyst": "true",
+        "skyld": "0.0",
+        "bruksnavn": "Gymnasbakken 47, tomt 3",
+        "teigerForMatrikkelenhet": {
+            "item": {
+                "metadata": {
+                    "item": [
+                        "uuid",
+                        "oppdatertAv",
+                        "oppdateringsdato",
+                        "teigId",
+                        "sluttdato",
+                        "id",
+                        "avsluttetAv",
+                        "versjonId",
+                        "hovedteig"
+                    ]
+                },
+                "oppdateringsdato": {
+                    "timestamp": "2020-06-18T02:29:27.594000000+02:00"
+                },
+                "versjonId": "2",
+                "oppdatertAv": "smatmynd",
+                "id": "525213757",
+                "hovedteig": "true",
+                "teigId": {
+                    "value": "525213750"
+                },
+                "uuid": {
+                    "navnerom": "https://data.geonorge.no/matrikkel",
+                    "uuid": "95d124c2-0d90-5059-bf3d-ab830fea4264"
+                }
+            }
+        },
+        "eierforhold": {
+            "item": [
+                {
+                    "$": {
+                        "xsi:type": "ns6:JuridiskPersonIkkeTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "uuid",
+                            "sluttdato",
+                            "id",
+                            "oppdatertAv",
+                            "datotil",
+                            "eierforholdKodeId",
+                            "versjonId",
+                            "andel",
+                            "oppdateringsdato",
+                            "kommuneId",
+                            "eierId",
+                            "datofra",
+                            "avsluttetAv"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T22:20:39.958000000+02:00"
+                    },
+                    "versjonId": "5",
+                    "oppdatertAv": "smatmynd",
+                    "id": "525213758",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "11"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "dfe37657-4295-5121-ab66-583b30daaa1d"
+                    },
+                    "datoTil": {
+                        "date": "2015-10-01"
+                    },
+                    "eierId": {
+                        "value": "9278455"
+                    }
+                },
+                {
+                    "$": {
+                        "xsi:type": "ns6:PersonTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "oppdateringsdato",
+                            "id",
+                            "andel",
+                            "versjonId",
+                            "kommuneId",
+                            "andelsnr",
+                            "oppdatertAv",
+                            "avsluttetAv",
+                            "datofra",
+                            "sluttdato",
+                            "eierId",
+                            "eierforholdKodeId",
+                            "uuid"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T23:54:06.346000000+02:00"
+                    },
+                    "versjonId": "2",
+                    "oppdatertAv": "smatmynd",
+                    "id": "6364263769",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "0"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "ef4c0a77-999a-5545-bc49-dc538597941c"
+                    },
+                    "andel": {
+                        "teller": "1",
+                        "nevner": "2"
+                    },
+                    "datoFra": {
+                        "date": "2020-04-02"
+                    },
+                    "eierId": {
+                        "value": "7895912"
+                    },
+                    "andelsnummer": "4"
+                },
+                {
+                    "$": {
+                        "xsi:type": "ns6:PersonTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "oppdateringsdato",
+                            "id",
+                            "andel",
+                            "versjonId",
+                            "kommuneId",
+                            "andelsnr",
+                            "oppdatertAv",
+                            "avsluttetAv",
+                            "datofra",
+                            "sluttdato",
+                            "eierId",
+                            "eierforholdKodeId",
+                            "uuid"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T23:54:06.346000000+02:00"
+                    },
+                    "versjonId": "2",
+                    "oppdatertAv": "smatmynd",
+                    "id": "6364263768",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "0"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "82915c60-e439-5ea8-9f8c-3a8773421fc3"
+                    },
+                    "andel": {
+                        "teller": "1",
+                        "nevner": "2"
+                    },
+                    "datoFra": {
+                        "date": "2020-04-02"
+                    },
+                    "eierId": {
+                        "value": "1659450"
+                    },
+                    "andelsnummer": "5"
+                }
+            ]
+        },
+        "erSeksjonert": "false",
+        "harAktiveFestegrunner": "false",
+        "harAnmerketKlage": "false",
+        "harRegistrertGrunnerverv": "false",
+        "harRegistrertJordskifteKrevd": "false",
+        "inngarISamlaFastEiendom": "false",
+        "harGrunnforurensing": "false",
+        "harKulturminne": "false",
+        "harAvtaleGrensePunktfeste": "false",
+        "harAvtaleStedbundenRettighet": "false",
+        "utgatt": "false",
+        "underSammenslaingBestar": "false",
+        "underSammenslaingUtgar": "false",
+        "oppmalingIkkeFullfort": "false",
+        "grensepunktmerkingMangler": "false",
+        "mangelMatrikkelforingskrav": "false",
+        "nymatrikulert": "false",
+        "etterML9BTilH": "false",
+        "kommunalTilleggsdel": {
+            "metadata": {
+                "item": [
+                    "kommentarer",
+                    "kartblader",
+                    "undereiendommerIds",
+                    "brukAvGrunnKodeId",
+                    "matrikkelenhetReferanser"
+                ]
+            },
+            "kartblader": "",
+            "brukAvGrunnKodeId": {
+                "value": "0"
+            },
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+        },
+        "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "0c101634-8ba5-5244-a9d5-9b78aea91111"
+        }
+    },
+    {
+        "$": {
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xsi:type": "ns6:Grunneiendom"
+        },
+        "id": {
+            "$": {
+                "xsi:type": "ns6:GrunneiendomId"
+            },
+            "value": "68577932"
+        },
+        "metadata": {
+            "item": [
+                "harAktiveFestegrunner",
+                "stedsnummer",
+                "oppmalingIkkeFullfort",
+                "uuid",
+                "oppdatertAv",
+                "mangelMatrikkelforingsKrav",
+                "tinglyst",
+                "harRegistrertJordskifteKrevd",
+                "avsluttetAv",
+                "historiskArealkildeId",
+                "sluttdato",
+                "fristOppmaling",
+                "underSammenslaingBestar",
+                "harRegistrertGrunnerverv",
+                "skyld",
+                "fristGrensepunktmerking",
+                "eierforhold",
+                "grensepunktmerkingMangler",
+                "harGrunnforurensing",
+                "etterML9BTilH",
+                "etableringsDato",
+                "teigerForMatrikkelenhet",
+                "matrikkelnummer",
+                "historiskOppgittAreal",
+                "versjonId",
+                "harKulturminne",
+                "versjon",
+                "underSammenslaingUtgar",
+                "kommunalTilleggsdel",
+                "id",
+                "nymatrikulert",
+                "fristMatrikkelforingsKrav",
+                "erSeksjonert",
+                "utgatt",
+                "harAnmerketKlage",
+                "inngarISamlaFastEiendom",
+                "bruksnavn",
+                "harAvtaleStedbundenRettighet",
+                "oppdateringsdato",
+                "harAvtaleGrensePunktfeste"
+            ]
+        },
+        "oppdateringsdato": {
+            "timestamp": "2021-01-07T04:05:44.890000000+01:00"
+        },
+        "versjonId": "5",
+        "oppdatertAv": "eksternregister2",
+        "versjon": "1609988744890",
+        "matrikkelnummer": {
+            "metadata": {
+                "item": [
+                    "seksjonsnummer",
+                    "kommuneId",
+                    "bruksnummer",
+                    "festenummer",
+                    "gardsnummer"
+                ]
+            },
+            "kommuneId": {
+                "value": "3817"
+            },
+            "gardsnummer": "53",
+            "bruksnummer": "207",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+        },
+        "etableringsdato": {
+            "date": "1994-11-02"
+        },
+        "historiskOppgittAreal": "5362426.0",
+        "historiskArealkildeId": {
+            "value": "5"
+        },
+        "tinglyst": "true",
+        "skyld": "0.0",
+        "bruksnavn": "HOLMEN",
+        "teigerForMatrikkelenhet": {
+            "item": [
+                {
+                    "metadata": {
+                        "item": [
+                            "uuid",
+                            "oppdatertAv",
+                            "oppdateringsdato",
+                            "teigId",
+                            "sluttdato",
+                            "id",
+                            "avsluttetAv",
+                            "versjonId",
+                            "hovedteig"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-18T02:23:17.063000000+02:00"
+                    },
+                    "versjonId": "2",
+                    "oppdatertAv": "smatmynd",
+                    "id": "294183192",
+                    "hovedteig": "true",
+                    "teigId": {
+                        "value": "68913440"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "a3c32469-ed5a-50e1-9167-d9e0d7adf7af"
+                    }
+                },
+                {
+                    "metadata": {
+                        "item": [
+                            "uuid",
+                            "oppdatertAv",
+                            "oppdateringsdato",
+                            "teigId",
+                            "sluttdato",
+                            "id",
+                            "avsluttetAv",
+                            "versjonId",
+                            "hovedteig"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-18T02:23:17.063000000+02:00"
+                    },
+                    "versjonId": "2",
+                    "oppdatertAv": "smatmynd",
+                    "id": "294183193",
+                    "hovedteig": "false",
+                    "teigId": {
+                        "value": "68913372"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "7f36f229-c2c4-50d4-a077-9dd6535191f0"
+                    }
+                },
+                {
+                    "metadata": {
+                        "item": [
+                            "uuid",
+                            "oppdatertAv",
+                            "oppdateringsdato",
+                            "teigId",
+                            "sluttdato",
+                            "id",
+                            "avsluttetAv",
+                            "versjonId",
+                            "hovedteig"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-18T02:23:17.063000000+02:00"
+                    },
+                    "versjonId": "2",
+                    "oppdatertAv": "smatmynd",
+                    "id": "294183194",
+                    "hovedteig": "false",
+                    "teigId": {
+                        "value": "68913285"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "57ebe45f-d46a-5ff9-9134-35b599e3159e"
+                    }
+                }
+            ]
+        },
+        "eierforhold": {
+            "item": {
+                "$": {
+                    "xsi:type": "ns6:PersonTinglystEierforhold"
+                },
+                "metadata": {
+                    "item": [
+                        "oppdateringsdato",
+                        "id",
+                        "andel",
+                        "versjonId",
+                        "kommuneId",
+                        "andelsnr",
+                        "oppdatertAv",
+                        "avsluttetAv",
+                        "datofra",
+                        "sluttdato",
+                        "eierId",
+                        "eierforholdKodeId",
+                        "uuid"
+                    ]
+                },
+                "oppdateringsdato": {
+                    "timestamp": "2021-01-07T04:05:44.890000000+01:00"
+                },
+                "versjonId": "1",
+                "oppdatertAv": "eksternregister2",
+                "id": "6390251504",
+                "kommuneId": {
+                    "value": "3817"
+                },
+                "eierforholdKodeId": {
+                    "value": "0"
+                },
+                "uuid": {
+                    "navnerom": "https://data.geonorge.no/matrikkel",
+                    "uuid": "3fe92ec7-941d-5198-8445-6bf83701d827"
+                },
+                "andel": {
+                    "teller": "1",
+                    "nevner": "1"
+                },
+                "datoFra": {
+                    "date": "2021-01-06"
+                },
+                "eierId": {
+                    "value": "5566176"
+                },
+                "andelsnummer": "4"
+            }
+        },
+        "erSeksjonert": "false",
+        "harAktiveFestegrunner": "false",
+        "harAnmerketKlage": "false",
+        "harRegistrertGrunnerverv": "false",
+        "harRegistrertJordskifteKrevd": "false",
+        "inngarISamlaFastEiendom": "false",
+        "harGrunnforurensing": "false",
+        "harKulturminne": "true",
+        "harAvtaleGrensePunktfeste": "false",
+        "harAvtaleStedbundenRettighet": "false",
+        "utgatt": "false",
+        "underSammenslaingBestar": "false",
+        "underSammenslaingUtgar": "false",
+        "oppmalingIkkeFullfort": "false",
+        "grensepunktmerkingMangler": "false",
+        "mangelMatrikkelforingskrav": "false",
+        "nymatrikulert": "false",
+        "etterML9BTilH": "false",
+        "kommunalTilleggsdel": {
+            "metadata": {
+                "item": [
+                    "kommentarer",
+                    "kartblader",
+                    "undereiendommerIds",
+                    "brukAvGrunnKodeId",
+                    "matrikkelenhetReferanser"
+                ]
+            },
+            "kartblader": "",
+            "brukAvGrunnKodeId": {
+                "value": "0"
+            },
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+        },
+        "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "53fe8aa3-4d77-55f7-8a6f-dcf6f1ed312f"
+        }
+    },
+    {
+        "$": {
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xsi:type": "ns6:Grunneiendom"
+        },
+        "id": {
+            "$": {
+                "xsi:type": "ns6:GrunneiendomId"
+            },
+            "value": "525214804"
+        },
+        "metadata": {
+            "item": [
+                "harAktiveFestegrunner",
+                "stedsnummer",
+                "oppmalingIkkeFullfort",
+                "uuid",
+                "oppdatertAv",
+                "mangelMatrikkelforingsKrav",
+                "tinglyst",
+                "harRegistrertJordskifteKrevd",
+                "avsluttetAv",
+                "historiskArealkildeId",
+                "sluttdato",
+                "fristOppmaling",
+                "underSammenslaingBestar",
+                "harRegistrertGrunnerverv",
+                "skyld",
+                "fristGrensepunktmerking",
+                "eierforhold",
+                "grensepunktmerkingMangler",
+                "harGrunnforurensing",
+                "etterML9BTilH",
+                "etableringsDato",
+                "teigerForMatrikkelenhet",
+                "matrikkelnummer",
+                "historiskOppgittAreal",
+                "versjonId",
+                "harKulturminne",
+                "versjon",
+                "underSammenslaingUtgar",
+                "kommunalTilleggsdel",
+                "id",
+                "nymatrikulert",
+                "fristMatrikkelforingsKrav",
+                "erSeksjonert",
+                "utgatt",
+                "harAnmerketKlage",
+                "inngarISamlaFastEiendom",
+                "bruksnavn",
+                "harAvtaleStedbundenRettighet",
+                "oppdateringsdato",
+                "harAvtaleGrensePunktfeste"
+            ]
+        },
+        "oppdateringsdato": {
+            "timestamp": "2020-06-15T22:30:53.865000000+02:00"
+        },
+        "versjonId": "9",
+        "oppdatertAv": "smatmynd",
+        "versjon": "1592253053865",
+        "matrikkelnummer": {
+            "metadata": {
+                "item": [
+                    "seksjonsnummer",
+                    "kommuneId",
+                    "bruksnummer",
+                    "festenummer",
+                    "gardsnummer"
+                ]
+            },
+            "kommuneId": {
+                "value": "3817"
+            },
+            "gardsnummer": "53",
+            "bruksnummer": "312",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+        },
+        "etableringsdato": {
+            "date": "2015-09-28"
+        },
+        "historiskOppgittAreal": "0.0",
+        "historiskArealkildeId": {
+            "value": "0"
+        },
+        "tinglyst": "true",
+        "skyld": "0.0",
+        "bruksnavn": "Gymnasbakken 45, tomt 4",
+        "teigerForMatrikkelenhet": {
+            "item": {
+                "metadata": {
+                    "item": [
+                        "uuid",
+                        "oppdatertAv",
+                        "oppdateringsdato",
+                        "teigId",
+                        "sluttdato",
+                        "id",
+                        "avsluttetAv",
+                        "versjonId",
+                        "hovedteig"
+                    ]
+                },
+                "oppdateringsdato": {
+                    "timestamp": "2020-06-18T02:29:27.594000000+02:00"
+                },
+                "versjonId": "2",
+                "oppdatertAv": "smatmynd",
+                "id": "525214814",
+                "hovedteig": "true",
+                "teigId": {
+                    "value": "525214803"
+                },
+                "uuid": {
+                    "navnerom": "https://data.geonorge.no/matrikkel",
+                    "uuid": "780947ca-7471-50ca-864b-62a6f77a89f8"
+                }
+            }
+        },
+        "eierforhold": {
+            "item": [
+                {
+                    "$": {
+                        "xsi:type": "ns6:JuridiskPersonIkkeTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "uuid",
+                            "sluttdato",
+                            "id",
+                            "oppdatertAv",
+                            "datotil",
+                            "eierforholdKodeId",
+                            "versjonId",
+                            "andel",
+                            "oppdateringsdato",
+                            "kommuneId",
+                            "eierId",
+                            "datofra",
+                            "avsluttetAv"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T23:26:42.648000000+02:00"
+                    },
+                    "versjonId": "5",
+                    "oppdatertAv": "smatmynd",
+                    "id": "525214815",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "11"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "7ce1d45c-a37c-5ac5-abde-862e4b87c50e"
+                    },
+                    "datoTil": {
+                        "date": "2015-10-01"
+                    },
+                    "eierId": {
+                        "value": "9278455"
+                    }
+                },
+                {
+                    "$": {
+                        "xsi:type": "ns6:PersonTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "oppdateringsdato",
+                            "id",
+                            "andel",
+                            "versjonId",
+                            "kommuneId",
+                            "andelsnr",
+                            "oppdatertAv",
+                            "avsluttetAv",
+                            "datofra",
+                            "sluttdato",
+                            "eierId",
+                            "eierforholdKodeId",
+                            "uuid"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T23:29:48.262000000+02:00"
+                    },
+                    "versjonId": "3",
+                    "oppdatertAv": "smatmynd",
+                    "id": "556588065",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "0"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "410afd63-166d-50f8-95ee-51c9c2c8278b"
+                    },
+                    "andel": {
+                        "teller": "1",
+                        "nevner": "2"
+                    },
+                    "datoFra": {
+                        "date": "2016-06-06"
+                    },
+                    "eierId": {
+                        "value": "4929626"
+                    },
+                    "andelsnummer": "3"
+                },
+                {
+                    "$": {
+                        "xsi:type": "ns6:PersonTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "oppdateringsdato",
+                            "id",
+                            "andel",
+                            "versjonId",
+                            "kommuneId",
+                            "andelsnr",
+                            "oppdatertAv",
+                            "avsluttetAv",
+                            "datofra",
+                            "sluttdato",
+                            "eierId",
+                            "eierforholdKodeId",
+                            "uuid"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T23:29:48.262000000+02:00"
+                    },
+                    "versjonId": "3",
+                    "oppdatertAv": "smatmynd",
+                    "id": "556588066",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "0"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "fb09cd84-b497-55f2-ab25-c3a4a4e6ada1"
+                    },
+                    "andel": {
+                        "teller": "1",
+                        "nevner": "2"
+                    },
+                    "datoFra": {
+                        "date": "2016-06-06"
+                    },
+                    "eierId": {
+                        "value": "3222760"
+                    },
+                    "andelsnummer": "4"
+                }
+            ]
+        },
+        "erSeksjonert": "false",
+        "harAktiveFestegrunner": "false",
+        "harAnmerketKlage": "false",
+        "harRegistrertGrunnerverv": "false",
+        "harRegistrertJordskifteKrevd": "false",
+        "inngarISamlaFastEiendom": "false",
+        "harGrunnforurensing": "false",
+        "harKulturminne": "false",
+        "harAvtaleGrensePunktfeste": "false",
+        "harAvtaleStedbundenRettighet": "false",
+        "utgatt": "false",
+        "underSammenslaingBestar": "false",
+        "underSammenslaingUtgar": "false",
+        "oppmalingIkkeFullfort": "false",
+        "grensepunktmerkingMangler": "false",
+        "mangelMatrikkelforingskrav": "false",
+        "nymatrikulert": "false",
+        "etterML9BTilH": "false",
+        "kommunalTilleggsdel": {
+            "metadata": {
+                "item": [
+                    "kommentarer",
+                    "kartblader",
+                    "undereiendommerIds",
+                    "brukAvGrunnKodeId",
+                    "matrikkelenhetReferanser"
+                ]
+            },
+            "kartblader": "",
+            "brukAvGrunnKodeId": {
+                "value": "0"
+            },
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+        },
+        "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "e52544b0-6268-5691-bafb-a55d4f92c099"
+        }
+    },
+    {
+        "$": {
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xsi:type": "ns6:Grunneiendom"
+        },
+        "id": {
+            "$": {
+                "xsi:type": "ns6:GrunneiendomId"
+            },
+            "value": "68579848"
+        },
+        "metadata": {
+            "item": [
+                "harAktiveFestegrunner",
+                "stedsnummer",
+                "oppmalingIkkeFullfort",
+                "uuid",
+                "oppdatertAv",
+                "mangelMatrikkelforingsKrav",
+                "tinglyst",
+                "harRegistrertJordskifteKrevd",
+                "avsluttetAv",
+                "historiskArealkildeId",
+                "sluttdato",
+                "fristOppmaling",
+                "underSammenslaingBestar",
+                "harRegistrertGrunnerverv",
+                "skyld",
+                "fristGrensepunktmerking",
+                "eierforhold",
+                "grensepunktmerkingMangler",
+                "harGrunnforurensing",
+                "etterML9BTilH",
+                "etableringsDato",
+                "teigerForMatrikkelenhet",
+                "matrikkelnummer",
+                "historiskOppgittAreal",
+                "versjonId",
+                "harKulturminne",
+                "versjon",
+                "underSammenslaingUtgar",
+                "kommunalTilleggsdel",
+                "id",
+                "nymatrikulert",
+                "fristMatrikkelforingsKrav",
+                "erSeksjonert",
+                "utgatt",
+                "harAnmerketKlage",
+                "inngarISamlaFastEiendom",
+                "bruksnavn",
+                "harAvtaleStedbundenRettighet",
+                "oppdateringsdato",
+                "harAvtaleGrensePunktfeste"
+            ]
+        },
+        "oppdateringsdato": {
+            "timestamp": "2020-06-15T20:26:34.378000000+02:00"
+        },
+        "versjonId": "6",
+        "oppdatertAv": "smatmynd",
+        "versjon": "1592245594378",
+        "matrikkelnummer": {
+            "metadata": {
+                "item": [
+                    "seksjonsnummer",
+                    "kommuneId",
+                    "bruksnummer",
+                    "festenummer",
+                    "gardsnummer"
+                ]
+            },
+            "kommuneId": {
+                "value": "3817"
+            },
+            "gardsnummer": "53",
+            "bruksnummer": "242",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+        },
+        "etableringsdato": {
+            "date": "2004-03-08"
+        },
+        "historiskOppgittAreal": "6330.3",
+        "historiskArealkildeId": {
+            "value": "1"
+        },
+        "tinglyst": "true",
+        "skyld": "0.0",
+        "bruksnavn": "Gymnasbakken, fellesareal",
+        "teigerForMatrikkelenhet": {
+            "item": {
+                "metadata": {
+                    "item": [
+                        "uuid",
+                        "oppdatertAv",
+                        "oppdateringsdato",
+                        "teigId",
+                        "sluttdato",
+                        "id",
+                        "avsluttetAv",
+                        "versjonId",
+                        "hovedteig"
+                    ]
+                },
+                "oppdateringsdato": {
+                    "timestamp": "2020-06-18T01:48:08.492000000+02:00"
+                },
+                "versjonId": "2",
+                "oppdatertAv": "smatmynd",
+                "id": "68914914",
+                "hovedteig": "true",
+                "teigId": {
+                    "value": "68914677"
+                },
+                "uuid": {
+                    "navnerom": "https://data.geonorge.no/matrikkel",
+                    "uuid": "663dbbe0-a7bb-5909-9f5f-3a44f3513551"
+                }
+            }
+        },
+        "eierforhold": {
+            "item": {
+                "$": {
+                    "xsi:type": "ns6:JuridiskPersonTinglystEierforhold"
+                },
+                "metadata": {
+                    "item": [
+                        "andelsnr",
+                        "eierId",
+                        "id",
+                        "versjonId",
+                        "uuid",
+                        "eierforholdKodeId",
+                        "sluttdato",
+                        "datofra",
+                        "oppdatertAv",
+                        "oppdateringsdato",
+                        "andel",
+                        "avsluttetAv",
+                        "kommuneId"
+                    ]
+                },
+                "oppdateringsdato": {
+                    "timestamp": "2020-06-17T23:29:17.634000000+02:00"
+                },
+                "versjonId": "3",
+                "oppdatertAv": "smatmynd",
+                "id": "551403277",
+                "kommuneId": {
+                    "value": "3817"
+                },
+                "eierforholdKodeId": {
+                    "value": "0"
+                },
+                "uuid": {
+                    "navnerom": "https://data.geonorge.no/matrikkel",
+                    "uuid": "4901ff85-e330-502c-b07c-f2bb2b4a1661"
+                },
+                "andel": {
+                    "teller": "1",
+                    "nevner": "1"
+                },
+                "datoFra": {
+                    "date": "2016-04-05"
+                },
+                "eierId": {
+                    "value": "503312057"
+                },
+                "andelsnummer": "3"
+            }
+        },
+        "erSeksjonert": "false",
+        "harAktiveFestegrunner": "false",
+        "harAnmerketKlage": "false",
+        "harRegistrertGrunnerverv": "false",
+        "harRegistrertJordskifteKrevd": "false",
+        "inngarISamlaFastEiendom": "false",
+        "harGrunnforurensing": "false",
+        "harKulturminne": "false",
+        "harAvtaleGrensePunktfeste": "false",
+        "harAvtaleStedbundenRettighet": "false",
+        "utgatt": "false",
+        "underSammenslaingBestar": "false",
+        "underSammenslaingUtgar": "false",
+        "oppmalingIkkeFullfort": "false",
+        "grensepunktmerkingMangler": "false",
+        "mangelMatrikkelforingskrav": "false",
+        "nymatrikulert": "false",
+        "etterML9BTilH": "false",
+        "kommunalTilleggsdel": {
+            "metadata": {
+                "item": [
+                    "kommentarer",
+                    "kartblader",
+                    "undereiendommerIds",
+                    "brukAvGrunnKodeId",
+                    "matrikkelenhetReferanser"
+                ]
+            },
+            "kartblader": "",
+            "brukAvGrunnKodeId": {
+                "value": "0"
+            },
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+        },
+        "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "e7b8149d-69f7-5292-90b6-7d428e81ed96"
+        }
+    },
+    {
+        "$": {
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xsi:type": "ns6:Grunneiendom"
+        },
+        "id": {
+            "$": {
+                "xsi:type": "ns6:GrunneiendomId"
+            },
+            "value": "525205379"
+        },
+        "metadata": {
+            "item": [
+                "harAktiveFestegrunner",
+                "stedsnummer",
+                "oppmalingIkkeFullfort",
+                "uuid",
+                "oppdatertAv",
+                "mangelMatrikkelforingsKrav",
+                "tinglyst",
+                "harRegistrertJordskifteKrevd",
+                "avsluttetAv",
+                "historiskArealkildeId",
+                "sluttdato",
+                "fristOppmaling",
+                "underSammenslaingBestar",
+                "harRegistrertGrunnerverv",
+                "skyld",
+                "fristGrensepunktmerking",
+                "eierforhold",
+                "grensepunktmerkingMangler",
+                "harGrunnforurensing",
+                "etterML9BTilH",
+                "etableringsDato",
+                "teigerForMatrikkelenhet",
+                "matrikkelnummer",
+                "historiskOppgittAreal",
+                "versjonId",
+                "harKulturminne",
+                "versjon",
+                "underSammenslaingUtgar",
+                "kommunalTilleggsdel",
+                "id",
+                "nymatrikulert",
+                "fristMatrikkelforingsKrav",
+                "erSeksjonert",
+                "utgatt",
+                "harAnmerketKlage",
+                "inngarISamlaFastEiendom",
+                "bruksnavn",
+                "harAvtaleStedbundenRettighet",
+                "oppdateringsdato",
+                "harAvtaleGrensePunktfeste"
+            ]
+        },
+        "oppdateringsdato": {
+            "timestamp": "2020-06-15T22:30:53.865000000+02:00"
+        },
+        "versjonId": "13",
+        "oppdatertAv": "smatmynd",
+        "versjon": "1592253053865",
+        "matrikkelnummer": {
+            "metadata": {
+                "item": [
+                    "seksjonsnummer",
+                    "kommuneId",
+                    "bruksnummer",
+                    "festenummer",
+                    "gardsnummer"
+                ]
+            },
+            "kommuneId": {
+                "value": "3817"
+            },
+            "gardsnummer": "53",
+            "bruksnummer": "310",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+        },
+        "etableringsdato": {
+            "date": "2015-09-28"
+        },
+        "historiskOppgittAreal": "0.0",
+        "historiskArealkildeId": {
+            "value": "0"
+        },
+        "tinglyst": "true",
+        "skyld": "0.0",
+        "bruksnavn": "Gymnasbakken 49-51, Tomt 1",
+        "teigerForMatrikkelenhet": {
+            "item": {
+                "metadata": {
+                    "item": [
+                        "uuid",
+                        "oppdatertAv",
+                        "oppdateringsdato",
+                        "teigId",
+                        "sluttdato",
+                        "id",
+                        "avsluttetAv",
+                        "versjonId",
+                        "hovedteig"
+                    ]
+                },
+                "oppdateringsdato": {
+                    "timestamp": "2020-06-18T02:29:27.594000000+02:00"
+                },
+                "versjonId": "2",
+                "oppdatertAv": "smatmynd",
+                "id": "525205389",
+                "hovedteig": "true",
+                "teigId": {
+                    "value": "525205378"
+                },
+                "uuid": {
+                    "navnerom": "https://data.geonorge.no/matrikkel",
+                    "uuid": "916b6aa1-ad8a-5b93-bea7-f000c4c25832"
+                }
+            }
+        },
+        "eierforhold": {
+            "item": [
+                {
+                    "$": {
+                        "xsi:type": "ns6:JuridiskPersonTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "andelsnr",
+                            "eierId",
+                            "id",
+                            "versjonId",
+                            "uuid",
+                            "eierforholdKodeId",
+                            "sluttdato",
+                            "datofra",
+                            "oppdatertAv",
+                            "oppdateringsdato",
+                            "andel",
+                            "avsluttetAv",
+                            "kommuneId"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T23:05:57.432000000+02:00"
+                    },
+                    "versjonId": "3",
+                    "oppdatertAv": "smatmynd",
+                    "id": "552078476",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "0"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "a648c4e2-0214-5d23-98e8-f80a786dfc24"
+                    },
+                    "andel": {
+                        "teller": "1",
+                        "nevner": "1"
+                    },
+                    "datoFra": {
+                        "date": "2016-04-13"
+                    },
+                    "eierId": {
+                        "value": "536597124"
+                    },
+                    "andelsnummer": "3"
+                },
+                {
+                    "$": {
+                        "xsi:type": "ns6:JuridiskPersonIkkeTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "uuid",
+                            "sluttdato",
+                            "id",
+                            "oppdatertAv",
+                            "datotil",
+                            "eierforholdKodeId",
+                            "versjonId",
+                            "andel",
+                            "oppdateringsdato",
+                            "kommuneId",
+                            "eierId",
+                            "datofra",
+                            "avsluttetAv"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T23:25:51.987000000+02:00"
+                    },
+                    "versjonId": "5",
+                    "oppdatertAv": "smatmynd",
+                    "id": "525205390",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "11"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "f06054b5-f22b-53ff-b59c-17c4ed7e8114"
+                    },
+                    "datoTil": {
+                        "date": "2015-10-01"
+                    },
+                    "eierId": {
+                        "value": "9278455"
+                    }
+                }
+            ]
+        },
+        "erSeksjonert": "false",
+        "harAktiveFestegrunner": "false",
+        "harAnmerketKlage": "false",
+        "harRegistrertGrunnerverv": "false",
+        "harRegistrertJordskifteKrevd": "false",
+        "inngarISamlaFastEiendom": "false",
+        "harGrunnforurensing": "false",
+        "harKulturminne": "false",
+        "harAvtaleGrensePunktfeste": "false",
+        "harAvtaleStedbundenRettighet": "false",
+        "utgatt": "false",
+        "underSammenslaingBestar": "false",
+        "underSammenslaingUtgar": "false",
+        "oppmalingIkkeFullfort": "false",
+        "grensepunktmerkingMangler": "false",
+        "mangelMatrikkelforingskrav": "false",
+        "nymatrikulert": "false",
+        "etterML9BTilH": "false",
+        "kommunalTilleggsdel": {
+            "metadata": {
+                "item": [
+                    "kommentarer",
+                    "kartblader",
+                    "undereiendommerIds",
+                    "brukAvGrunnKodeId",
+                    "matrikkelenhetReferanser"
+                ]
+            },
+            "kartblader": "",
+            "brukAvGrunnKodeId": {
+                "value": "0"
+            },
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+        },
+        "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "760cc611-76c7-50a9-ac5c-26edc33c7ec9"
+        }
+    },
+    {
+        "$": {
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xsi:type": "ns6:Grunneiendom"
+        },
+        "id": {
+            "$": {
+                "xsi:type": "ns6:GrunneiendomId"
+            },
+            "value": "525222624"
+        },
+        "metadata": {
+            "item": [
+                "harAktiveFestegrunner",
+                "stedsnummer",
+                "oppmalingIkkeFullfort",
+                "uuid",
+                "oppdatertAv",
+                "mangelMatrikkelforingsKrav",
+                "tinglyst",
+                "harRegistrertJordskifteKrevd",
+                "avsluttetAv",
+                "historiskArealkildeId",
+                "sluttdato",
+                "fristOppmaling",
+                "underSammenslaingBestar",
+                "harRegistrertGrunnerverv",
+                "skyld",
+                "fristGrensepunktmerking",
+                "eierforhold",
+                "grensepunktmerkingMangler",
+                "harGrunnforurensing",
+                "etterML9BTilH",
+                "etableringsDato",
+                "teigerForMatrikkelenhet",
+                "matrikkelnummer",
+                "historiskOppgittAreal",
+                "versjonId",
+                "harKulturminne",
+                "versjon",
+                "underSammenslaingUtgar",
+                "kommunalTilleggsdel",
+                "id",
+                "nymatrikulert",
+                "fristMatrikkelforingsKrav",
+                "erSeksjonert",
+                "utgatt",
+                "harAnmerketKlage",
+                "inngarISamlaFastEiendom",
+                "bruksnavn",
+                "harAvtaleStedbundenRettighet",
+                "oppdateringsdato",
+                "harAvtaleGrensePunktfeste"
+            ]
+        },
+        "oppdateringsdato": {
+            "timestamp": "2020-06-15T22:30:53.865000000+02:00"
+        },
+        "versjonId": "10",
+        "oppdatertAv": "smatmynd",
+        "versjon": "1592253053865",
+        "matrikkelnummer": {
+            "metadata": {
+                "item": [
+                    "seksjonsnummer",
+                    "kommuneId",
+                    "bruksnummer",
+                    "festenummer",
+                    "gardsnummer"
+                ]
+            },
+            "kommuneId": {
+                "value": "3817"
+            },
+            "gardsnummer": "53",
+            "bruksnummer": "315",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+        },
+        "etableringsdato": {
+            "date": "2015-09-28"
+        },
+        "historiskOppgittAreal": "0.0",
+        "historiskArealkildeId": {
+            "value": "0"
+        },
+        "tinglyst": "true",
+        "skyld": "0.0",
+        "bruksnavn": "Gymnasbakken, tomt 7, vegareal",
+        "teigerForMatrikkelenhet": {
+            "item": {
+                "metadata": {
+                    "item": [
+                        "uuid",
+                        "oppdatertAv",
+                        "oppdateringsdato",
+                        "teigId",
+                        "sluttdato",
+                        "id",
+                        "avsluttetAv",
+                        "versjonId",
+                        "hovedteig"
+                    ]
+                },
+                "oppdateringsdato": {
+                    "timestamp": "2020-06-18T02:29:27.594000000+02:00"
+                },
+                "versjonId": "2",
+                "oppdatertAv": "smatmynd",
+                "id": "525223364",
+                "hovedteig": "true",
+                "teigId": {
+                    "value": "525222623"
+                },
+                "uuid": {
+                    "navnerom": "https://data.geonorge.no/matrikkel",
+                    "uuid": "69dbb6a8-8e32-5382-8899-11f17ab78330"
+                }
+            }
+        },
+        "eierforhold": {
+            "item": [
+                {
+                    "$": {
+                        "xsi:type": "ns6:JuridiskPersonTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "andelsnr",
+                            "eierId",
+                            "id",
+                            "versjonId",
+                            "uuid",
+                            "eierforholdKodeId",
+                            "sluttdato",
+                            "datofra",
+                            "oppdatertAv",
+                            "oppdateringsdato",
+                            "andel",
+                            "avsluttetAv",
+                            "kommuneId"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T22:37:57.748000000+02:00"
+                    },
+                    "versjonId": "3",
+                    "oppdatertAv": "smatmynd",
+                    "id": "551404435",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "0"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "647ed97e-a2c4-557b-b7bb-364b6769a033"
+                    },
+                    "andel": {
+                        "teller": "1",
+                        "nevner": "1"
+                    },
+                    "datoFra": {
+                        "date": "2016-04-05"
+                    },
+                    "eierId": {
+                        "value": "503312057"
+                    },
+                    "andelsnummer": "2"
+                },
+                {
+                    "$": {
+                        "xsi:type": "ns6:JuridiskPersonIkkeTinglystEierforhold"
+                    },
+                    "metadata": {
+                        "item": [
+                            "uuid",
+                            "sluttdato",
+                            "id",
+                            "oppdatertAv",
+                            "datotil",
+                            "eierforholdKodeId",
+                            "versjonId",
+                            "andel",
+                            "oppdateringsdato",
+                            "kommuneId",
+                            "eierId",
+                            "datofra",
+                            "avsluttetAv"
+                        ]
+                    },
+                    "oppdateringsdato": {
+                        "timestamp": "2020-06-17T23:25:51.987000000+02:00"
+                    },
+                    "versjonId": "5",
+                    "oppdatertAv": "smatmynd",
+                    "id": "525223365",
+                    "kommuneId": {
+                        "value": "3817"
+                    },
+                    "eierforholdKodeId": {
+                        "value": "11"
+                    },
+                    "uuid": {
+                        "navnerom": "https://data.geonorge.no/matrikkel",
+                        "uuid": "3e446149-36e4-580e-946c-bb5e59633bad"
+                    },
+                    "datoTil": {
+                        "date": "2015-10-01"
+                    },
+                    "eierId": {
+                        "value": "9278455"
+                    }
+                }
+            ]
+        },
+        "erSeksjonert": "false",
+        "harAktiveFestegrunner": "false",
+        "harAnmerketKlage": "false",
+        "harRegistrertGrunnerverv": "false",
+        "harRegistrertJordskifteKrevd": "false",
+        "inngarISamlaFastEiendom": "false",
+        "harGrunnforurensing": "false",
+        "harKulturminne": "false",
+        "harAvtaleGrensePunktfeste": "false",
+        "harAvtaleStedbundenRettighet": "false",
+        "utgatt": "false",
+        "underSammenslaingBestar": "false",
+        "underSammenslaingUtgar": "false",
+        "oppmalingIkkeFullfort": "false",
+        "grensepunktmerkingMangler": "false",
+        "mangelMatrikkelforingskrav": "false",
+        "nymatrikulert": "false",
+        "etterML9BTilH": "false",
+        "kommunalTilleggsdel": {
+            "metadata": {
+                "item": [
+                    "kommentarer",
+                    "kartblader",
+                    "undereiendommerIds",
+                    "brukAvGrunnKodeId",
+                    "matrikkelenhetReferanser"
+                ]
+            },
+            "kartblader": "",
+            "brukAvGrunnKodeId": {
+                "value": "0"
+            },
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+        },
+        "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "588fdcbd-c1d1-5f12-9182-8cc34532a71e"
+        }
+    }
+]

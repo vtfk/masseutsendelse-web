@@ -27,8 +27,8 @@
             <h1>En feil har oppstått</h1>
             <h3 v-if="error.title">{{error.title}}</h3>
             <p v-if="error.message">{{error.message}}</p>
-            <strong>Stack:</strong>
-            <p style="text-align: left;">{{error.stack}}</p>
+            <!-- <strong>Stack:</strong>
+            <p style="text-align: left;">{{error.stack}}</p> -->
             <div style="display: flex; justify-content: center;">
               <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {reset(true)}}">Start på nytt</VTFKButton>
             </div>
@@ -47,7 +47,55 @@
             <VTFKButton style="margin-top: 1rem" :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
             <Loading v-if="statItems.length == 0 && isContactingMatrikkel" title="Kontaker matrikkelen" message="Henter enheter innenfor polygon"/>
             <!-- Cards som viser stats om informasjonen -->
-            <StatCards v-else style="margin-top: 1rem" :items="statItems"/>
+            <StatCards style="margin-top: 1rem" :items="statItems"/>
+            <table class="tmpTable">
+              <tr>
+                <th style="width: 240px;">Bruksnavn</th>
+                <th style="width: 120px;">Type</th>
+                <th style="width: 80px;">Gårds #</th>
+                <th style="width: 80px;">Bruks #</th>
+                <th style="width: 80px;">Feste #</th>
+                <th style="width: 80px;">Areal</th>
+                <th style="width: 80px;">KommuneId</th>
+                <th style="width: 100px;">ID</th>
+                <th>Eiere</th>
+              </tr>
+              <tr v-for="(item, i) in parsedItems" :key="i">
+                <td>{{item.bruksnavn}}</td>
+                <td>{{item.type}}</td>
+                <td>{{item.gardsnummer}}</td>
+                <td>{{item.bruksnummer}}</td>
+                <td>{{item.festenummer}}</td>
+                <td>{{item.oppgittAreal}}</td>
+                <td>{{item.kommuneId}}</td>
+                <td>{{item.id}}</td>
+                
+                <td>
+                  <table class="ownerTable">
+                    <tr>
+                      <th style="width: 125px;">Fra dato</th>
+                      <th style="width: 280px;">Type</th>
+                      <th style="width: 100px;">EierId</th>
+                      <th style="width: 130px;">eierforholdKode</th>
+                      <th>kommuneId</th>
+                      <th>Andelsnummer</th>
+                      <th>Andel teller</th>
+                      <th>Andel nevner</th>
+                    </tr>
+                    <tr v-for="(eier, j) in item.eiere" :key="j">
+                      <td>{{eier.datoFra}}</td>
+                      <td>{{eier.type}}</td>
+                      <td>{{eier.eierId}}</td>
+                      <td>{{eier.eierforholdKode}}</td>
+                      <td>{{eier.kommuneId}}</td>
+                      <td>{{eier.andelsnummer}}</td>
+                      <td><div v-if="eier.andel && eier.andel.teller">{{eier.andel.teller}}</div></td>
+                      <td><div v-if="eier.andel && eier.andel.nevner">{{eier.andel.nevner}}</div></td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
             <!-- Angreknapp -->
             <VTFKButton style="margin-top: 1rem" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
           </div>
@@ -108,6 +156,7 @@ export default {
       markers: [],
       polygon: [],
       statItems: [],
+      parsedItems: [],
       error: undefined,
     }
   },
@@ -185,8 +234,14 @@ export default {
 
       this.statItems.push({ text: 'Enheter', value: matrikkelEnhetItems.length })
 
+      // Hent ut data for alle matrikkel enhetene
       let matrikkelEnheter = await matrikkelClient.getStoreItems(matrikkelEnhetItems, { query: { flatten: true, metadata: false } });
       if(!matrikkelEnheter && matrikkelEnheter.length) { this.error = 'Kunne ikke laste inn noen matrikkelenheter innenfor dette polygonet. '; return; }
+      
+      // Parse the matrikkelenhet data
+      let parsedMatrikkelEnheter = this.parseMatrikkelEnheter(matrikkelEnheter);
+
+      this.parsedItems = parsedMatrikkelEnheter;
 
       console.log('Returned:')
       console.log(matrikkelEnheter);
@@ -309,6 +364,78 @@ export default {
         this.setError(err);
         console.error(err.stack);
       }
+    },
+    getItemType(item) {
+      if(!item) { return 'unresolved'; }
+
+      let type = 'unresolved';
+      if(item && item.$ && item.$['xsi:type']) { type = item.$['xsi:type']; }
+      if(type.includes(':')) { type = type.split(':')[1]; }
+
+      return type;
+    },
+    getItemValue(item) {
+      if(!item) { return; }
+
+      if(Object.keys(item).length === 1) { return item[Object.keys(item)[0]] }
+      
+      return item;
+    },
+    parseMatrikkelEnheter(Enheter) {
+      if(!Enheter) { return; }
+      if(!Array.isArray(Enheter)) { Enheter = [Enheter]; }
+
+      let parsed = [];
+
+      Enheter.forEach((enhet) => {
+        let item = {}
+
+        let type = this.getItemType(enhet);
+
+        let id = 'unresolved';
+        if(enhet && enhet.id) {
+          if(enhet.id.value) { id = enhet.id.value; }
+          else { id = enhet.id; }
+        }
+
+        item = {
+          bruksnavn: enhet.bruksnavn,
+          oppgittAreal: enhet.historiskOppgittAreal || 0,
+          id: id,
+          type: type
+        }
+        console.log(enhet);
+        // Hent ut matrikkel informasjon
+        if(enhet.matrikkelnummer) {
+          item.gardsnummer = this.getItemValue(enhet.matrikkelnummer.gardsnummer);
+          item.bruksnummer = this.getItemValue(enhet.matrikkelnummer.bruksnummer);
+          item.festenummer = this.getItemValue(enhet.matrikkelnummer.festenummer);
+          item.kommuneId = this.getItemValue(enhet.matrikkelnummer.kommuneId);
+        }
+
+        // Hent ut eierinformasjon
+        if(enhet.eierforhold) {
+          if(enhet.eierforhold.item) { enhet.eierforhold = enhet.eierforhold.item }
+          if(!Array.isArray(enhet.eierforhold)) { enhet.eierforhold = [enhet.eierforhold]; }
+
+          let eiere = [];
+          enhet.eierforhold.forEach((eierforhold) => {
+            eiere.push({
+              datoFra: this.getItemValue(eierforhold.datoFra),
+              type: this.getItemType(eierforhold),
+              eierId: this.getItemValue(eierforhold.eierId),
+              eierforholdKode: this.getItemValue(eierforhold.eierforholdKodeId),
+              kommuneId: this.getItemValue(eierforhold.kommuneId),
+              andelsnummer: this.getItemValue(eierforhold.andelsnummer),
+              andel: this.getItemValue(eierforhold.andel),
+            })
+          })
+          item.eiere = eiere;
+        }
+
+        parsed.push(item);
+      })
+      return parsed;
     }
   },
   created() {
@@ -335,7 +462,7 @@ export default {
     padding-top: 4rem;
     padding-left: 1rem;
     padding-right: 1rem;
-    max-width: 1100px;
+    max-width: 1750px;
     margin: 0 auto;
   }
 
@@ -358,5 +485,29 @@ export default {
     background-color: #F8D3D1;
     border-radius: 10px; 
     padding: 1rem 1rem;
+  }
+
+  .tmpTable, .ownerTable {
+    vertical-align: top;
+    text-align: left;
+    border-collapse: collapse;
+  }
+  
+  .tmpTable tr:nth-child(even) {background-color: #d8d8d8;}
+  .tmpTable tr:nth-child(odd) {background-color: #a8a8a8;}
+
+  .ownerTable tr:nth-child(even) {background-color: #f7fffe;}
+  .ownerTable tr:nth-child(odd) {background-color: #a9c6cf;}
+
+  .tmpTable td {
+    vertical-align: top;
+    text-align: left;
+    padding: 5px;
+  }
+
+  .tmpTable th {
+    vertical-align: top;
+    text-align: left;
+    padding: 0;
   }
 </style>
