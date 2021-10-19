@@ -67,4 +67,8 @@ export default {
     padding: 1rem 1rem;
   }
 
+  .shadow {
+    box-shadow: 0px 1px 5px 1px #888888;
+  }
+
 </style>

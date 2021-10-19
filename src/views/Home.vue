@@ -7,8 +7,8 @@
             Ett verktøy utviklet for Samferdesel og mobilitets sektoren.<br/>
             Verktøyet lar deg laste opp en polygon fil, gjøre oppslag i Matrikkelen og varsle alle eiere som befinner seg innenfor polygonet.
           </p>
-          <div style="display: flex; flex-direction: row; padding-top: 1rem">
-            <div style="margin-right: 2rem;">
+          <div style="display: flex; flex-direction: row; padding-top: 1rem; gap: 1rem;">
+            <div>
               <GuideBtnModal />
             </div>
             <router-link to="/utsendelser" style="text-decoration: none; color: inherit;">
@@ -37,13 +37,18 @@
           </div>
           <div v-else class="center-content">
             <!-- Kart komponent -->
-            <Map style="margin-top: 2rem;" :coordinates="polygon" :center="mapCenter" :markers="markers"/>
+            <Map :coordinates="polygon" :center="mapCenter" :markers="markers"/>
             <!-- Knapp for å hente data fra API -->
-            <VTFKButton style="margin-top: 1rem" :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
+            <div style="display: flex; gap: 1rem;">
+              <!-- Hent informasjon fra matrikkelen -->
+              <VTFKButton style="margin-top: 1rem" :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
+              <!-- Angreknapp -->
+              <VTFKButton style="margin-top: 1rem" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
+            </div>
             <Loading v-if="statItems.length == 0 && isContactingMatrikkel" title="Kontaker matrikkelen" message="Henter enheter innenfor polygon"/>
             <!-- Cards som viser stats om informasjonen -->
             <StatCards style="margin-top: 1rem" :items="statItems"/>
-            <VDataTable style="margin-top: 1rem; width: 100%;" :headers="tableHeader" :items="parsedItems" :items-per-page="20" :show-expand="true">
+            <VDataTable class="shadow" style="margin-top: 1rem; width: 100%;" :headers="tableHeader" :items="parsedItems" :items-per-page="20" :show-expand="true">
               <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length" style="padding: 1rem 1rem;">
                   <h2>Eierforhold</h2>
@@ -52,8 +57,14 @@
                 </td>
               </template>
             </VDataTable>
-            <!-- Angreknapp -->
-            <VTFKButton style="margin-top: 1rem" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
+            <div class="card shadow" style="margin-top: 2rem; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h1>Prosjektbeskrivelse</h1>
+              <VTFKSelect label="mal" :selectedItem="selectedTemplate" :items="templateItems" :onChage="() => {}" style="max-width: 750px; width: 100%;" />
+              <VTFKTextField placeholder="Prosjektnavn" style="max-width: 750px; width: 100%;"/>
+              <VTFKTextField placeholder="Brødtekst" rows="8" style="max-width: 750px; width: 100%;"/>
+              <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {}}">Se forhåndsvisning</VTFKButton>
+              <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => { submitMassDispatch(); }}">Send til godkjenning</VTFKButton>
+            </div>
           </div>
         </div>
       </div>
@@ -61,7 +72,7 @@
 
 <script>
   // VTFK komponenter
-  import { Button, Spinner } from '@vtfk/components'
+  import { Button, Spinner, TextField, Select } from '@vtfk/components'
 
   // Prosjektkomponenter
   import GuideBtnModal from '../components/GuideBtnModal.vue'
@@ -89,6 +100,8 @@
     components: {
     'VTFKButton': Button,
     'VTFKSpinner': Spinner,
+    'VTFKTextField': TextField,
+    'VTFKSelect': Select,
     GuideBtnModal,
     UploadField,
     Map,
@@ -107,6 +120,17 @@
       polygon: [],
       statItems: [],
       parsedItems: [],
+      selectedTemplate: undefined,
+      templateItems: [
+        {
+          label: 'Omregulering',
+          value: 'omregulering'
+        },
+        {
+          label: 'Bygge vei',
+          value: 'vei'
+        }
+      ],
       tableHeader: [
         {
           text: 'Bruksnavn',
@@ -518,11 +542,24 @@
         parsed.push(item);
       })
       return parsed;
+    },
+    submitMassDispatch() {
+      if(confirm('Er du helt sikker på at du vil sende inn?')) {
+        console.log('Vil sendes inn');
+      }
     }
   },
   }
 </script>
 
-<style>
+<style scoped>
+
+  .card {
+    width: 100%;
+    border-radius: 20px;
+    background-color: white;
+    min-height: 250px;
+    padding: 1rem 1rem;
+  }
 
 </style>
