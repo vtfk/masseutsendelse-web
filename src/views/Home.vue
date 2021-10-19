@@ -52,7 +52,7 @@
             <VTFKCheckbox name="matrikkelOk" label="Matrikkelinformasjonen ser korrekt ut" :passedProps="{ onChange: () => { updateProject('isMatrikkelApproved', !project.isMatrikkelApproved); }}" style="margin-top: 1rem;" />
             <!-- Prosjekt informasjon -->
             <div v-if="project.isMatrikkelApproved" class="card shadow" style="margin-top: 1rem; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h1>Prosjektbeskrivelse</h1>
+              <h1>Masseutsendelse</h1>
               <VTFKSelect
                 label="Velg dokument mal"
                 :items="templateItems"
@@ -63,7 +63,7 @@
                 :closeOnSelect="true"
                 :isOpen="isTemplateSelectorOpen"
               />
-              <VTFKTextField placeholder="Prosjektnavn" style="max-width: 750px; width: 100%;"/>
+              <VTFKTextField placeholder="Tittel" style="max-width: 750px; width: 100%;"/>
               <VTFKTextField placeholder="Brødtekst" :rows="8" style="max-width: 750px; width: 100%;"/>
               <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {}}">Se forhåndsvisning</VTFKButton>
               <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => { submitMassDispatch(); }}">Send til godkjenning</VTFKButton>
