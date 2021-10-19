@@ -18,7 +18,11 @@ if(process.env.VUE_APP_USE_MOCK === 'true') {
 Vue.use(VuePlugin)
 Vue.config.productionTip = false
 
+// Setup the routes
+import router from './router'
+
 new Vue({
   vuetify,
+  router,
   render: h => h(App)
 }).$mount('#app')

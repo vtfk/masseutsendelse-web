@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <a href="https://masseutsendelse.vtfk.dev/" style="color: inherit; text-decoration: inherit;">
+    <router-link to="/" style="color: inherit; text-decoration: inherit;">
     <div style="display: flex; gap: 0.5rem; align-items: center;">
       <div class="header-part">
         <img :src="require('@/assets/VTFK.svg')" style="height: 3rem"/>
@@ -9,7 +9,7 @@
         Masseutsendelse
       </div>
     </div>
-    </a>
+    </router-link>
     <div style="display: flex; gap: 0.75rem; align-items: center;">
       <div class="header-part typography paragraph">Noen André</div>
       <div class="header-part swansDown user-image"><VTFKInitialsBadge firstName="Noen" lastName="André"/></div>
@@ -17,7 +17,7 @@
         <VTFKIconDropdownNav>
           <VTFKIconDropdownNavItem title='Hjelp' :onClick="() => { }" />
           <VTFKIconDropdownNavItem title="Logg ut" href="https://www.vtfk.no" />
-          <VTFKIconDropdownNavItem title='Tidligere opplastninger' :onClick="() => { }" />
+          <VTFKIconDropdownNavItem title='Utsendelser' :onClick="() => { route('/utsendelser') }" />
         </VTFKIconDropdownNav>
       </div>
     </div>
@@ -35,10 +35,16 @@ export default {
     'VTFKInitialsBadge': InitialsBadge,
     'VTFKIconDropdownNav': IconDropdownNav,
     'VTFKIconDropdownNavItem': IconDropdownNavItem,
-    
   },
   data() {
     return {
+    }
+  },
+  methods: {
+    route(route) {
+      if(!route) { return }
+
+      this.$router.push(route);
     }
   }
 }
