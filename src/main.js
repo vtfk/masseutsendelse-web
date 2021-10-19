@@ -3,6 +3,7 @@ import App from './App.vue'
 import { VuePlugin } from 'vuera'
 import 'leaflet/dist/leaflet.css';
 import Config from '../config';
+import vuetify from './plugins/vuetify'
 
 // Add global accessible object
 Vue.prototype.$config = Config;
@@ -18,5 +19,6 @@ Vue.use(VuePlugin)
 Vue.config.productionTip = false
 
 new Vue({
-  render: h => h(App),
+  vuetify,
+  render: h => h(App)
 }).$mount('#app')

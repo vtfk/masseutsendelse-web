@@ -36,7 +36,7 @@
                     <span id="selectedRows"></span>
                 </div>
             <div class="modal-content" style="margin-top: -4.5rem;"> 
-                <ag-grid-vue style="width: 100%; height:100%; margin-left: 3rem; background-color:blue;"
+                <!-- <ag-grid-vue style="width: 100%; height:100%; margin-left: 3rem; background-color:blue;"
                 class="ag-theme-material"
                 id="gamleFiler"
                 :overlayLoadingTemplate="overlayLoading"
@@ -52,7 +52,7 @@
                 @cell-value-changed="onCellValueChanged"
                 @row-value-changed="onRowValueChanged"
                 >
-                </ag-grid-vue>
+                </ag-grid-vue> -->
             </div>
         </VTFKModal>
     </div>
@@ -60,22 +60,22 @@
 
 <script>
 // AG-Grid 
-import { AgGridVue } from "ag-grid-vue";
-import { AllCommunityModules } from '@ag-grid-community/all-modules';
+// import { AgGridVue } from "ag-grid-vue";
+// import { AllCommunityModules } from '@ag-grid-community/all-modules';
 
 //VTFK komponenter
 import { Button, Modal } from '@vtfk/components'
 
 //Modal
-import EditBtnModal from './EditBtnModal.vue'
+// import EditBtnModal from './EditBtnModal.vue'
 
 export default {
     name: 'TableBtnModal',
     components: {
         'VTFKButton': Button,
         'VTFKModal': Modal,
-        AgGridVue,
-        EditBtnModal
+        // AgGridVue,
+        // EditBtnModal
     },
     data() {
         return {
@@ -84,7 +84,7 @@ export default {
         rowData: null,
         rowClassRules: null,
         rowSelection: null,
-        modules: AllCommunityModules,
+        // modules: AllCommunityModules,
         }
     },
     methods: {
@@ -254,10 +254,10 @@ export default {
 </script>
 
 <style scoped>
-    @import "~ag-grid-community/dist/styles/ag-grid.css";
-    @import "~ag-grid-community/dist/styles/ag-theme-material.css";
+    /* @import "~ag-grid-community/dist/styles/ag-grid.css";
+    @import "~ag-grid-community/dist/styles/ag-theme-material.css"; */
 
-    .ag-theme-material {
+    /* .ag-theme-material {
         outline: 1px solid lightgrey;
     }
 
@@ -265,5 +265,5 @@ export default {
         .ag-theme-material {
             margin-top: 3.5rem;
         }
-    }
+    } */
 </style>

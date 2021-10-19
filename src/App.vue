@@ -48,54 +48,15 @@
             <Loading v-if="statItems.length == 0 && isContactingMatrikkel" title="Kontaker matrikkelen" message="Henter enheter innenfor polygon"/>
             <!-- Cards som viser stats om informasjonen -->
             <StatCards style="margin-top: 1rem" :items="statItems"/>
-            <table class="tmpTable">
-              <tr>
-                <th style="width: 240px;">Bruksnavn</th>
-                <th style="width: 120px;">Type</th>
-                <th style="width: 80px;">Gårds #</th>
-                <th style="width: 80px;">Bruks #</th>
-                <th style="width: 80px;">Feste #</th>
-                <th style="width: 80px;">Areal</th>
-                <th style="width: 80px;">KommuneId</th>
-                <th style="width: 100px;">ID</th>
-                <th>Eiere</th>
-              </tr>
-              <tr v-for="(item, i) in parsedItems" :key="i">
-                <td>{{item.bruksnavn}}</td>
-                <td>{{item.type}}</td>
-                <td>{{item.gardsnummer}}</td>
-                <td>{{item.bruksnummer}}</td>
-                <td>{{item.festenummer}}</td>
-                <td>{{item.oppgittAreal}}</td>
-                <td>{{item.kommuneId}}</td>
-                <td>{{item.id}}</td>
-                
-                <td>
-                  <table class="ownerTable">
-                    <tr>
-                      <th style="width: 125px;">Fra dato</th>
-                      <th style="width: 280px;">Type</th>
-                      <th style="width: 100px;">EierId</th>
-                      <th style="width: 130px;">eierforholdKode</th>
-                      <th>kommuneId</th>
-                      <th>Andelsnummer</th>
-                      <th>Andel teller</th>
-                      <th>Andel nevner</th>
-                    </tr>
-                    <tr v-for="(eier, j) in item.eiere" :key="j">
-                      <td>{{eier.datoFra}}</td>
-                      <td>{{eier.type}}</td>
-                      <td>{{eier.eierId}}</td>
-                      <td>{{eier.eierforholdKode}}</td>
-                      <td>{{eier.kommuneId}}</td>
-                      <td>{{eier.andelsnummer}}</td>
-                      <td><div v-if="eier.andel && eier.andel.teller">{{eier.andel.teller}}</div></td>
-                      <td><div v-if="eier.andel && eier.andel.nevner">{{eier.andel.nevner}}</div></td>
-                    </tr>
-                  </table>
+            <VDataTable style="margin-top: 1rem; width: 100%;" :headers="tableHeader" :items="parsedItems" :items-per-page="20" :show-expand="true">
+              <template v-slot:expanded-item="{ headers, item }">
+                <td :colspan="headers.length" style="padding: 1rem 1rem;">
+                  <h2>Eierforhold</h2>
+                  <VDataTable :headers="eierHeader" :items="item.eiere" :hide-default-footer="true">
+                  </VDataTable>
                 </td>
-              </tr>
-            </table>
+              </template>
+            </VDataTable>
             <!-- Angreknapp -->
             <VTFKButton style="margin-top: 1rem" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
           </div>
@@ -157,6 +118,70 @@ export default {
       polygon: [],
       statItems: [],
       parsedItems: [],
+      tableHeader: [
+        {
+          text: 'Bruksnavn',
+          value: 'bruksnavn'
+        },
+        {
+          text: 'Type',
+          value: 'type'
+        },
+        {
+          text: 'Gårds #',
+          value: 'gardsnummer'
+        },
+        {
+          text: 'Bruks #',
+          value: 'bruksnummer'
+        },
+        {
+          text: 'Feste #',
+          value: 'festenummer'
+        },
+        {
+          text: 'Kommune ID',
+          value: 'kommuneId'
+        },
+        {
+          text: 'Areal',
+          value: 'oppgittAreal'
+        }
+      ],
+      eierHeader: [
+        {
+          text: 'Dato fra',
+          value: 'datoFra'
+        },
+        {
+          text: 'Type',
+          value: 'type'
+        },
+        {
+          text: 'Eier id',
+          value: 'eierId'
+        },
+        {
+          text: 'EierforholdKode',
+          value: 'eierforholdKode'
+        },
+        {
+          text: 'kommuneId',
+          value: 'kommuneId'
+        },
+        {
+          text: 'Andelsnummer',
+          value: 'andelsnummer'
+        },
+        {
+          text: 'Andel teller',
+          value: 'andel.teller'
+        },
+        {
+          text: 'Andel nevner',
+          value: 'andel.nevner'
+        },
+      ],
       error: undefined,
     }
   },
@@ -269,18 +294,42 @@ export default {
       })
 
       const matrikkelEiere = await matrikkelClient.getStoreItems(ownerRequest, { query: { flatten: true, metadata: false } });
-      console.log('Matrikkel eiere');
-      console.log(matrikkelEiere);
 
       // Match eiere og matrikkelEiere
       if(ownerRequest.length !== matrikkelEiere.length) {
         throw new AppError('Mismatch i mellom antall forespurte eiere og motatte eiere', 'Vi spurte matrikkel APIet om informasjon om ' + ownerRequest.length + ' eiere, men fikk svar på ' + matrikkelEiere.length + ' eiere.')
       }
 
+      let ikkeMatchetEiere = [];  // array som holder på antallet eiere som ikke er matchet om noen
+      eiere.forEach((eierforhold) => {
+        let match = undefined;
+        console.log(eierforhold);
+        
+        matrikkelEiere.forEach((eier) => {
+          let type = this.getItemType(eier);
+          let id = this.getItemValue(eier.id);
+
+          if(id === eierforhold.eierId) { match = eier; }
+          else { return; }
+
+          eier.type = type;
+          eierforhold.eier = eier;
+        })
+
+        if(!match) {
+          ikkeMatchetEiere.push(eierforhold);
+        }
+      })
+
+      if(ikkeMatchetEiere.length > 0) {
+        throw new AppError('Klarte ikke finne alle eiere', 'Vi klarte ikke å finne ' + ikkeMatchetEiere.length + ' eiere')
+      }
+
+      console.log(eiere);
+
       this.parsedItems = parsedMatrikkelEnheter;
 
-      console.log('Returned:')
-      console.log(matrikkelEnheter);
+
       this.isContactingMatrikkel = false;
     },
     async readFile(file) {
@@ -413,7 +462,13 @@ export default {
     getItemValue(item) {
       if(!item) { return; }
 
-      if(Object.keys(item).length === 1) { return item[Object.keys(item)[0]] }
+      if(Object.keys(item).length === 1) {
+        return item[Object.keys(item)[0]]
+      }
+      else if(Object.keys(item).length === 2 && item.$) {
+        let key = Object.keys(item).find((k) => k !== '$');
+        if(key) { return item[key]; }
+      }
       
       return item;
     },
@@ -422,10 +477,12 @@ export default {
       if(!Array.isArray(Enheter)) { Enheter = [Enheter]; }
 
       let parsed = [];
-      
+      let counter = 0;
+      console.log('Enhter til parsing: ' + Enheter.length)
       Enheter.forEach((enhet) => {
+        counter++;
         let item = {}
-
+        console.log('Parsing: ' + counter);
         let type = this.getItemType(enhet);
 
         let id = 'unresolved';
@@ -440,7 +497,7 @@ export default {
           id: id,
           type: type
         }
-        console.log(enhet);
+
         // Hent ut matrikkel informasjon
         if(enhet.matrikkelnummer) {
           item.gardsnummer = this.getItemValue(enhet.matrikkelnummer.gardsnummer);
@@ -474,8 +531,6 @@ export default {
       return parsed;
     }
   },
-  created() {
-  }
 }
 
 </script>
@@ -498,7 +553,7 @@ export default {
     padding-top: 4rem;
     padding-left: 1rem;
     padding-right: 1rem;
-    max-width: 1750px;
+    max-width: 1200px!important;
     margin: 0 auto;
   }
 
@@ -523,27 +578,4 @@ export default {
     padding: 1rem 1rem;
   }
 
-  .tmpTable, .ownerTable {
-    vertical-align: top;
-    text-align: left;
-    border-collapse: collapse;
-  }
-  
-  .tmpTable tr:nth-child(even) {background-color: #d8d8d8;}
-  .tmpTable tr:nth-child(odd) {background-color: #a8a8a8;}
-
-  .ownerTable tr:nth-child(even) {background-color: #f7fffe;}
-  .ownerTable tr:nth-child(odd) {background-color: #a9c6cf;}
-
-  .tmpTable td {
-    vertical-align: top;
-    text-align: left;
-    padding: 5px;
-  }
-
-  .tmpTable th {
-    vertical-align: top;
-    text-align: left;
-    padding: 0;
-  }
 </style>
