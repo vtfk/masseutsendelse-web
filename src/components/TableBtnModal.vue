@@ -45,9 +45,12 @@
                 :animateRows="true"
                 @grid-ready="onGridReady"
                 :modules="modules"
+                :editType="fullRow"
                 :rowData="rowData"
                 :rowSelection="rowSelection"
                 @selection-changed="onSelectionChanged"
+                @cell-value-changed="onCellValueChanged"
+                @row-value-changed="onRowValueChanged"
                 >
                 </ag-grid-vue>
             </div>
@@ -108,7 +111,30 @@ export default {
 
         //Redigerer en rad
         editRow() {
-            //TODO
+            this.gridApi.setFocusedCell(4, 'Status');
+            this.gridApi.startEditingCell({
+                rowIndex: 2,
+                colKey: 'make',
+            });
+        },
+        onCellValueChanged(event) {
+            console.log(
+                'onCellValueChanged: ' + event.colDef.field + ' = ' + event.newValue
+            );
+        },
+        onRowValueChanged(event) {
+        var data = event.data;
+            console.log(
+                'onRowValueChanged: (' +
+                data.make +
+                ', ' +
+                data.model +
+                ', ' +
+                data.price +
+                ', ' +
+                data.field5 +
+                ')'
+            );
         },
 
         viewDocument() {
@@ -147,16 +173,21 @@ export default {
 
     beforeMount() {
     this.rowSelection = 'multiple';
+    this.editType = 'fullRow';
     this.overlayLoading =
         '<span class="ag-overlay-loading-center">Vennligst vent mens radene lastes inn.</span>'; //Spinner?
     this.overlayNoRows = 
         '<span class="typography heading-four" style="padding: 10px; border: 2px solid #444; background: #D1EAE9;">Det finnes ingen rader</span>';
   
     this.columnDefs = [
-      { field: "Prosjekt", sortable: true, filter: true, flex: 1, minWidth: 200},
-      { field: "ProsjektNr", sortable: true, filter: true, flex: 1, minWidth: 200},
+      { field: "Prosjekt", sortable: true, filter: true, flex: 1, editable: true, minWidth: 200},
+      { field: "ProsjektNr", sortable: true, filter: true, flex: 1, editable: true, minWidth: 200},
       { field: "Dato", sortable: true, filter: true, flex: 1, minWidth: 200},
-      { field: "Status", sortable: true, filter: true, flex: 1, minWidth: 200,
+      { field: "Status", sortable: true, filter: true, flex: 1, editable: true, minWidth: 200, 
+        cellEditor: "agSelectCellEditor",
+        cellEditorParams: {
+          values: ["Godkjent", "Sendt", "Til Behandling", "Ikke Godkjent"]
+        },
         cellStyle: params => {
             if (params.value === "Godkjent") {
                 //mark godkjent cells as green
@@ -176,8 +207,8 @@ export default {
             }
             return null;
         },},
-      { field: "Oppretshaver", sortable: true, filter: true, flex: 1, minWidth: 200},
-      { field: "Filnavn", sortable: true, filter: true, flex: 1, minWidth: 200},
+      { field: "Oppretshaver", sortable: true, filter: true, flex: 1, editable: true, minWidth: 200},
+      { field: "Filnavn", sortable: true, filter: true, flex: 1, editable: true, minWidth: 200},
     ];
     this.rowData = [
         //fetch('https://www.ag-grid.com/example-assets/small-row-data.json')

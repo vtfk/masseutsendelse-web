@@ -17,6 +17,7 @@
         <VTFKIconDropdownNav>
           <VTFKIconDropdownNavItem title='Hjelp' :onClick="() => { }" />
           <VTFKIconDropdownNavItem title="Logg ut" href="https://www.vtfk.no" />
+          <VTFKIconDropdownNavItem title='Tidligere opplastninger' :onClick="() => { }" />
         </VTFKIconDropdownNav>
       </div>
     </div>
@@ -27,12 +28,14 @@
 // VTFK komponenter
 import { InitialsBadge, IconDropdownNav, IconDropdownNavItem } from '@vtfk/components'
 
+
 export default {
   name: 'Header',
   components: {
     'VTFKInitialsBadge': InitialsBadge,
     'VTFKIconDropdownNav': IconDropdownNav,
-    'VTFKIconDropdownNavItem': IconDropdownNavItem 
+    'VTFKIconDropdownNavItem': IconDropdownNavItem,
+    
   },
   data() {
     return {
