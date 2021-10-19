@@ -2,7 +2,7 @@
   <div class="map-wrapper">
     <l-map style="height: 400px; width: 750px; max-width: 800px; z-index: 1;" :zoom="mapZoom" :center="mapCenter">
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-      <l-marker :lat-lng="mapCenter"></l-marker>
+      <l-marker v-for="(marker, i) in markers" :key="i" :lat-lng="marker"></l-marker>
       <l-polygon :lat-lngs="polygon.coordinates" :fillColor="polygon.fillColor" :color="polygon.color"></l-polygon>
     </l-map>
   </div>
@@ -34,9 +34,9 @@ export default {
       type: Array,
       default: () => [59.2654381, 10.4159352]
     },
-    marker: {
+    markers: {
       type: Array,
-      default: () => [59.2654381, 10.4159352]
+      default: () => [[59.2654381, 10.4159352]]
     },
     lineColor: {
       type: String,

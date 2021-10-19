@@ -1,0 +1,82 @@
+{
+    "$": {
+        "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+        "xsi:type": "ns4:JuridiskPerson"
+    },
+    "id": {
+        "$": {
+            "xsi:type": "ns4:JuridiskPersonId"
+        },
+        "value": "6257903605"
+    },
+    "metadata": {
+        "item": [
+            "postadresse",
+            "oppdateringsdato",
+            "id",
+            "versjon",
+            "sluttdato",
+            "slettetDato",
+            "forretningsadresse",
+            "avsluttetAv",
+            "oppdatertAv",
+            "uuid",
+            "nummer",
+            "navn",
+            "organisasjonsformKode",
+            "versjonId"
+        ]
+    },
+    "oppdateringsdato": {
+        "timestamp": "2021-03-24T02:20:19.547000000+01:00"
+    },
+    "versjonId": "5",
+    "oppdatertAv": "eksternregister1",
+    "versjon": "1616548819547",
+    "nummer": "821227062",
+    "navn": "VESTFOLD OG TELEMARK FYLKESKOMMUNE",
+    "postadresse": {
+        "metadata": {
+            "item": [
+                "adresselinje1",
+                "adresselinje3",
+                "postnummeromradeId",
+                "adresselinje2",
+                "landKodeId"
+            ]
+        },
+        "adresselinje1": "Postboks 2844",
+        "postnummeromradeId": {
+            "value": "1004431"
+        },
+        "landKodeId": {
+            "value": "5001"
+        }
+    },
+    "uuid": {
+        "navnerom": "https://data.geonorge.no/matrikkel",
+        "uuid": "bbe8ea66-687c-5ab3-81d3-56273e17f74d"
+    },
+    "forretningsadresse": {
+        "metadata": {
+            "item": [
+                "adresselinje1",
+                "adresselinje3",
+                "postnummeromradeId",
+                "adresselinje2",
+                "landKodeId"
+            ]
+        },
+        "adresselinje1": "Torggata 18",
+        "postnummeromradeId": {
+            "value": "1004446"
+        },
+        "landKodeId": {
+            "value": "5001"
+        }
+    },
+    "organisasjonsformKode": {
+        "orgformNavn": "Fylkeskommune",
+        "orgformKode": "FYLK"
+    }
+}

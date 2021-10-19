@@ -23,7 +23,17 @@
         </div>
         <!-- Upload felt -->
         <div style="margin-top: 1rem;">
-          <div v-if="!hasLoadedFile">
+          <div v-if="error" class="error-card">
+            <h1>En feil har oppstått</h1>
+            <h3 v-if="error.title">{{error.title}}</h3>
+            <p v-if="error.message">{{error.message}}</p>
+            <!-- <strong>Stack:</strong>
+            <p style="text-align: left;">{{error.stack}}</p> -->
+            <div style="display: flex; justify-content: center;">
+              <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {reset(true)}}">Start på nytt</VTFKButton>
+            </div>
+          </div>
+          <div v-else-if="!hasLoadedFile">
             <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
           </div>
           <div v-else-if="isParsingFile">
@@ -32,13 +42,62 @@
           </div>
           <div v-else class="center-content">
             <!-- Kart komponent -->
-            <Map style="margin-top: 2rem;" :coordinates="polygon" :center="mapCenter"/>
+            <Map style="margin-top: 2rem;" :coordinates="polygon" :center="mapCenter" :markers="markers"/>
             <!-- Knapp for å hente data fra API -->
             <VTFKButton style="margin-top: 1rem" :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
+            <Loading v-if="statItems.length == 0 && isContactingMatrikkel" title="Kontaker matrikkelen" message="Henter enheter innenfor polygon"/>
             <!-- Cards som viser stats om informasjonen -->
             <StatCards style="margin-top: 1rem" :items="statItems"/>
+            <table class="tmpTable">
+              <tr>
+                <th style="width: 240px;">Bruksnavn</th>
+                <th style="width: 120px;">Type</th>
+                <th style="width: 80px;">Gårds #</th>
+                <th style="width: 80px;">Bruks #</th>
+                <th style="width: 80px;">Feste #</th>
+                <th style="width: 80px;">Areal</th>
+                <th style="width: 80px;">KommuneId</th>
+                <th style="width: 100px;">ID</th>
+                <th>Eiere</th>
+              </tr>
+              <tr v-for="(item, i) in parsedItems" :key="i">
+                <td>{{item.bruksnavn}}</td>
+                <td>{{item.type}}</td>
+                <td>{{item.gardsnummer}}</td>
+                <td>{{item.bruksnummer}}</td>
+                <td>{{item.festenummer}}</td>
+                <td>{{item.oppgittAreal}}</td>
+                <td>{{item.kommuneId}}</td>
+                <td>{{item.id}}</td>
+                
+                <td>
+                  <table class="ownerTable">
+                    <tr>
+                      <th style="width: 125px;">Fra dato</th>
+                      <th style="width: 280px;">Type</th>
+                      <th style="width: 100px;">EierId</th>
+                      <th style="width: 130px;">eierforholdKode</th>
+                      <th>kommuneId</th>
+                      <th>Andelsnummer</th>
+                      <th>Andel teller</th>
+                      <th>Andel nevner</th>
+                    </tr>
+                    <tr v-for="(eier, j) in item.eiere" :key="j">
+                      <td>{{eier.datoFra}}</td>
+                      <td>{{eier.type}}</td>
+                      <td>{{eier.eierId}}</td>
+                      <td>{{eier.eierforholdKode}}</td>
+                      <td>{{eier.kommuneId}}</td>
+                      <td>{{eier.andelsnummer}}</td>
+                      <td><div v-if="eier.andel && eier.andel.teller">{{eier.andel.teller}}</div></td>
+                      <td><div v-if="eier.andel && eier.andel.nevner">{{eier.andel.nevner}}</div></td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
             <!-- Angreknapp -->
-            <VTFKButton style="margin-top: 1rem">Angre</VTFKButton>
+            <VTFKButton style="margin-top: 1rem" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
           </div>
         </div>
       </div>
@@ -57,11 +116,21 @@ import TableBtnModal from './components/TableBtnModal.vue'
 import UploadField from './components/UploadField.vue'
 import Map from './components/Map.vue'
 import StatCards from './components/StatCards.vue'
+import Loading from './components/Loadig.vue'
 
 // Import libraries
 import MatrikkelProxyClient from './lib/matrikkelProxyClient'
 import DxfParser from 'dxf-parser'
 import proj4 from 'proj4';
+
+// Error klasse
+class AppError extends Error {
+  constructor(title, message) {
+    super(message);
+    Error.captureStackTrace(this, this.constructor);
+    this.title = title;
+  }
+}
 
 export default {
   name: 'App',
@@ -73,7 +142,8 @@ export default {
     TableBtnModal,
     UploadField,
     Map,
-    StatCards, 
+    StatCards,
+    Loading
   },
   data() {
     return {
@@ -81,13 +151,40 @@ export default {
       isShowModal: false,
       hasLoadedFile: false,
       isParsingFile: false,
+      isContactingMatrikkel: false,
       mapCenter: [],
+      markers: [],
       polygon: [],
       statItems: [],
-      error: '',
+      parsedItems: [],
+      error: undefined,
     }
   },
   methods: {
+    setError(error) {
+      this.error = error;
+    },
+    reset(force = false) {
+      if(force === false) {
+        if(!confirm('Er du helt sikker på at du vil starte på nytt?')) {
+          return;
+        }
+      }
+
+      // Action states
+      this.state = 'initial';
+      this.isShowModal = false;
+      this.hasLoadedFile = false;
+      this.isParsingFile = false;
+      this.isContactingMatrikkel = false;
+
+      // Data
+      this.markers = [];
+      this.mapCenter = [];
+      this.polygon = [];
+      this.statItems = [];
+      this.error = undefined;
+    },
     async getDataFromMatrikkelAPI(polygon) {
       if(!polygon) {
         polygon = [
@@ -118,7 +215,7 @@ export default {
           }
         ]
       }
-
+      this.isContactingMatrikkel = true;
       let matrikkelClient = new MatrikkelProxyClient();
 
       // Hent ut alle MatrikkelEnhet-IDer innenfor polygonet
@@ -137,11 +234,54 @@ export default {
 
       this.statItems.push({ text: 'Enheter', value: matrikkelEnhetItems.length })
 
+      // Hent ut data for alle matrikkel enhetene
       let matrikkelEnheter = await matrikkelClient.getStoreItems(matrikkelEnhetItems, { query: { flatten: true, metadata: false } });
       if(!matrikkelEnheter && matrikkelEnheter.length) { this.error = 'Kunne ikke laste inn noen matrikkelenheter innenfor dette polygonet. '; return; }
+      
+      // Parse the matrikkelenhet data
+      let parsedMatrikkelEnheter = this.parseMatrikkelEnheter(matrikkelEnheter);
+
+      // Hent ut alle eiere fra dataene
+      let eiere = [];
+      parsedMatrikkelEnheter.forEach((enhet) => {
+        enhet.eiere.forEach((eier) => {
+          if(!eiere.find((e) => e.eierId === eier.eierId && e.type === eier.type)) {
+            eiere.push(eier);
+          }
+        })
+      })
+
+      // Legg ut ett stat-card for hver av de unike eierne
+      this.statItems.push({ text: 'Unike eiere', value: eiere.length })
+
+      let antallJuridiskeEiere = eiere.filter((e) => e.type.toLowerCase().includes('juridisk'));
+      this.statItems.push({ text: 'Juridiske eiere', value: antallJuridiskeEiere.length })
+      this.statItems.push({ text: 'Private eiere', value: eiere.length - antallJuridiskeEiere.length })
+
+      // Kontakt matrikkelen og hent ut alle eiere
+      let ownerRequest = [];
+      eiere.forEach((eier) => {
+        ownerRequest.push({
+          type: 'PersonId',
+          namespace: 'http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person',
+          value: eier.eierId
+        })
+      })
+
+      const matrikkelEiere = await matrikkelClient.getStoreItems(ownerRequest, { query: { flatten: true, metadata: false } });
+      console.log('Matrikkel eiere');
+      console.log(matrikkelEiere);
+
+      // Match eiere og matrikkelEiere
+      if(ownerRequest.length !== matrikkelEiere.length) {
+        throw new AppError('Mismatch i mellom antall forespurte eiere og motatte eiere', 'Vi spurte matrikkel APIet om informasjon om ' + ownerRequest.length + ' eiere, men fikk svar på ' + matrikkelEiere.length + ' eiere.')
+      }
+
+      this.parsedItems = parsedMatrikkelEnheter;
 
       console.log('Returned:')
       console.log(matrikkelEnheter);
+      this.isContactingMatrikkel = false;
     },
     async readFile(file) {
       // Always return a Promise
@@ -162,80 +302,176 @@ export default {
       });
     },
     async parseFiles(files) {
-      // let dxf_files = files.filter((f) => f.name.toLowerCase().endsWith('.dxf'));
-      this.hasLoadedFile = true;
-      this.isParsingFile = true;
-      let dxf_files = files;
+      try {
+        if(!files || files.length == 0) {
+          throw new AppError('Filopplastings feil', 'Det ble påkallet en filopplasting, men ingen fil ble lastet opp')
+        }
+        let dxf_files = files.filter((f) => f.name.toLowerCase().endsWith('.dxf'));
+        if(!dxf_files || dxf_files.length === 0) {
+          throw new AppError('Feil filtype', 'Filen som ble lastet opp er av feil filtype. Filen må være av typen .dxf')
+        }
 
-      if(dxf_files.length <= 0) { return; } //TODO: Throw feil
+        this.hasLoadedFile = true;
+        this.isParsingFile = true;
 
-      let file = dxf_files[0];
-      if(!file) { return } // TODO: Throw feil
-      let fileData = await this.readFile(file.data);
+        let file = dxf_files[0];
+        let fileData = await this.readFile(file.data);
 
-      var parser = new DxfParser();
-      let parsed = parser.parseSync(fileData);
+        if(!fileData || fileData.length === 0) { throw new AppError('Filen er tom', 'Den opplastede .dxf-filen inneholder ingen data') }
 
-      // TODO: Sjekk at entities kun har ett item
-      // Sjekk også at typen er LWPOLYLINE
+        var parser = new DxfParser();
+        let parsed = parser.parseSync(fileData);
 
-      let vertices = parsed.entities[0].vertices;
-      // console.log('Polygon før transformasjon')
-      // console.log(vertices);
-      // // console.log(parsed.enteties[0]);
+        if(!parsed.entities) { throw new AppError('Fil inneholder ingen former', 'Filen inneholder ingen former') }
+
+        let polygons = parsed.entities.filter((i => i.type === 'LWPOLYLINE'));
+        if(polygons.length == 0) { throw new AppError('Fil inneholder ingen polygoner', 'Filen inneholder ingen polygoner') }
+        else if(polygons.length > 1) { throw new AppError('Fil inneholder ingen polygoner', ('Filen må kun inneholde ett polygon, men det inne holder ' + polygons.length))  }
+
+        const polygon = polygons[0];
+        if(!polygon || !polygon.vertices || polygon.vertices.length === 0) {
+          throw new AppError('Polygonet mangler linjesegmenter', ('Polygonet i filen inneholder ingen linjesegmenter'))
+        }
+ 
+        let vertices = polygons[0].vertices;
+
+        // Define the coordinate translations
+        proj4.defs([
+          [
+            'EPSG:4326',
+            '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees'],
+          [
+            'EPSG:25832',
+            '+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs'
+          ]
+        ]);
+
+        let lowX = vertices[0].x;
+        let highX = vertices[0].x;
+        let lowY = vertices[0].y;
+        let highY = vertices[0].y;
+        
+        let northPoint = undefined;
+        let westPoint = undefined;
+        let eastPoint = undefined;
+        let southPoint = undefined;
+
+        let transformedVertices = [];
+        // let firstLatitude = vertices[0].y;
+        vertices.forEach((vertice) => {
+          // Make a copy of the vertice to not modify the source object
+          let vCopy = JSON.parse(JSON.stringify(vertice))
+          // Transform the coordinates
+          let transformed = proj4('EPSG:25832', 'EPSG:4326', vCopy);
+          // Find the outermost points, used for calculating the center of the polygon
+          if(vertice.x > highX) { westPoint = vertice; highX = vertice.x; }
+          else if(vertice.x < lowX) { eastPoint = vertice; lowX = vertice.x; }
+          if(vertice.y > highY) { northPoint = vertice; highY = vertice.y; }
+          else if(vertice.y < lowY) { southPoint = vertice; lowY = vertice.y }
+          // Add the transformed points to the transformed array
+          transformedVertices.push([transformed.y, transformed.x]);
+        })
+
+        // Calculate midpoint
+        let transformedCenter = proj4('EPSG:25832', 'EPSG:4326', {x: (lowX + highX) / 2, y: (lowY + highY) / 2});
+
+        // Calculate the coordinates for the outmost points
+        let translatedNorth = proj4('EPSG:25832', 'EPSG:4326', {x: northPoint.x , y: northPoint.y});
+        let translatedWest = proj4('EPSG:25832', 'EPSG:4326', {x: westPoint.x , y: westPoint.y});
+        let translatedEast = proj4('EPSG:25832', 'EPSG:4326', {x: eastPoint.x , y: eastPoint.y});
+        let translatedSouth = proj4('EPSG:25832', 'EPSG:4326', {x: southPoint.x , y: southPoint.y});
+
+        // Set the center of the map
+        this.mapCenter = [transformedCenter.y, transformedCenter.x];
+
+        // Add markers for the outermost points
+        this.markers.push([transformedCenter.y, transformedCenter.x]);
+        this.markers.push([translatedNorth.y, translatedNorth.x]);
+        this.markers.push([translatedWest.y, translatedWest.x]);
+        this.markers.push([translatedEast.y, translatedEast.x]);
+        this.markers.push([translatedSouth.y, translatedSouth.x]);
+
+        // Set the polygon the be the transformed vertices
+        this.polygon = transformedVertices;
+
+        // Set that the file has been parsed
+        this.isParsingFile = false;
+      } catch (err) {
+        this.setError(err);
+        console.error(err.stack);
+      }
+    },
+    getItemType(item) {
+      if(!item) { return 'unresolved'; }
+
+      let type = 'unresolved';
+      if(item && item.$ && item.$['xsi:type']) { type = item.$['xsi:type']; }
+      if(type.includes(':')) { type = type.split(':')[1]; }
+
+      return type;
+    },
+    getItemValue(item) {
+      if(!item) { return; }
+
+      if(Object.keys(item).length === 1) { return item[Object.keys(item)[0]] }
       
-      // Define the coordinate translations
-      proj4.defs([
-        [
-          'EPSG:4326',
-          '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees'],
-        [
-          'EPSG:25832',
-          '+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs'
-        ]
-      ]);
+      return item;
+    },
+    parseMatrikkelEnheter(Enheter) {
+      if(!Enheter) { return; }
+      if(!Array.isArray(Enheter)) { Enheter = [Enheter]; }
 
-      // let transformed = proj4('EPSG:25832', 'EPSG:4326', vertices[0]);
-      // let lowX = null;
-      // let highX = null;
-      // let highY = null;
-      // let lowY = null;
-      let sumX = null;
-      let sumY = null;
-      let transformedVertices = [];
-      vertices.forEach((vertice) => {
-        // Make a copy of the vertice to not modify the source object
-        let vCopy = JSON.parse(JSON.stringify(vertice))
-        // Transform the coordinates
-        let transformed = proj4('EPSG:25832', 'EPSG:4326', vCopy);
+      let parsed = [];
+      
+      Enheter.forEach((enhet) => {
+        let item = {}
 
-        // if(vertice.x > highX) { highX = vertice.x }
-        // else if(vertice.x < lowX) { lowX = vertice.x }
-        // if(vertice.y > highY) { highY = vertice.y }
-        // else if(vertice.y < lowY) { lowY = vertice.y }
+        let type = this.getItemType(enhet);
 
-        // Add 
-        sumX += vertice.x;
-        sumY += vertice.y;
+        let id = 'unresolved';
+        if(enhet && enhet.id) {
+          if(enhet.id.value) { id = enhet.id.value; }
+          else { id = enhet.id; }
+        }
 
-        transformedVertices.push([transformed.y, transformed.x]);
+        item = {
+          bruksnavn: enhet.bruksnavn,
+          oppgittAreal: enhet.historiskOppgittAreal || 0,
+          id: id,
+          type: type
+        }
+        console.log(enhet);
+        // Hent ut matrikkel informasjon
+        if(enhet.matrikkelnummer) {
+          item.gardsnummer = this.getItemValue(enhet.matrikkelnummer.gardsnummer);
+          item.bruksnummer = this.getItemValue(enhet.matrikkelnummer.bruksnummer);
+          item.festenummer = this.getItemValue(enhet.matrikkelnummer.festenummer);
+          item.kommuneId = this.getItemValue(enhet.matrikkelnummer.kommuneId);
+        }
+
+        // Hent ut eierinformasjon
+        if(enhet.eierforhold) {
+          if(enhet.eierforhold.item) { enhet.eierforhold = enhet.eierforhold.item }
+          if(!Array.isArray(enhet.eierforhold)) { enhet.eierforhold = [enhet.eierforhold]; }
+
+          let eiere = [];
+          enhet.eierforhold.forEach((eierforhold) => {
+            eiere.push({
+              datoFra: this.getItemValue(eierforhold.datoFra),
+              type: this.getItemType(eierforhold),
+              eierId: this.getItemValue(eierforhold.eierId),
+              eierforholdKode: this.getItemValue(eierforhold.eierforholdKodeId),
+              kommuneId: this.getItemValue(eierforhold.kommuneId),
+              andelsnummer: this.getItemValue(eierforhold.andelsnummer),
+              andel: this.getItemValue(eierforhold.andel),
+            })
+          })
+          item.eiere = eiere;
+        }
+
+        parsed.push(item);
       })
-
-      // Calculate midpoint
-      let transformedCenter = proj4('EPSG:25832', 'EPSG:4326', {x: sumX / transformedVertices.length, y: sumY / transformedVertices.length});
-      // let transformedCenter = proj4('EPSG:25832', 'EPSG:4326', { x: (lowX + highX) / 2, y: (lowY + highY) / 2 });
-
-      this.mapCenter = [transformedCenter.y, transformedCenter.x];
-
-      this.polygon = transformedVertices;
-
-      this.isParsingFile = false;
-      
-
-      // TODO: Sjekk at antall transformerte er samme som input antall
-
-      // console.log(transformedVertices);
-
+      return parsed;
     }
   },
   created() {
@@ -262,7 +498,7 @@ export default {
     padding-top: 4rem;
     padding-left: 1rem;
     padding-right: 1rem;
-    max-width: 1100px;
+    max-width: 1750px;
     margin: 0 auto;
   }
 
@@ -277,5 +513,37 @@ export default {
 
   .centered {
     margin: 0 auto;
+  }
+
+  .error-card {
+    width: 100%;
+    min-height: 250px;
+    background-color: #F8D3D1;
+    border-radius: 10px; 
+    padding: 1rem 1rem;
+  }
+
+  .tmpTable, .ownerTable {
+    vertical-align: top;
+    text-align: left;
+    border-collapse: collapse;
+  }
+  
+  .tmpTable tr:nth-child(even) {background-color: #d8d8d8;}
+  .tmpTable tr:nth-child(odd) {background-color: #a8a8a8;}
+
+  .ownerTable tr:nth-child(even) {background-color: #f7fffe;}
+  .ownerTable tr:nth-child(odd) {background-color: #a9c6cf;}
+
+  .tmpTable td {
+    vertical-align: top;
+    text-align: left;
+    padding: 5px;
+  }
+
+  .tmpTable th {
+    vertical-align: top;
+    text-align: left;
+    padding: 0;
   }
 </style>
