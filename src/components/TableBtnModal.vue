@@ -15,8 +15,8 @@
                 </VTFKButton>
                 <VTFKButton 
                 type='secondary' size='small' style="padding-bottom: 1rem;"
-                :passedProps="{ onClick: () => editRow() }"
-                >Rediger Rad
+                :passedProps="{ onClick: () => saveEdit() }"
+                >Lagre Endring
                 </VTFKButton>
                 <EditBtnModal/>
                 <VTFKButton 
@@ -45,7 +45,7 @@
                 :animateRows="true"
                 @grid-ready="onGridReady"
                 :modules="modules"
-                :editType="fullRow"
+                :editType="editType"
                 :rowData="rowData"
                 :rowSelection="rowSelection"
                 @selection-changed="onSelectionChanged"
@@ -110,12 +110,8 @@ export default {
         },
 
         //Redigerer en rad
-        editRow() {
-            this.gridApi.setFocusedCell(4, 'Status');
-            this.gridApi.startEditingCell({
-                rowIndex: 2,
-                colKey: 'make',
-            });
+        saveEdit() {
+            this.gridApi.stopEditing();
         },
         onCellValueChanged(event) {
             console.log(
@@ -126,13 +122,17 @@ export default {
         var data = event.data;
             console.log(
                 'onRowValueChanged: (' +
-                data.make +
+                data.Prosjekt +
                 ', ' +
-                data.model +
+                data.ProsjektNr +
                 ', ' +
-                data.price +
+                data.Dato +
                 ', ' +
-                data.field5 +
+                data.Status +
+                ', ' +
+                data.Oppretshaver +
+                ', ' +
+                data.Filnavn +
                 ')'
             );
         },
@@ -208,7 +208,7 @@ export default {
             return null;
         },},
       { field: "Oppretshaver", sortable: true, filter: true, flex: 1, editable: true, minWidth: 200},
-      { field: "Filnavn", sortable: true, filter: true, flex: 1, editable: true, minWidth: 200},
+      { field: "Filnavn", sortable: true, filter: true, flex: 1, minWidth: 200},
     ];
     this.rowData = [
         //fetch('https://www.ag-grid.com/example-assets/small-row-data.json')
