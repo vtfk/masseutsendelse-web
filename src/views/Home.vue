@@ -48,6 +48,26 @@
             <Loading v-if="statItems.length == 0 && isContactingMatrikkel" title="Kontaker matrikkelen" message="Henter enheter innenfor polygon"/>
             <!-- Cards som viser stats om informasjonen -->
             <StatCards style="margin-top: 1rem" :items="statItems"/>
+            <!-- Aksept for at matrikkel info ser ok ut -->
+            <VTFKCheckbox name="matrikkelOk" label="Matrikkelinformasjonen ser korrekt ut" :passedProps="{ onChange: () => { updateProject('isMatrikkelApproved', !project.isMatrikkelApproved); }}" style="margin-top: 1rem;" />
+            <!-- Prosjekt informasjon -->
+            <div v-if="project.isMatrikkelApproved" class="card shadow" style="margin-top: 1rem; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h1>Prosjektbeskrivelse</h1>
+              <VTFKSelect
+                label="Velg dokument mal"
+                :items="templateItems"
+                :passedProps="{ onChange: (e) => { onTemplateChange(e)}}"
+                style="max-width: 750px; width: 100%;"
+                placeholder="Velg mal"
+                :selectedItem="selectedTemplate"
+                :closeOnSelect="true"
+                :isOpen="isTemplateSelectorOpen"
+              />
+              <VTFKTextField placeholder="Prosjektnavn" style="max-width: 750px; width: 100%;"/>
+              <VTFKTextField placeholder="Brødtekst" :rows="8" style="max-width: 750px; width: 100%;"/>
+              <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {}}">Se forhåndsvisning</VTFKButton>
+              <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => { submitMassDispatch(); }}">Send til godkjenning</VTFKButton>
+            </div>
             <VDataTable class="shadow" style="margin-top: 1rem; width: 100%;" :headers="tableHeader" :items="parsedItems" :items-per-page="20" :show-expand="true">
               <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length" style="padding: 1rem 1rem;">
@@ -57,14 +77,6 @@
                 </td>
               </template>
             </VDataTable>
-            <div class="card shadow" style="margin-top: 2rem; width: 100%; display: flex; flex-direction: column; align-items: center;">
-              <h1>Prosjektbeskrivelse</h1>
-              <VTFKSelect label="mal" :selectedItem="selectedTemplate" :items="templateItems" :onChage="() => {}" style="max-width: 750px; width: 100%;" />
-              <VTFKTextField placeholder="Prosjektnavn" style="max-width: 750px; width: 100%;"/>
-              <VTFKTextField placeholder="Brødtekst" rows="8" style="max-width: 750px; width: 100%;"/>
-              <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {}}">Se forhåndsvisning</VTFKButton>
-              <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => { submitMassDispatch(); }}">Send til godkjenning</VTFKButton>
-            </div>
           </div>
         </div>
       </div>
@@ -72,7 +84,7 @@
 
 <script>
   // VTFK komponenter
-  import { Button, Spinner, TextField, Select } from '@vtfk/components'
+  import { Button, Spinner, TextField, Select, Checkbox } from '@vtfk/components'
 
   // Prosjektkomponenter
   import GuideBtnModal from '../components/GuideBtnModal.vue'
@@ -102,6 +114,7 @@
     'VTFKSpinner': Spinner,
     'VTFKTextField': TextField,
     'VTFKSelect': Select,
+    'VTFKCheckbox': Checkbox,
     GuideBtnModal,
     UploadField,
     Map,
@@ -120,7 +133,11 @@
       polygon: [],
       statItems: [],
       parsedItems: [],
+      isTemplateSelectorOpen: true,
       selectedTemplate: undefined,
+      project: {
+        isMatrikkelApproved: false
+      },
       templateItems: [
         {
           label: 'Omregulering',
@@ -438,20 +455,23 @@
         let transformedCenter = proj4('EPSG:25832', 'EPSG:4326', {x: (lowX + highX) / 2, y: (lowY + highY) / 2});
 
         // Calculate the coordinates for the outmost points
+        /* eslint-disable */
         let translatedNorth = proj4('EPSG:25832', 'EPSG:4326', {x: northPoint.x , y: northPoint.y});
         let translatedWest = proj4('EPSG:25832', 'EPSG:4326', {x: westPoint.x , y: westPoint.y});
         let translatedEast = proj4('EPSG:25832', 'EPSG:4326', {x: eastPoint.x , y: eastPoint.y});
         let translatedSouth = proj4('EPSG:25832', 'EPSG:4326', {x: southPoint.x , y: southPoint.y});
+        /* eslint-enable */
 
         // Set the center of the map
         this.mapCenter = [transformedCenter.y, transformedCenter.x];
 
         // Add markers for the outermost points
+        
         this.markers.push([transformedCenter.y, transformedCenter.x]);
-        this.markers.push([translatedNorth.y, translatedNorth.x]);
-        this.markers.push([translatedWest.y, translatedWest.x]);
-        this.markers.push([translatedEast.y, translatedEast.x]);
-        this.markers.push([translatedSouth.y, translatedSouth.x]);
+        // this.markers.push([translatedNorth.y, translatedNorth.x]);
+        // this.markers.push([translatedWest.y, translatedWest.x]);
+        // this.markers.push([translatedEast.y, translatedEast.x]);
+        // this.markers.push([translatedSouth.y, translatedSouth.x]);
 
         // Set the polygon the be the transformed vertices
         this.polygon = transformedVertices;
@@ -547,6 +567,13 @@
       if(confirm('Er du helt sikker på at du vil sende inn?')) {
         console.log('Vil sendes inn');
       }
+    },
+    onTemplateChange(e) {
+      this.selectedTemplate = e;
+    },
+    updateProject(key, value) {
+      console.log('Setting "' + key + '" to "' + value + '"');
+      this.$set(this.project, key, value)
     }
   },
   }
