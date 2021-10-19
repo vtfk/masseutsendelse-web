@@ -146,28 +146,30 @@ export default {
         },
 
         onSelectionChanged() {
-        var selectedRows = this.gridApi.getSelectedRows();
-        var selectedRowsString = ''
-        var maxToShow = 5
-        selectedRows.forEach(function (selectedRow, index) {
-            if (index >= maxToShow) {
-            return;
+            //Når en rad blir valgt, skriv raden med ønsket prosjektnavn til og med 5 stk, deretter tell "resten"
+            var selectedRows = this.gridApi.getSelectedRows();
+            var selectedRowsString = ''
+            var maxToShow = 5
+            selectedRows.forEach(function (selectedRow, index) {
+                if (index >= maxToShow) {
+                return;
+                }
+                if (index > 0) {
+                selectedRowsString += ', '
+                }
+                selectedRowsString += selectedRow.Prosjekt;
+            });
+            if (selectedRows.length > maxToShow) {
+                var othersCount = selectedRows.length - maxToShow;
+                selectedRowsString +=
+                ' og ' + othersCount + ' til. ' // (othersCount !== 1 ? 's' : '')
             }
-            if (index > 0) {
-            selectedRowsString += ', '
-            }
-            selectedRowsString += selectedRow.Prosjekt;
-        });
-        if (selectedRows.length > maxToShow) {
-            var othersCount = selectedRows.length - maxToShow;
-            selectedRowsString +=
-            ' og ' + othersCount + ' til. ' // (othersCount !== 1 ? 's' : '')
-        }
-        document.querySelector('#selectedRows').innerHTML = selectedRowsString;
-        },
-        onGridReady(params) {
-        this.gridApi = params.api;
-        this.gridColumnApi = params.columnApi;
+            document.querySelector('#selectedRows').innerHTML = selectedRowsString;
+            },
+            //Grid API starter når grid er loadet.
+            onGridReady(params) {
+            this.gridApi = params.api;
+            this.gridColumnApi = params.columnApi;
         }
     },
 
