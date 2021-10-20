@@ -7,8 +7,8 @@
             Ett verktøy utviklet for Samferdesel og mobilitets sektoren.<br/>
             Verktøyet lar deg laste opp en polygon fil, gjøre oppslag i Matrikkelen og varsle alle eiere som befinner seg innenfor polygonet.
           </p>
-          <div style="display: flex; flex-direction: row; padding-top: 1rem">
-            <div style="margin-right: 2rem;">
+          <div style="display: flex; flex-direction: row; padding-top: 1rem; gap: 1rem;">
+            <div>
               <GuideBtnModal />
             </div>
             <router-link to="/utsendelser" style="text-decoration: none; color: inherit;">
@@ -16,7 +16,7 @@
             </router-link>
           </div>
         </div>
-        <!-- Upload felt -->
+        <!-- Innhold -->
         <div style="margin-top: 1rem;">
           <div v-if="error" class="error-card">
             <h1>En feil har oppstått</h1>
@@ -28,22 +28,69 @@
               <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {reset(true)}}">Start på nytt</VTFKButton>
             </div>
           </div>
-          <div v-else-if="!hasLoadedFile">
+          <!-- Upload felt -->
+          <div v-else-if="!uploadedFile">
             <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
           </div>
+          <!-- Parsing indicator -->
           <div v-else-if="isParsingFile">
-            <p class="typography heading-two">Her jobbas det!<p/>
+            <p class="typography heading-two">Filen bearbeides, vent litt<p/>
             <VTFKSpinner size="xlarge"/>
           </div>
           <div v-else class="center-content">
             <!-- Kart komponent -->
-            <Map style="margin-top: 2rem;" :coordinates="polygon" :center="mapCenter" :markers="markers"/>
+            <Map :coordinates="polygon" :center="mapCenter" :markers="markers"/>
             <!-- Knapp for å hente data fra API -->
-            <VTFKButton style="margin-top: 1rem" :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
-            <Loading v-if="statItems.length == 0 && isContactingMatrikkel" title="Kontaker matrikkelen" message="Henter enheter innenfor polygon"/>
-            <!-- Cards som viser stats om informasjonen -->
-            <StatCards style="margin-top: 1rem" :items="statItems"/>
-            <VDataTable style="margin-top: 1rem; width: 100%;" :headers="tableHeader" :items="parsedItems" :items-per-page="20" :show-expand="true">
+            <div v-if="!isAllRequiredMatrikkelInfoRetreived" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-top: 1rem;">
+              <!-- Hent informasjon fra matrikkelen -->
+              <VTFKButton :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
+              <!-- Angreknapp -->
+              <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
+            </div>
+            <div v-else>
+              <Loading v-if="statItems.length == 0 && isContactingMatrikkel" title="Kontaker matrikkelen" message="Henter enheter innenfor polygon"/>
+              <!-- Cards som viser stats om informasjonen -->
+              <StatCards style="margin-top: 1rem" :items="statItems"/>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-top: 1rem;">
+                <!-- Angreknapp -->
+                <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
+                <!-- Aksept for at matrikkel info ser ok ut -->
+                <VTFKCheckbox
+                  v-if="dispatch.matrikkel.affectedCount"
+                  name="matrikkelOk"
+                  label="Matrikkelinformasjonen ser korrekt ut"
+                  :passedProps="{ onChange: () => { isMatrikkelApproved = !isMatrikkelApproved; }}"
+                />
+              </div>
+            </div>
+            
+            <!-- Prosjekt informasjon -->
+            <div v-if="isMatrikkelApproved" class="card shadow" style="margin-top: 1rem; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h1>Masseutsendelse</h1>
+              <VTFKSelect
+                label="Velg dokument mal"
+                :items="templateItems"
+                :passedProps="{ onChange: (e) => { onTemplateChange(e)}}"
+                style="max-width: 750px; width: 100%;"
+                placeholder="Velg mal"
+                :selectedItem="selectedTemplate"
+                :closeOnSelect="true"
+                :isOpen="isTemplateSelectorOpen"
+              />
+              <VTFKTextField placeholder="Tittel" :value="dispatch.title" :passedProps="{ onChange: (e) => { dispatch.title = e.target.value } }" style="max-width: 750px; width: 100%; margin-top: 1rem;" />
+              <VTFKTextField placeholder="Brødtekst" :value="dispatch.body" :passedProps="{ onChange: (e) => { dispatch.body = e.target.value } }" :rows="8" style="max-width: 750px; width: 100%; margin-top: 1rem;"/>
+              <VTFKButton style="margin-top: 1rem;" :disabled="!isDispatchFilledInn" :passedProps="{onClick: () => {}}">Se forhåndsvisning</VTFKButton>
+              <VTFKCheckbox
+                v-if="isAllRequiredMatrikkelInfoRetreived"
+                name="dispatchApproved"
+                :label="'Følgende informasjon skal sendes ut til ' + dispatch.matrikkel.totalOwners + ' mottakere'"
+                :passedProps="{ onChange: () => { isFirstLevelDispatchApproved = !isFirstLevelDispatchApproved; }}"
+                style="margin-top: 1rem;"
+              />
+              <VTFKButton style="margin-top: 1rem;" :disabled="!isFirstLevelDispatchApproved || !isDispatchFilledInn" :passedProps="{onClick: () => { submitMassDispatch(); }}">Send til godkjenning</VTFKButton>
+              <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {reset()}}">Start på nytt</VTFKButton>
+            </div>
+            <!-- <VDataTable class="shadow" style="margin-top: 1rem; width: 100%;" :headers="tableHeader" :items="parsedItems" :items-per-page="20" :show-expand="true">
               <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length" style="padding: 1rem 1rem;">
                   <h2>Eierforhold</h2>
@@ -51,9 +98,7 @@
                   </VDataTable>
                 </td>
               </template>
-            </VDataTable>
-            <!-- Angreknapp -->
-            <VTFKButton style="margin-top: 1rem" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
+            </VDataTable> -->
           </div>
         </div>
       </div>
@@ -61,7 +106,7 @@
 
 <script>
   // VTFK komponenter
-  import { Button, Spinner } from '@vtfk/components'
+  import { Button, Spinner, TextField, Select, Checkbox } from '@vtfk/components'
 
   // Prosjektkomponenter
   import GuideBtnModal from '../components/GuideBtnModal.vue'
@@ -89,6 +134,9 @@
     components: {
     'VTFKButton': Button,
     'VTFKSpinner': Spinner,
+    'VTFKTextField': TextField,
+    'VTFKSelect': Select,
+    'VTFKCheckbox': Checkbox,
     GuideBtnModal,
     UploadField,
     Map,
@@ -97,16 +145,46 @@
   },
   data() {
     return {
-      isSpinning: false,
+      dispatch: {
+        title: '',
+        body: '',
+        template: undefined,
+        matrikkel: {
+          affectedCount: null,
+          area: null,
+          totalOwners: null,
+          privateOwners: null,
+          businessOwners: null
+        },
+        polygon: {
+          coordinateSystem: undefined,
+          points: []
+        }
+      },
+      uploadedFile: undefined,
+      isParsingFile: false,
+      isMatrikkelApproved: false,
+      isFirstLevelDispatchApproved: false,
       isShowModal: false,
       hasLoadedFile: false,
-      isParsingFile: false,
       isContactingMatrikkel: false,
       mapCenter: [],
       markers: [],
       polygon: [],
       statItems: [],
       parsedItems: [],
+      isTemplateSelectorOpen: true,
+      selectedTemplate: undefined,
+      templateItems: [
+        {
+          label: 'Omregulering',
+          value: 'omregulering'
+        },
+        {
+          label: 'Bygge vei',
+          value: 'vei'
+        }
+      ],
       tableHeader: [
         {
           text: 'Bruksnavn',
@@ -174,6 +252,20 @@
       error: undefined,
     }
   },
+  computed: {
+    isAllRequiredMatrikkelInfoRetreived() {
+      const m = this.dispatch.matrikkel;
+      if(m.affectedCount !== null && m.area !== null && m.totalOwners !== null) {
+        return true;
+      }
+
+      return false;
+    },
+    isDispatchFilledInn() {
+      if(this.dispatch.title && this.dispatch.body && this.dispatch.template) { return true; }
+      return false;
+    }
+  },
   methods: {
     setError(error) {
       this.error = error;
@@ -193,6 +285,7 @@
       this.isContactingMatrikkel = false;
 
       // Data
+      this.uploadedFile = undefined;
       this.markers = [];
       this.mapCenter = [];
       this.polygon = [];
@@ -248,6 +341,8 @@
 
       this.statItems.push({ text: 'Enheter', value: matrikkelEnhetItems.length })
 
+      this.dispatch.matrikkel.affectedCount = matrikkelEnhetItems.length;
+
       // Hent ut data for alle matrikkel enhetene
       let matrikkelEnheter = await matrikkelClient.getStoreItems(matrikkelEnhetItems, { query: { flatten: true, metadata: false } });
       if(!matrikkelEnheter && matrikkelEnheter.length) { this.error = 'Kunne ikke laste inn noen matrikkelenheter innenfor dette polygonet. '; return; }
@@ -271,6 +366,10 @@
       let antallJuridiskeEiere = eiere.filter((e) => e.type.toLowerCase().includes('juridisk'));
       this.statItems.push({ text: 'Juridiske eiere', value: antallJuridiskeEiere.length })
       this.statItems.push({ text: 'Private eiere', value: eiere.length - antallJuridiskeEiere.length })
+
+      this.dispatch.matrikkel.privateOwners = eiere.length - antallJuridiskeEiere.length;
+      this.dispatch.matrikkel.businessOwners = antallJuridiskeEiere.length;
+      this.dispatch.matrikkel.totalOwners = eiere.length;
 
       // Kontakt matrikkelen og hent ut alle eiere
       let ownerRequest = [];
@@ -348,11 +447,12 @@
         if(!dxf_files || dxf_files.length === 0) {
           throw new AppError('Feil filtype', 'Filen som ble lastet opp er av feil filtype. Filen må være av typen .dxf')
         }
-
+        
         this.hasLoadedFile = true;
         this.isParsingFile = true;
 
         let file = dxf_files[0];
+        this.uploadedFile = file;
         let fileData = await this.readFile(file.data);
 
         if(!fileData || fileData.length === 0) { throw new AppError('Filen er tom', 'Den opplastede .dxf-filen inneholder ingen data') }
@@ -414,20 +514,26 @@
         let transformedCenter = proj4('EPSG:25832', 'EPSG:4326', {x: (lowX + highX) / 2, y: (lowY + highY) / 2});
 
         // Calculate the coordinates for the outmost points
+        /* eslint-disable */
         let translatedNorth = proj4('EPSG:25832', 'EPSG:4326', {x: northPoint.x , y: northPoint.y});
         let translatedWest = proj4('EPSG:25832', 'EPSG:4326', {x: westPoint.x , y: westPoint.y});
         let translatedEast = proj4('EPSG:25832', 'EPSG:4326', {x: eastPoint.x , y: eastPoint.y});
         let translatedSouth = proj4('EPSG:25832', 'EPSG:4326', {x: southPoint.x , y: southPoint.y});
+        /* eslint-enable */
+
+        // Kalkuler polygonets areal
+        this.dispatch.matrikkel.area = 100;
 
         // Set the center of the map
         this.mapCenter = [transformedCenter.y, transformedCenter.x];
 
         // Add markers for the outermost points
+        
         this.markers.push([transformedCenter.y, transformedCenter.x]);
-        this.markers.push([translatedNorth.y, translatedNorth.x]);
-        this.markers.push([translatedWest.y, translatedWest.x]);
-        this.markers.push([translatedEast.y, translatedEast.x]);
-        this.markers.push([translatedSouth.y, translatedSouth.x]);
+        // this.markers.push([translatedNorth.y, translatedNorth.x]);
+        // this.markers.push([translatedWest.y, translatedWest.x]);
+        // this.markers.push([translatedEast.y, translatedEast.x]);
+        // this.markers.push([translatedSouth.y, translatedSouth.x]);
 
         // Set the polygon the be the transformed vertices
         this.polygon = transformedVertices;
@@ -518,11 +624,35 @@
         parsed.push(item);
       })
       return parsed;
+    },
+    submitMassDispatch() {
+      if(confirm('Er du helt sikker på at du vil sende inn?')) {
+        console.log('Vil sendes inn');
+      }
+    },
+    onTemplateChange(e) {
+      this.selectedTemplate = e;
+      this.dispatch.template = e.value;
+    },
+    onTextChange(e) {
+      console.log(e);
+    },
+    updateProject(key, value) {
+      console.log('Setting "' + key + '" to "' + value + '"');
+      this.$set(this.project, key, value)
     }
   },
   }
 </script>
 
-<style>
+<style scoped>
+
+  .card {
+    width: 100%;
+    border-radius: 20px;
+    background-color: white;
+    min-height: 250px;
+    padding: 1rem 1rem;
+  }
 
 </style>
