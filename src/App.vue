@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <v-app id="app" data-app>
     <header>
       <div class="container">
         <Header />
@@ -9,7 +9,7 @@
       <router-view>
       </router-view>
     </main>
-  </div>
+  </v-app>
 </template>
 
 <script>

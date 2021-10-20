@@ -1,10 +1,11 @@
 import Vue from 'vue';
-import Vuetify, { VDataTable, VDataTableHeader } from 'vuetify/lib'
+import Vuetify, { VDataTable, VDataTableHeader, VDialog } from 'vuetify/lib'
 
 Vue.use(Vuetify, {
   components: {
     VDataTable,
-    VDataTableHeader
+    VDataTableHeader,
+    VDialog
   }
 });
 
