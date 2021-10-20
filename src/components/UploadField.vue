@@ -8,7 +8,8 @@
         {{error}}
       </p>
       <p v-else-if="files.length == 0">
-        Dra filen og slipp den i feltet<br> eller trykk i feltet for å laste opp
+        <img :src="require('@/assets/icons/upload.svg')" style="width: 100px;" /><br><br>
+        Dra og slipp eller trykk i feltet for å laste opp fil
       </p>
       <div v-else style="height: 100%;">
         <h2>Filen er lastet opp</h2>
@@ -124,10 +125,12 @@ export default {
     position: relative;
     cursor: pointer;
     border-radius: 20px;
+    margin-top: 1rem;
   }
 
   .dropbox-dragged-over {
-    background: lightblue; 
+    background: lightblue;
+    outline-color: aliceblue;
   }
 
   .dropbox p {
