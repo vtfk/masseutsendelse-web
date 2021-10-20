@@ -1,74 +1,35 @@
 <template>
   <div class="container">
-        <!-- Informasjonstekst -->
-        <div style="display: flex; align-items: center; flex-direction: column;">
-          <div class="typography heading-two header-title">Masseutsendelse</div>
-          <p class="typography paragraph header-description" style="margin-top: 1rem;">
-            Ett verktøy utviklet for Samferdesel og mobilitets sektoren.<br/>
-            Verktøyet lar deg laste opp en polygon fil, gjøre oppslag i Matrikkelen og varsle alle eiere som befinner seg innenfor polygonet.
-          </p>
-          <div style="display: flex; flex-direction: row; padding-top: 1rem">
-            <div style="margin-right: 2rem;">
-              <GuideBtnModal />
-            </div>
-            <router-link to="/utsendelser" style="text-decoration: none; color: inherit;">
-              <VTFKButton>Alle utsendelser</VTFKButton>
-            </router-link>
-          </div>
+    <!-- Informasjonstekst -->
+    <div style="display: flex; align-items: center; flex-direction: column;">
+      <div class="typography heading-two header-title">Masseutsendelse</div>
+      <p class="typography paragraph header-description" style="margin-top: 1rem;">
+        Ett verktøy utviklet for Samferdesel og mobilitets sektoren.<br/>
+        Verktøyet lar deg laste opp en polygon fil, gjøre oppslag i Matrikkelen og varsle alle eiere som befinner seg innenfor polygonet.
+      </p>
+      <div style="display: flex; flex-direction: row; padding-top: 1rem; gap: 1rem;">
+        <div>
+          <GuideBtnModal />
         </div>
-        <!-- Upload felt -->
-        <div style="margin-top: 1rem;">
-          <div v-if="error" class="error-card">
-            <h1>En feil har oppstått</h1>
-            <h3 v-if="error.title">{{error.title}}</h3>
-            <p v-if="error.message">{{error.message}}</p>
-            <!-- <strong>Stack:</strong>
-            <p style="text-align: left;">{{error.stack}}</p> -->
-            <div style="display: flex; justify-content: center;">
-              <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {reset(true)}}">Start på nytt</VTFKButton>
-            </div>
-          </div>
-          <div v-else-if="!hasLoadedFile">
-            <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
-          </div>
-          <div v-else-if="isParsingFile">
-            <p class="typography heading-two">Her jobbas det!<p/>
-            <VTFKSpinner size="xlarge"/>
-          </div>
-          <div v-else class="center-content">
-            <!-- Kart komponent -->
-            <Map style="margin-top: 2rem;" :coordinates="polygon" :center="mapCenter" :markers="markers"/>
-            <!-- Knapp for å hente data fra API -->
-            <VTFKButton style="margin-top: 1rem" :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
-            <Loading v-if="statItems.length == 0 && isContactingMatrikkel" title="Kontaker matrikkelen" message="Henter enheter innenfor polygon"/>
-            <!-- Cards som viser stats om informasjonen -->
-            <StatCards style="margin-top: 1rem" :items="statItems"/>
-            <VDataTable style="margin-top: 1rem; width: 100%;" :headers="tableHeader" :items="parsedItems" :items-per-page="20" :show-expand="true">
-              <template v-slot:expanded-item="{ headers, item }">
-                <td :colspan="headers.length" style="padding: 1rem 1rem;">
-                  <h2>Eierforhold</h2>
-                  <VDataTable :headers="eierHeader" :items="item.eiere" :hide-default-footer="true">
-                  </VDataTable>
-                </td>
-              </template>
-            </VDataTable>
-            <!-- Angreknapp -->
-            <VTFKButton style="margin-top: 1rem" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
-          </div>
-        </div>
+        <router-link to="/utsendelser" style="text-decoration: none; color: inherit;">
+          <VTFKButton>Alle utsendelser</VTFKButton>
+        </router-link>
       </div>
+    </div>
+    <!-- Innhold -->
+    <div class="mt-1">
+      <DispatchEditor />
+    </div>
+  </div>
 </template>
 
 <script>
   // VTFK komponenter
-  import { Button, Spinner } from '@vtfk/components'
+  import { Button } from '@vtfk/components'
 
   // Prosjektkomponenter
   import GuideBtnModal from '../components/GuideBtnModal.vue'
-  import UploadField from '../components/UploadField.vue'
-  import Map from '../components/Map.vue'
-  import StatCards from '../components/StatCards.vue'
-  import Loading from '../components/Loadig.vue'
+  import DispatchEditor from '../components/DispatchEditor.vue';
 
   // Import libraries
   import MatrikkelProxyClient from '../lib/matrikkelProxyClient'
@@ -76,102 +37,91 @@
   import proj4 from 'proj4';
 
   // Error klasse
-  class AppError extends Error {
-    constructor(title, message) {
-      super(message);
-      Error.captureStackTrace(this, this.constructor);
-      this.title = title;
-    }
-  }
+  import AppError from '../lib/AppError';
 
   export default {
     name: 'HomeView',
     components: {
     'VTFKButton': Button,
-    'VTFKSpinner': Spinner,
     GuideBtnModal,
-    UploadField,
-    Map,
-    StatCards,
-    Loading
+    DispatchEditor
   },
   data() {
     return {
-      isSpinning: false,
-      isShowModal: false,
-      hasLoadedFile: false,
+      dispatch: {
+        title: '',
+        body: '',
+        template: undefined,
+        matrikkel: {
+          affectedCount: null,
+          area: null,
+          totalOwners: null,
+          privateOwners: null,
+          businessOwners: null
+        },
+        polygon: {
+          coordinatesystem: 'EUREF89 UTM Sone 32',
+          areal: null,
+          vertices: [],
+          extremes: {
+            north: undefined,
+            west: undefined,
+            east: undefined,
+            south: undefined,
+            center: undefined
+          }
+        },
+        geopolygon: {
+          coordinateSystem: 'WGS 84',
+          vertices: [],
+          extremes: {
+            north: undefined,
+            west: undefined,
+            east: undefined,
+            south: undefined,
+            center: undefined
+          }
+        }
+      },
+      uploadedFile: undefined,
       isParsingFile: false,
+      isMatrikkelApproved: false,
+      isFirstLevelDispatchApproved: false,
+      hasLoadedFile: false,
       isContactingMatrikkel: false,
-      mapCenter: [],
-      markers: [],
-      polygon: [],
       statItems: [],
       parsedItems: [],
-      tableHeader: [
+      isTemplateSelectorOpen: true,
+      selectedTemplate: undefined,
+      templateItems: [
         {
-          text: 'Bruksnavn',
-          value: 'bruksnavn'
+          label: 'Omregulering',
+          value: 'omregulering'
         },
         {
-          text: 'Type',
-          value: 'type'
-        },
-        {
-          text: 'Gårds #',
-          value: 'gardsnummer'
-        },
-        {
-          text: 'Bruks #',
-          value: 'bruksnummer'
-        },
-        {
-          text: 'Feste #',
-          value: 'festenummer'
-        },
-        {
-          text: 'Kommune ID',
-          value: 'kommuneId'
-        },
-        {
-          text: 'Areal',
-          value: 'oppgittAreal'
+          label: 'Bygge vei',
+          value: 'vei'
         }
       ],
-      eierHeader: [
-        {
-          text: 'Dato fra',
-          value: 'datoFra'
-        },
-        {
-          text: 'Type',
-          value: 'type'
-        },
-        {
-          text: 'Eier id',
-          value: 'eierId'
-        },
-        {
-          text: 'EierforholdKode',
-          value: 'eierforholdKode'
-        },
-        {
-          text: 'kommuneId',
-          value: 'kommuneId'
-        },
-        {
-          text: 'Andelsnummer',
-          value: 'andelsnummer'
-        },
-        {
-          text: 'Andel teller',
-          value: 'andel.teller'
-        },
-        {
-          text: 'Andel nevner',
-          value: 'andel.nevner'
-        },
-      ],
-      error: undefined,
+      error: undefined
+    }
+  },
+  computed: {
+    isAllRequiredMatrikkelInfoRetreived() {
+      const m = this.dispatch.matrikkel;
+      if(m.affectedCount !== null && m.area !== null && m.totalOwners !== null) {
+        return true;
+      }
+
+      return false;
+    },
+    isDispatchFilledInn() {
+      if(this.dispatch.title && this.dispatch.body && this.dispatch.template) { return true; }
+      return false;
+    },
+    mode() {
+      if(!this.dispatch || this.dispatch.id === undefined) { return 'new'; }
+      return 'edit';
     }
   },
   methods: {
@@ -187,15 +137,12 @@
 
       // Action states
       this.state = 'initial';
-      this.isShowModal = false;
       this.hasLoadedFile = false;
       this.isParsingFile = false;
       this.isContactingMatrikkel = false;
 
       // Data
-      this.markers = [];
-      this.mapCenter = [];
-      this.polygon = [];
+      this.uploadedFile = undefined;
       this.statItems = [];
       this.error = undefined;
     },
@@ -248,6 +195,8 @@
 
       this.statItems.push({ text: 'Enheter', value: matrikkelEnhetItems.length })
 
+      this.dispatch.matrikkel.affectedCount = matrikkelEnhetItems.length;
+
       // Hent ut data for alle matrikkel enhetene
       let matrikkelEnheter = await matrikkelClient.getStoreItems(matrikkelEnhetItems, { query: { flatten: true, metadata: false } });
       if(!matrikkelEnheter && matrikkelEnheter.length) { this.error = 'Kunne ikke laste inn noen matrikkelenheter innenfor dette polygonet. '; return; }
@@ -272,6 +221,10 @@
       this.statItems.push({ text: 'Juridiske eiere', value: antallJuridiskeEiere.length })
       this.statItems.push({ text: 'Private eiere', value: eiere.length - antallJuridiskeEiere.length })
 
+      this.dispatch.matrikkel.privateOwners = eiere.length - antallJuridiskeEiere.length;
+      this.dispatch.matrikkel.businessOwners = antallJuridiskeEiere.length;
+      this.dispatch.matrikkel.totalOwners = eiere.length;
+
       // Kontakt matrikkelen og hent ut alle eiere
       let ownerRequest = [];
       eiere.forEach((eier) => {
@@ -292,8 +245,7 @@
       let ikkeMatchetEiere = [];  // array som holder på antallet eiere som ikke er matchet om noen
       eiere.forEach((eierforhold) => {
         let match = undefined;
-        console.log(eierforhold);
-        
+
         matrikkelEiere.forEach((eier) => {
           let type = this.getItemType(eier);
           let id = this.getItemValue(eier.id);
@@ -314,10 +266,7 @@
         throw new AppError('Klarte ikke finne alle eiere', 'Vi klarte ikke å finne ' + ikkeMatchetEiere.length + ' eiere')
       }
 
-      console.log(eiere);
-
       this.parsedItems = parsedMatrikkelEnheter;
-
 
       this.isContactingMatrikkel = false;
     },
@@ -348,11 +297,12 @@
         if(!dxf_files || dxf_files.length === 0) {
           throw new AppError('Feil filtype', 'Filen som ble lastet opp er av feil filtype. Filen må være av typen .dxf')
         }
-
+        
         this.hasLoadedFile = true;
         this.isParsingFile = true;
 
         let file = dxf_files[0];
+        this.uploadedFile = file;
         let fileData = await this.readFile(file.data);
 
         if(!fileData || fileData.length === 0) { throw new AppError('Filen er tom', 'Den opplastede .dxf-filen inneholder ingen data') }
@@ -394,11 +344,14 @@
         let eastPoint = undefined;
         let southPoint = undefined;
 
+        let arrayifiedVertices = [];
         let transformedVertices = [];
         // let firstLatitude = vertices[0].y;
         vertices.forEach((vertice) => {
           // Make a copy of the vertice to not modify the source object
           let vCopy = JSON.parse(JSON.stringify(vertice))
+          // Add the non transformed values into the array
+          arrayifiedVertices.push([vertice.y, vertice.x]);
           // Transform the coordinates
           let transformed = proj4('EPSG:25832', 'EPSG:4326', vCopy);
           // Find the outermost points, used for calculating the center of the polygon
@@ -410,27 +363,50 @@
           transformedVertices.push([transformed.y, transformed.x]);
         })
 
+        let center = {
+          x: (lowX + highX) / 2,
+          y: (lowY + highY) / 2
+        }
+
         // Calculate midpoint
-        let transformedCenter = proj4('EPSG:25832', 'EPSG:4326', {x: (lowX + highX) / 2, y: (lowY + highY) / 2});
+        let transformedCenter = proj4('EPSG:25832', 'EPSG:4326', JSON.parse(JSON.stringify(center)));
 
         // Calculate the coordinates for the outmost points
+        /* eslint-disable */
         let translatedNorth = proj4('EPSG:25832', 'EPSG:4326', {x: northPoint.x , y: northPoint.y});
         let translatedWest = proj4('EPSG:25832', 'EPSG:4326', {x: westPoint.x , y: westPoint.y});
         let translatedEast = proj4('EPSG:25832', 'EPSG:4326', {x: eastPoint.x , y: eastPoint.y});
         let translatedSouth = proj4('EPSG:25832', 'EPSG:4326', {x: southPoint.x , y: southPoint.y});
+        /* eslint-enable */
 
-        // Set the center of the map
-        this.mapCenter = [transformedCenter.y, transformedCenter.x];
+        // Set the polygon for the dispatch object
+        this.dispatch.polygon.coordinatesystem = 'EUREF89 UTM Sone 32';
+        this.dispatch.polygon.area = 100;
+        this.dispatch.polygon.vertices = arrayifiedVertices;
+        this.dispatch.polygon.extremes = {
+          north: [northPoint.y, northPoint.x],
+          west: [westPoint.y, westPoint.x],
+          east: [eastPoint.y, eastPoint.x],
+          south: [southPoint.y, southPoint.x],
+          center: [center.y, center.x]
+        };
 
-        // Add markers for the outermost points
-        this.markers.push([transformedCenter.y, transformedCenter.x]);
-        this.markers.push([translatedNorth.y, translatedNorth.x]);
-        this.markers.push([translatedWest.y, translatedWest.x]);
-        this.markers.push([translatedEast.y, translatedEast.x]);
-        this.markers.push([translatedSouth.y, translatedSouth.x]);
+        // Set the geopolygon for the dispatch object
+        this.dispatch.geopolygon.coordinateSystem = 'WGS84';
+        this.dispatch.geopolygon.area = 100;
+        this.dispatch.geopolygon.vertices = transformedVertices;
+        this.dispatch.geopolygon.extremes = {
+          north: [translatedNorth.y, translatedNorth.x],
+          west: [translatedWest.y, translatedWest.x],
+          east: [translatedEast.y, translatedEast.y],
+          south: [translatedSouth.y, translatedSouth.x],
+          center: [transformedCenter.y, transformedCenter.x]
+        }
 
-        // Set the polygon the be the transformed vertices
-        this.polygon = transformedVertices;
+
+        // Kalkuler polygonets areal
+        // TODO: Dette må finnes ut av
+        this.dispatch.matrikkel.area = 100;
 
         // Set that the file has been parsed
         this.isParsingFile = false;
@@ -518,11 +494,31 @@
         parsed.push(item);
       })
       return parsed;
+    },
+    submitMassDispatch() {
+      if(confirm('Er du helt sikker på at du vil sende inn?')) {
+        console.log('Vil sendes inn');
+      }
+    },
+    onTemplateChange(e) {
+      this.selectedTemplate = e;
+      this.dispatch.template = e.value;
+    },
+    onTextChange(e) {
+      console.log(e);
+    },
+    updateProject(key, value) {
+      console.log('Setting "' + key + '" to "' + value + '"');
+      this.$set(this.project, key, value)
     }
-  },
   }
+}
 </script>
 
-<style>
+<style scoped>
+
+  
+
+  
 
 </style>
