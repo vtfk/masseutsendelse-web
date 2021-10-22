@@ -37,6 +37,7 @@
           <v-icon
             medium
             style="padding-right:0.2rem;"
+            tag='test'
             @click="editItem(item)"
             v-on:click="test"
           >
@@ -118,9 +119,9 @@
       <v-card-title>
         Kart
       </v-card-title>
-        <v-card-text>
-          Noe greier her
-        </v-card-text>
+        <v-img class="map-wrapper">
+          <Map/>
+        </v-img>
         <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
           <VTFKButton 
             type='secondary' size='small' style="padding-bottom: 1rem;"
@@ -167,12 +168,17 @@
 </template>
 
 <script>
+//VTFK
 import { Button } from '@vtfk/components'
+
+//Prosjekt
+import Map from '../components/Map.vue';
 
   export default {
     name: 'UtsendelserView',
     components: {
         'VTFKButton': Button,
+        Map,
     },
     data () {
       return {
@@ -337,5 +343,8 @@ import { Button } from '@vtfk/components'
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.map-wrapper {
+    box-shadow: 0px 1px 5px 1px #888888;
 }
 </style>
