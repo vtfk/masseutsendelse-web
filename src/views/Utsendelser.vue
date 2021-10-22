@@ -116,7 +116,7 @@
     >
     <v-card>
       <v-card-title>
-        Sett status
+        Kart
       </v-card-title>
         <v-card-text>
           Noe greier her
@@ -138,7 +138,7 @@
     >
     <v-card>
       <v-card-title>
-        Sett status
+        Dokumenter
       </v-card-title>
         <v-card-text>
           Noe greier her
