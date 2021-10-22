@@ -45,13 +45,13 @@
           <v-icon
             medium
             style="padding-right:0.2rem;"
-            @click="openMap(item)"
+            @click="openDoc(item)"
           >
             mdi-note-search 
           </v-icon>
           <v-icon
             medium
-            @click="openLetter(item)"
+            @click="openMap(item)"
           >
             mdi-map-search 
           </v-icon>
@@ -110,8 +110,48 @@
     </v-card>
     </v-dialog>
     <!-- Map dialog -->
-    <!-- Doc dialog -->
+    <v-dialog
+    v-model="dialogMap"
+    width="50%"
+    >
+    <v-card>
+      <v-card-title>
+        Sett status
+      </v-card-title>
+        <v-card-text>
+          Noe greier her
+        </v-card-text>
+        <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
+          <VTFKButton 
+            type='secondary' size='small' style="padding-bottom: 1rem;"
+            :passedProps="{ onClick: () => [dialogMap = false] }"
+            >Lukk
+          </VTFKButton>
+        </v-card-actions>
+    </v-card>
+    </v-dialog>
 
+    <!-- Doc dialog -->
+    <v-dialog
+    v-model="dialogDoc"
+    width="50%"
+    >
+    <v-card>
+      <v-card-title>
+        Sett status
+      </v-card-title>
+        <v-card-text>
+          Noe greier her
+        </v-card-text>
+        <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
+          <VTFKButton 
+            type='secondary' size='small' style="padding-bottom: 1rem;"
+            :passedProps="{ onClick: () => [dialogDoc = false] }"
+            >Lukk
+          </VTFKButton>
+        </v-card-actions>
+    </v-card>
+    </v-dialog>
     <!-- Alerts -->
     <v-alert 
     :value="alert_success" 
@@ -137,9 +177,9 @@ import { Button } from '@vtfk/components'
     data () {
       return {
         search: '',
-        dialog: false,
+        dialogDoc: false,
         dialogEdit: false,
-        dialogDelete:false,
+        dialogMap:false,
         loading:false,
         alert_success: false,
         headers: [
@@ -232,12 +272,24 @@ import { Button } from '@vtfk/components'
         // console.log(this.editedIndex)
         // console.log(this.editedItem)
       },
-      openMap(){
+      openMap(item){
         // TODO
         // En funksjon som åpner kartet til polygonet til det valgte prosjektet
+        // Henter prosjekt nr fra table, sender til DB får tilbake kart info og passer dene til kartet.
+        this.editedIndex = this.prosjekter.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.dialogMap = true
+        this.fetchProsjektNr = `${this.editedItem.prosjektnr}`
+        console.log(this.fetchProsjektNr)
       },
-      openLetter(){
-        console.log("Hei")
+      openDoc(item){
+        //TODO
+        // Henter prosjekt nr fra table, sender dette til DB og fær tilbake brevet/dokumentene som er sendt. 
+        this.editedIndex = this.prosjekter.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.dialogDoc = true
+        this.fetchProsjektNr = `${this.editedItem.prosjektnr}`
+        console.log(this.fetchProsjektNr)
       },
       saveEdit() {
         this.dialogEdit = false
