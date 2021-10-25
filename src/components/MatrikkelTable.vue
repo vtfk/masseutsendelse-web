@@ -1,9 +1,33 @@
 <template>
-  <VDataTable class="shadow" style="margin-top: 1rem; width: 100%;" :headers="tableHeader" :items="$props.items" :items-per-page="20" :show-expand="true">
+  <VDataTable class="shadow" style="width: 100%;" :headers="tableHeader" :items="$props.items" item-key="bruksnavn" :items-per-page="20" :show-expand="true">
     <template v-slot:expanded-item="{ headers, item }">
       <td :colspan="headers.length" style="padding: 1rem 1rem;">
         <h2>Eierforhold</h2>
-        <VDataTable :headers="eierHeader" :items="item.eiere" :hide-default-footer="true">
+        <VDataTable :headers="eierHeader" :items="item.eierforhold" item-key="id" :hide-default-footer="true">
+          <template v-slot:[`item.$type`]="{ item }">
+            <div v-if="item.$type">
+              <div v-if="item.$type.toLowerCase().includes('juridisk')">
+                Juridisk 🏢
+              </div>
+              <div v-else>
+                Privat 🏠
+              </div>
+            </div>
+          </template>
+          <template v-slot:[`item.adresse`]="{ item }">
+            <div v-if="item.eier && item.eier.postadresse">
+              <div v-if="item.eier.postadresse.adresselinje1">{{item.eier.postadresse.adresselinje1}}</div>
+              <div v-if="item.eier.postadresse.adresselinje2">{{item.eier.postadresse.adresselinje2}}</div>
+              <div v-if="item.eier.postadresse.adresselinje3">{{item.eier.postadresse.adresselinje3}}</div>
+              <div v-if="item.eier.postadresse.adresselinje4">{{item.eier.postadresse.adresselinje4}}</div>
+              <div v-if="item.eier.postadresse.adresselinje5">{{item.eier.postadresse.adresselinje5}}</div>
+            </div>
+          </template>
+          <template v-slot:[`item.andel`]="{ item }">
+            <div v-if="item.andel && item.andel.teller && item.andel.nevner">
+              {{item.andel.teller}} / {{item.andel.nevner}} ({{(item.andel.teller / item.andel.nevner) * 100}}%)
+            </div>
+          </template>
         </VDataTable>
       </td>
     </template>
@@ -14,7 +38,11 @@
   export default {
     name: 'MatrikkelTable',
     props: {
-      items: { type: Array }
+      items: { type: Array },
+      'item-key': {
+        type: [String, Number],
+        default: 'id'
+      }
     },
     data() {
       return {
@@ -25,27 +53,27 @@
           },
           {
             text: 'Type',
-            value: 'type'
+            value: '$type'
           },
           {
             text: 'Gårds #',
-            value: 'gardsnummer'
+            value: 'matrikkelnummer.gardsnummer'
           },
           {
             text: 'Bruks #',
-            value: 'bruksnummer'
+            value: 'matrikkelnummer.bruksnummer'
           },
           {
             text: 'Feste #',
-            value: 'festenummer'
+            value: 'matrikkelnummer.festenummer'
           },
           {
             text: 'Kommune ID',
-            value: 'kommuneId'
+            value: 'matrikkelnummer.kommuneId'
           },
           {
             text: 'Areal',
-            value: 'oppgittAreal'
+            value: 'historiskOppgittAreal'
           }
         ],
         eierHeader: [
@@ -55,31 +83,23 @@
           },
           {
             text: 'Type',
-            value: 'type'
+            value: '$type'
           },
           {
-            text: 'Eier id',
-            value: 'eierId'
+            text: 'Eier',
+            value: 'eier.navn'
           },
           {
-            text: 'EierforholdKode',
-            value: 'eierforholdKode'
+            text: 'Org-/Person-nummer',
+            value: 'eier.nummer'
           },
           {
-            text: 'kommuneId',
-            value: 'kommuneId'
+            text: 'Postadresse',
+            value: 'adresse'
           },
           {
-            text: 'Andelsnummer',
-            value: 'andelsnummer'
-          },
-          {
-            text: 'Andel teller',
-            value: 'andel.teller'
-          },
-          {
-            text: 'Andel nevner',
-            value: 'andel.nevner'
+            text: 'Andel',
+            value: 'andel'
           }
         ]
       }

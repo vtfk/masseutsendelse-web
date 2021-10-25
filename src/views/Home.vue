@@ -17,7 +17,7 @@
       </div>
     </div>
     <!-- Innhold -->
-    <div class="mt-1">
+    <div style="margin-top: 1rem;">
       <DispatchEditor />
     </div>
   </div>
@@ -516,9 +516,7 @@
 </script>
 
 <style scoped>
-
-  
-
-  
-
+  .mt-1 {
+    margin-top: 1rem;
+  }
 </style>

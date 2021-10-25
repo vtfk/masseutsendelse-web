@@ -1,15 +1,17 @@
 <template>
-  <v-app id="app" data-app>
-    <header>
-      <div class="container">
-        <Header />
-      </div>
-    </header>
-    <main>
-      <router-view>
-      </router-view>
-    </main>
-  </v-app>
+  <div id="app" data-app>
+    <v-app>
+      <header>
+        <div class="container">
+          <Header />
+        </div>
+      </header>
+      <main>
+        <router-view>
+        </router-view>
+      </main>
+    </v-app>
+  </div>
 </template>
 
 <script>

@@ -25,7 +25,7 @@ export default class MatrikkelProxyClient {
     if(!request) { throw new Error('request cannot be empty'); }
 
     // Apply query options to the request if specified
-    if(options.query) {
+    if(options && options.query) {
       let addingFirstQuery = false;
       if(!request.url.includes('?')) {
         request.url += '?';
@@ -102,4 +102,38 @@ export default class MatrikkelProxyClient {
     return response.data;
   }
 
+  /**
+    * Will attempt to get the type of a provided object if it is not flattened
+    * @param {Item} Item - An object returned from the MatrikkelAPI
+  */ 
+   static getItemType(Item) {
+    if(!Item) { return undefined; }
+
+    if(Item.$type || Item.type) {
+      return Item.$type || Item.type;
+    }
+
+    return 'unknown';
+  }
+
+  /**
+    * Will attempt to get the real value of a property
+    * Example test: { value: 'actual value' } will return 'actual value'
+    * @param {Item} Item - An object returned from the MatrikkelAPI
+  */ 
+  static getItemValue(Item) {
+    if(!Item) { return; }
+    
+    if(Item.value) {
+      return Item.value
+    }
+    else if(Object.keys(Item).length === 1) {
+      return Item[Object.keys(Item)[0]]
+    } else if (Object.keys(Item).length === 3 && Item.$type && Item.$namespace) {
+      let key = Object.keys(Item).find((k) => k !== '$');
+      if(key) { return Item[key]; }
+    }
+    
+    return Item;
+  }
 }

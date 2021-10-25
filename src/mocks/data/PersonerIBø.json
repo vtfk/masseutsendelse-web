@@ -4,77 +4,26 @@
             "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "xsi:type": "ns4:JuridiskPerson"
         },
-        "id": {
-            "$": {
-                "xsi:type": "ns4:JuridiskPersonId"
-            },
-            "value": "10520065"
-        },
-        "metadata": {
-            "item": [
-                "postadresse",
-                "oppdateringsdato",
-                "id",
-                "versjon",
-                "sluttdato",
-                "slettetDato",
-                "forretningsadresse",
-                "avsluttetAv",
-                "oppdatertAv",
-                "uuid",
-                "nummer",
-                "navn",
-                "organisasjonsformKode",
-                "versjonId"
-            ]
-        },
-        "oppdateringsdato": {
-            "timestamp": "2020-06-16T05:35:14.595000000+02:00"
-        },
+        "id": "10520065",
+        "oppdateringsdato": "2020-06-16T05:35:14.595000000+02:00",
         "versjonId": "2",
         "oppdatertAv": "smatmynd",
         "versjon": "1592278514595",
         "nummer": "991670149",
         "navn": "BØ NORMISJON",
         "postadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje1": "Gymnasbakken 55",
-            "postnummeromradeId": {
-                "value": "426345793"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "426345793",
+            "landKodeId": "5001"
         },
         "uuid": {
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "dec51e5c-f615-51ed-9d88-0308e4e1b41d"
         },
         "forretningsadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje1": "Gymnasbakken 55",
-            "postnummeromradeId": {
-                "value": "426345793"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "426345793",
+            "landKodeId": "5001"
         },
         "organisasjonsformKode": {
             "orgformNavn": "Forening/lag/innretning",
@@ -86,84 +35,27 @@
             "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "xsi:type": "ns4:FysiskPerson"
         },
-        "id": {
-            "$": {
-                "xsi:type": "ns4:FysiskPersonId"
-            },
-            "value": "1659450"
-        },
-        "metadata": {
-            "item": [
-                "sluttdato",
-                "avsluttetAv",
-                "postadresse",
-                "uuid",
-                "navn",
-                "oppdatertAv",
-                "spesifisertRegTypeKodeId",
-                "oppdateringsdato",
-                "nummer",
-                "bostedsadresse",
-                "id",
-                "versjonId",
-                "etternavn",
-                "versjon",
-                "fornavn",
-                "personStatusKodeId",
-                "hjemlandsAdresse"
-            ]
-        },
-        "oppdateringsdato": {
-            "timestamp": "2020-06-15T22:25:33.808000000+02:00"
-        },
+        "id": "1659450",
+        "oppdateringsdato": "2020-06-15T22:25:33.808000000+02:00",
         "versjonId": "4",
         "oppdatertAv": "smatmynd",
         "versjon": "1592252733808",
-        "nummer": "FJERNET",
-        "navn": "HOVET TOMMY",
+        "nummer": "03066936278",
+        "navn": "BERGSKÅS TONJE VEDVIK",
         "postadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje2": "LIVEGEN 223",
             "adresselinje3": "3803 BØ I TELEMARK",
-            "postnummeromradeId": {
-                "value": "426345794"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "426345794",
+            "landKodeId": "5001"
         },
         "uuid": {
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "0ec6e13f-9a01-55b2-93c2-f9035ac06fed"
         },
-        "etternavn": "HOVET",
-        "fornavn": "TOMMY",
-        "spesifisertRegTypeKodeId": {
-            "value": "1"
-        },
+        "etternavn": "BERGSKÅS",
+        "fornavn": "TONJE VEDVIK",
+        "spesifisertRegTypeKodeId": "1",
         "bostedsadresse": {
-            "metadata": {
-                "item": [
-                    "husbokstav",
-                    "bruksnummer",
-                    "undernummer",
-                    "festenummer",
-                    "kommunenummer",
-                    "adressekode",
-                    "husnummer",
-                    "bruksenhetsnummer",
-                    "gardsnummer",
-                    "postnummer"
-                ]
-            },
             "kommunenummer": "3817",
             "adressekode": "1079",
             "husnummer": "223",
@@ -173,86 +65,33 @@
             "undernummer": "0",
             "postnummer": "3803"
         },
-        "personStatusKodeId": {
-            "value": "1"
-        }
+        "personStatusKodeId": "1"
     },
     {
         "$": {
             "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "xsi:type": "ns4:JuridiskPerson"
         },
-        "id": {
-            "$": {
-                "xsi:type": "ns4:JuridiskPersonId"
-            },
-            "value": "503312057"
-        },
-        "metadata": {
-            "item": [
-                "postadresse",
-                "oppdateringsdato",
-                "id",
-                "versjon",
-                "sluttdato",
-                "slettetDato",
-                "forretningsadresse",
-                "avsluttetAv",
-                "oppdatertAv",
-                "uuid",
-                "nummer",
-                "navn",
-                "organisasjonsformKode",
-                "versjonId"
-            ]
-        },
-        "oppdateringsdato": {
-            "timestamp": "2020-06-16T16:02:46.237000000+02:00"
-        },
+        "id": "503312057",
+        "oppdateringsdato": "2020-06-16T16:02:46.237000000+02:00",
         "versjonId": "4",
         "oppdatertAv": "smatmynd",
         "versjon": "1592316166237",
         "nummer": "914458811",
         "navn": "STUDENTSAMSKIPNADEN I SØRØST NORGE",
         "postadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje1": "Raveien 189B",
-            "postnummeromradeId": {
-                "value": "1004170"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "1004170",
+            "landKodeId": "5001"
         },
         "uuid": {
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "737341bb-31af-593d-9dc0-b10bb7362d40"
         },
         "forretningsadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje1": "Raveien 189B",
-            "postnummeromradeId": {
-                "value": "1004170"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "1004170",
+            "landKodeId": "5001"
         },
         "organisasjonsformKode": {
             "orgformNavn": "Annet foretak iflg. særsk. lov",
@@ -264,77 +103,26 @@
             "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "xsi:type": "ns4:JuridiskPerson"
         },
-        "id": {
-            "$": {
-                "xsi:type": "ns4:JuridiskPersonId"
-            },
-            "value": "585795431"
-        },
-        "metadata": {
-            "item": [
-                "postadresse",
-                "oppdateringsdato",
-                "id",
-                "versjon",
-                "sluttdato",
-                "slettetDato",
-                "forretningsadresse",
-                "avsluttetAv",
-                "oppdatertAv",
-                "uuid",
-                "nummer",
-                "navn",
-                "organisasjonsformKode",
-                "versjonId"
-            ]
-        },
-        "oppdateringsdato": {
-            "timestamp": "2020-06-16T16:44:03.188000000+02:00"
-        },
+        "id": "585795431",
+        "oppdateringsdato": "2020-06-16T16:44:03.188000000+02:00",
         "versjonId": "2",
         "oppdatertAv": "smatmynd",
         "versjon": "1592318643188",
         "nummer": "918703136",
         "navn": "GYMNASBAKKEN II BORETTSLAG",
         "postadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje1": "Postboks 44",
-            "postnummeromradeId": {
-                "value": "1004535"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "1004535",
+            "landKodeId": "5001"
         },
         "uuid": {
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "9463b4f3-08c1-5bc4-983a-02aaa6a1065c"
         },
         "forretningsadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje1": "Jernbanegata 25",
-            "postnummeromradeId": {
-                "value": "1004548"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "1004548",
+            "landKodeId": "5001"
         },
         "organisasjonsformKode": {
             "orgformNavn": "Borettslag",
@@ -346,84 +134,27 @@
             "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "xsi:type": "ns4:FysiskPerson"
         },
-        "id": {
-            "$": {
-                "xsi:type": "ns4:FysiskPersonId"
-            },
-            "value": "7895912"
-        },
-        "metadata": {
-            "item": [
-                "sluttdato",
-                "avsluttetAv",
-                "postadresse",
-                "uuid",
-                "navn",
-                "oppdatertAv",
-                "spesifisertRegTypeKodeId",
-                "oppdateringsdato",
-                "nummer",
-                "bostedsadresse",
-                "id",
-                "versjonId",
-                "etternavn",
-                "versjon",
-                "fornavn",
-                "personStatusKodeId",
-                "hjemlandsAdresse"
-            ]
-        },
-        "oppdateringsdato": {
-            "timestamp": "2020-06-16T03:28:20.431000000+02:00"
-        },
+        "id": "7895912",
+        "oppdateringsdato": "2020-06-16T03:28:20.431000000+02:00",
         "versjonId": "4",
         "oppdatertAv": "smatmynd",
         "versjon": "1592270900431",
-        "nummer": "FJERNET",
-        "navn": "BEIDER VEGARD",
+        "nummer": "30067147525",
+        "navn": "BERGSKÅS TROND",
         "postadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje2": "LIVEGEN 223",
             "adresselinje3": "3803 BØ I TELEMARK",
-            "postnummeromradeId": {
-                "value": "426345794"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "426345794",
+            "landKodeId": "5001"
         },
         "uuid": {
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "3daad4f5-97e7-5e32-8ed6-75dc40f1cafa"
         },
-        "etternavn": "BEIDER",
-        "fornavn": "VEGARD",
-        "spesifisertRegTypeKodeId": {
-            "value": "1"
-        },
+        "etternavn": "BERGSKÅS",
+        "fornavn": "TROND",
+        "spesifisertRegTypeKodeId": "1",
         "bostedsadresse": {
-            "metadata": {
-                "item": [
-                    "husbokstav",
-                    "bruksnummer",
-                    "undernummer",
-                    "festenummer",
-                    "kommunenummer",
-                    "adressekode",
-                    "husnummer",
-                    "bruksenhetsnummer",
-                    "gardsnummer",
-                    "postnummer"
-                ]
-            },
             "kommunenummer": "3817",
             "adressekode": "1079",
             "husnummer": "223",
@@ -433,93 +164,34 @@
             "undernummer": "0",
             "postnummer": "3803"
         },
-        "personStatusKodeId": {
-            "value": "1"
-        }
+        "personStatusKodeId": "1"
     },
     {
         "$": {
             "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "xsi:type": "ns4:FysiskPerson"
         },
-        "id": {
-            "$": {
-                "xsi:type": "ns4:FysiskPersonId"
-            },
-            "value": "4929626"
-        },
-        "metadata": {
-            "item": [
-                "sluttdato",
-                "avsluttetAv",
-                "postadresse",
-                "uuid",
-                "navn",
-                "oppdatertAv",
-                "spesifisertRegTypeKodeId",
-                "oppdateringsdato",
-                "nummer",
-                "bostedsadresse",
-                "id",
-                "versjonId",
-                "etternavn",
-                "versjon",
-                "fornavn",
-                "personStatusKodeId",
-                "hjemlandsAdresse"
-            ]
-        },
-        "oppdateringsdato": {
-            "timestamp": "2020-06-16T00:50:45.885000000+02:00"
-        },
+        "id": "4929626",
+        "oppdateringsdato": "2020-06-16T00:50:45.885000000+02:00",
         "versjonId": "6",
         "oppdatertAv": "smatmynd",
         "versjon": "1592261445885",
-        "nummer": "FJERNET",
-        "navn": "STOL LENE",
+        "nummer": "17038929275",
+        "navn": "NYHUS LILL-KATRIN",
         "postadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje2": "GYMNASBAKKEN 45",
             "adresselinje3": "3802 BØ I TELEMARK",
-            "postnummeromradeId": {
-                "value": "426345793"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "426345793",
+            "landKodeId": "5001"
         },
         "uuid": {
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "678b8386-b0f2-56b8-88fc-167989b1404f"
         },
-        "etternavn": "STOL",
-        "fornavn": "LENE",
-        "spesifisertRegTypeKodeId": {
-            "value": "1"
-        },
+        "etternavn": "NYHUS",
+        "fornavn": "LILL-KATRIN",
+        "spesifisertRegTypeKodeId": "1",
         "bostedsadresse": {
-            "metadata": {
-                "item": [
-                    "husbokstav",
-                    "bruksnummer",
-                    "undernummer",
-                    "festenummer",
-                    "kommunenummer",
-                    "adressekode",
-                    "husnummer",
-                    "bruksenhetsnummer",
-                    "gardsnummer",
-                    "postnummer"
-                ]
-            },
             "kommunenummer": "3817",
             "adressekode": "1037",
             "husnummer": "45",
@@ -529,93 +201,34 @@
             "undernummer": "0",
             "postnummer": "3802"
         },
-        "personStatusKodeId": {
-            "value": "1"
-        }
+        "personStatusKodeId": "1"
     },
     {
         "$": {
             "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "xsi:type": "ns4:FysiskPerson"
         },
-        "id": {
-            "$": {
-                "xsi:type": "ns4:FysiskPersonId"
-            },
-            "value": "5566176"
-        },
-        "metadata": {
-            "item": [
-                "sluttdato",
-                "avsluttetAv",
-                "postadresse",
-                "uuid",
-                "navn",
-                "oppdatertAv",
-                "spesifisertRegTypeKodeId",
-                "oppdateringsdato",
-                "nummer",
-                "bostedsadresse",
-                "id",
-                "versjonId",
-                "etternavn",
-                "versjon",
-                "fornavn",
-                "personStatusKodeId",
-                "hjemlandsAdresse"
-            ]
-        },
-        "oppdateringsdato": {
-            "timestamp": "2021-06-30T06:15:58.357000000+02:00"
-        },
+        "id": "5566176",
+        "oppdateringsdato": "2021-06-30T06:15:58.357000000+02:00",
         "versjonId": "8",
         "oppdatertAv": "eksternregister1",
         "versjon": "1625026558357",
-        "nummer": "FJERNET",
-        "navn": "LUTH TRUDE",
+        "nummer": "20018949742",
+        "navn": "KNATTERUD EIRIK IDLAND",
         "postadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje2": "Prestevegen 2",
             "adresselinje3": "3802 BØ I TELEMARK",
-            "postnummeromradeId": {
-                "value": "426345793"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "426345793",
+            "landKodeId": "5001"
         },
         "uuid": {
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "4008ffca-4c96-5e2d-b3c8-5f2431190499"
         },
-        "etternavn": "LUTH",
-        "fornavn": "TRUDE",
-        "spesifisertRegTypeKodeId": {
-            "value": "10"
-        },
+        "etternavn": "KNATTERUD",
+        "fornavn": "EIRIK IDLAND",
+        "spesifisertRegTypeKodeId": "10",
         "bostedsadresse": {
-            "metadata": {
-                "item": [
-                    "husbokstav",
-                    "bruksnummer",
-                    "undernummer",
-                    "festenummer",
-                    "kommunenummer",
-                    "adressekode",
-                    "husnummer",
-                    "bruksenhetsnummer",
-                    "gardsnummer",
-                    "postnummer"
-                ]
-            },
             "kommunenummer": "3817",
             "adressekode": "1051",
             "husnummer": "2",
@@ -625,86 +238,33 @@
             "undernummer": "0",
             "postnummer": "3802"
         },
-        "personStatusKodeId": {
-            "value": "1"
-        }
+        "personStatusKodeId": "1"
     },
     {
         "$": {
             "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "xsi:type": "ns4:JuridiskPerson"
         },
-        "id": {
-            "$": {
-                "xsi:type": "ns4:JuridiskPersonId"
-            },
-            "value": "6257903605"
-        },
-        "metadata": {
-            "item": [
-                "postadresse",
-                "oppdateringsdato",
-                "id",
-                "versjon",
-                "sluttdato",
-                "slettetDato",
-                "forretningsadresse",
-                "avsluttetAv",
-                "oppdatertAv",
-                "uuid",
-                "nummer",
-                "navn",
-                "organisasjonsformKode",
-                "versjonId"
-            ]
-        },
-        "oppdateringsdato": {
-            "timestamp": "2021-03-24T02:20:19.547000000+01:00"
-        },
+        "id": "6257903605",
+        "oppdateringsdato": "2021-03-24T02:20:19.547000000+01:00",
         "versjonId": "5",
         "oppdatertAv": "eksternregister1",
         "versjon": "1616548819547",
         "nummer": "821227062",
         "navn": "VESTFOLD OG TELEMARK FYLKESKOMMUNE",
         "postadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje1": "Postboks 2844",
-            "postnummeromradeId": {
-                "value": "1004431"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "1004431",
+            "landKodeId": "5001"
         },
         "uuid": {
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "bbe8ea66-687c-5ab3-81d3-56273e17f74d"
         },
         "forretningsadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje1": "Torggata 18",
-            "postnummeromradeId": {
-                "value": "1004446"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "1004446",
+            "landKodeId": "5001"
         },
         "organisasjonsformKode": {
             "orgformNavn": "Fylkeskommune",
@@ -716,84 +276,27 @@
             "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "xsi:type": "ns4:FysiskPerson"
         },
-        "id": {
-            "$": {
-                "xsi:type": "ns4:FysiskPersonId"
-            },
-            "value": "4581299"
-        },
-        "metadata": {
-            "item": [
-                "sluttdato",
-                "avsluttetAv",
-                "postadresse",
-                "uuid",
-                "navn",
-                "oppdatertAv",
-                "spesifisertRegTypeKodeId",
-                "oppdateringsdato",
-                "nummer",
-                "bostedsadresse",
-                "id",
-                "versjonId",
-                "etternavn",
-                "versjon",
-                "fornavn",
-                "personStatusKodeId",
-                "hjemlandsAdresse"
-            ]
-        },
-        "oppdateringsdato": {
-            "timestamp": "2020-06-16T00:33:02.202000000+02:00"
-        },
+        "id": "4581299",
+        "oppdateringsdato": "2020-06-16T00:33:02.202000000+02:00",
         "versjonId": "4",
         "oppdatertAv": "smatmynd",
         "versjon": "1592260382202",
-        "nummer": "FJERNET",
-        "navn": "EVEN ODD",
+        "nummer": "15093647944",
+        "navn": "HOLTA BJØRN",
         "postadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje2": "GYMNASBAKKEN 43",
             "adresselinje3": "3802 BØ I TELEMARK",
-            "postnummeromradeId": {
-                "value": "426345793"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "426345793",
+            "landKodeId": "5001"
         },
         "uuid": {
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "ef8ab403-1f6d-53d6-a94d-b5642f40dd27"
         },
-        "etternavn": "EVEN",
-        "fornavn": "ODD",
-        "spesifisertRegTypeKodeId": {
-            "value": "1"
-        },
+        "etternavn": "HOLTA",
+        "fornavn": "BJØRN",
+        "spesifisertRegTypeKodeId": "1",
         "bostedsadresse": {
-            "metadata": {
-                "item": [
-                    "husbokstav",
-                    "bruksnummer",
-                    "undernummer",
-                    "festenummer",
-                    "kommunenummer",
-                    "adressekode",
-                    "husnummer",
-                    "bruksenhetsnummer",
-                    "gardsnummer",
-                    "postnummer"
-                ]
-            },
             "kommunenummer": "3817",
             "adressekode": "1037",
             "husnummer": "43",
@@ -803,93 +306,34 @@
             "undernummer": "0",
             "postnummer": "3802"
         },
-        "personStatusKodeId": {
-            "value": "1"
-        }
+        "personStatusKodeId": "1"
     },
     {
         "$": {
             "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "xsi:type": "ns4:FysiskPerson"
         },
-        "id": {
-            "$": {
-                "xsi:type": "ns4:FysiskPersonId"
-            },
-            "value": "3222760"
-        },
-        "metadata": {
-            "item": [
-                "sluttdato",
-                "avsluttetAv",
-                "postadresse",
-                "uuid",
-                "navn",
-                "oppdatertAv",
-                "spesifisertRegTypeKodeId",
-                "oppdateringsdato",
-                "nummer",
-                "bostedsadresse",
-                "id",
-                "versjonId",
-                "etternavn",
-                "versjon",
-                "fornavn",
-                "personStatusKodeId",
-                "hjemlandsAdresse"
-            ]
-        },
-        "oppdateringsdato": {
-            "timestamp": "2020-06-15T23:23:31.579000000+02:00"
-        },
+        "id": "3222760",
+        "oppdateringsdato": "2020-06-15T23:23:31.579000000+02:00",
         "versjonId": "5",
         "oppdatertAv": "smatmynd",
         "versjon": "1592256211579",
-        "nummer": "FJERNET",
-        "navn": "SKALLE TOM",
+        "nummer": "09098539120",
+        "navn": "SANDA TORSTEIN",
         "postadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje2": "GYMNASBAKKEN 45",
             "adresselinje3": "3802 BØ I TELEMARK",
-            "postnummeromradeId": {
-                "value": "426345793"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "426345793",
+            "landKodeId": "5001"
         },
         "uuid": {
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "04cac8de-3f59-5690-9895-3090e908f1b0"
         },
-        "etternavn": "SKALLE",
-        "fornavn": "TOM",
-        "spesifisertRegTypeKodeId": {
-            "value": "1"
-        },
+        "etternavn": "SANDA",
+        "fornavn": "TORSTEIN",
+        "spesifisertRegTypeKodeId": "1",
         "bostedsadresse": {
-            "metadata": {
-                "item": [
-                    "husbokstav",
-                    "bruksnummer",
-                    "undernummer",
-                    "festenummer",
-                    "kommunenummer",
-                    "adressekode",
-                    "husnummer",
-                    "bruksenhetsnummer",
-                    "gardsnummer",
-                    "postnummer"
-                ]
-            },
             "kommunenummer": "3817",
             "adressekode": "1037",
             "husnummer": "45",
@@ -899,174 +343,66 @@
             "undernummer": "0",
             "postnummer": "3802"
         },
-        "personStatusKodeId": {
-            "value": "1"
-        }
+        "personStatusKodeId": "1"
     },
     {
         "$": {
             "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "xsi:type": "ns4:JuridiskPerson"
         },
-        "id": {
-            "$": {
-                "xsi:type": "ns4:JuridiskPersonId"
-            },
-            "value": "9278455"
-        },
-        "metadata": {
-            "item": [
-                "postadresse",
-                "oppdateringsdato",
-                "id",
-                "versjon",
-                "sluttdato",
-                "slettetDato",
-                "forretningsadresse",
-                "avsluttetAv",
-                "oppdatertAv",
-                "uuid",
-                "nummer",
-                "navn",
-                "organisasjonsformKode",
-                "versjonId"
-            ]
-        },
-        "oppdateringsdato": {
-            "timestamp": "2020-06-16T04:47:17.804000000+02:00"
-        },
+        "id": "9278455",
+        "oppdateringsdato": "2020-06-16T04:47:17.804000000+02:00",
         "versjonId": "3",
         "oppdatertAv": "smatmynd",
         "versjon": "1592275637804",
         "nummer": "947820915",
         "navn": "STUDENTSAMSKIPNADEN I TELEMARK",
         "postadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje1": "Kjølnes ring 56",
             "adresselinje3": "3918 PORSGRUNN",
-            "landKodeId": {
-                "value": "5001"
-            }
+            "landKodeId": "5001"
         },
         "uuid": {
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "f203aab4-b661-5184-bfcc-a76027bd1dc5"
         },
         "forretningsadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje1": "Kjølnes ring 56",
             "adresselinje3": "3918 PORSGRUNN",
-            "landKodeId": {
-                "value": "5001"
-            }
+            "landKodeId": "5001"
         },
         "organisasjonsformKode": {
             "orgformNavn": "Annet foretak iflg. særsk. lov",
             "orgformKode": "SÆR"
         },
-        "slettetDato": {
-            "date": "2015-12-18"
-        }
+        "slettetDato": "2015-12-18"
     },
     {
         "$": {
             "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "xsi:type": "ns4:FysiskPerson"
         },
-        "id": {
-            "$": {
-                "xsi:type": "ns4:FysiskPersonId"
-            },
-            "value": "1131404"
-        },
-        "metadata": {
-            "item": [
-                "sluttdato",
-                "avsluttetAv",
-                "postadresse",
-                "uuid",
-                "navn",
-                "oppdatertAv",
-                "spesifisertRegTypeKodeId",
-                "oppdateringsdato",
-                "nummer",
-                "bostedsadresse",
-                "id",
-                "versjonId",
-                "etternavn",
-                "versjon",
-                "fornavn",
-                "personStatusKodeId",
-                "hjemlandsAdresse"
-            ]
-        },
-        "oppdateringsdato": {
-            "timestamp": "2020-06-15T21:58:35.043000000+02:00"
-        },
+        "id": "1131404",
+        "oppdateringsdato": "2020-06-15T21:58:35.043000000+02:00",
         "versjonId": "4",
         "oppdatertAv": "smatmynd",
         "versjon": "1592251115043",
         "nummer": "01063448032",
-        "navn": "LEM HANS-TORE",
+        "navn": "HOLTA KARI MARIE VREIM",
         "postadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje2": "GYMNASBAKKEN 43",
             "adresselinje3": "3802 BØ I TELEMARK",
-            "postnummeromradeId": {
-                "value": "426345793"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "426345793",
+            "landKodeId": "5001"
         },
         "uuid": {
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "c76789b7-b7d6-50aa-86da-d2f06d070a0c"
         },
-        "etternavn": "LEM",
-        "fornavn": "HANS-TORE",
-        "spesifisertRegTypeKodeId": {
-            "value": "1"
-        },
+        "etternavn": "HOLTA",
+        "fornavn": "KARI MARIE VREIM",
+        "spesifisertRegTypeKodeId": "1",
         "bostedsadresse": {
-            "metadata": {
-                "item": [
-                    "husbokstav",
-                    "bruksnummer",
-                    "undernummer",
-                    "festenummer",
-                    "kommunenummer",
-                    "adressekode",
-                    "husnummer",
-                    "bruksenhetsnummer",
-                    "gardsnummer",
-                    "postnummer"
-                ]
-            },
             "kommunenummer": "3817",
             "adressekode": "1037",
             "husnummer": "43",
@@ -1076,86 +412,33 @@
             "undernummer": "0",
             "postnummer": "3802"
         },
-        "personStatusKodeId": {
-            "value": "1"
-        }
+        "personStatusKodeId": "1"
     },
     {
         "$": {
             "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "xsi:type": "ns4:JuridiskPerson"
         },
-        "id": {
-            "$": {
-                "xsi:type": "ns4:JuridiskPersonId"
-            },
-            "value": "536597124"
-        },
-        "metadata": {
-            "item": [
-                "postadresse",
-                "oppdateringsdato",
-                "id",
-                "versjon",
-                "sluttdato",
-                "slettetDato",
-                "forretningsadresse",
-                "avsluttetAv",
-                "oppdatertAv",
-                "uuid",
-                "nummer",
-                "navn",
-                "organisasjonsformKode",
-                "versjonId"
-            ]
-        },
-        "oppdateringsdato": {
-            "timestamp": "2020-06-16T16:18:56.733000000+02:00"
-        },
+        "id": "536597124",
+        "oppdateringsdato": "2020-06-16T16:18:56.733000000+02:00",
         "versjonId": "2",
         "oppdatertAv": "smatmynd",
         "versjon": "1592317136733",
         "nummer": "916125038",
         "navn": "GYMNASBAKKEN I BORETTSLAG",
         "postadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje1": "Postboks 44",
-            "postnummeromradeId": {
-                "value": "1004535"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "1004535",
+            "landKodeId": "5001"
         },
         "uuid": {
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "41950a9d-516e-5742-8c2a-e65de113e9dd"
         },
         "forretningsadresse": {
-            "metadata": {
-                "item": [
-                    "adresselinje1",
-                    "adresselinje3",
-                    "postnummeromradeId",
-                    "adresselinje2",
-                    "landKodeId"
-                ]
-            },
             "adresselinje1": "Jernbanegata 25",
-            "postnummeromradeId": {
-                "value": "1004548"
-            },
-            "landKodeId": {
-                "value": "5001"
-            }
+            "postnummeromradeId": "1004548",
+            "landKodeId": "5001"
         },
         "organisasjonsformKode": {
             "orgformNavn": "Borettslag",

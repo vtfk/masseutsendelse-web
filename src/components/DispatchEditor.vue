@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-1">
+  <div style="margin-top: 1rem;">
     <!-- Feilmelding -->
     <Error v-if="error" :error="error" v-on:resetClicked="reset(true)" />
     <!-- Fil opplasting -->
@@ -12,33 +12,32 @@
     </div>
     <!-- Kart og matrikkel -->
     <div v-else class="center-content">
-      <Map :coordinates="dispatch.geopolygon.vertices" :center="dispatch.geopolygon.extremes.center" :markers="[dispatch.geopolygon.extremes.center]"/>
-      <div v-if="!isAllRequiredMatrikkelInfoRetreived" class="mt-1 centeredColumn">
+      <Map :coordinates="dispatch.geopolygon.vertices" :center="dispatch.geopolygon.extremes.center" :markers="[dispatch.geopolygon.extremes.center]"/>  
+      <div v-if="!isAllRequiredMatrikkelInfoRetreived && !isContactingMatrikkel" class="centeredColumn" style="margin-top: 1rem;">
         <VTFKButton :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
         <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
       </div>
-      <div v-else>
-        <Loading v-if="statItems.length == 0 && isContactingMatrikkel" title="Kontaker matrikkelen" message="Henter enheter innenfor polygon"/>
-        <div v-else>
-          <!-- Cards som viser stats om informasjonen -->
-          <StatCards style="margin-top: 1rem" :items="statItems"/>
-          <!-- Matrikkel table -->
-          <MatrikkelTable :items="parsedItems" />
-        </div>
-        <div class="mt-1 centeredColumn">
-          <!-- Angreknapp -->
-          <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
-          <!-- Aksept for at matrikkel info ser ok ut -->
-          <VTFKCheckbox
-            v-if="dispatch.matrikkel.affectedCount"
-            name="matrikkelOk"
-            label="Matrikkelinformasjonen ser korrekt ut"
-            :passedProps="{ onChange: () => { isMatrikkelApproved = !isMatrikkelApproved; }}"
-          />
-        </div>
+      <div v-else-if="isContactingMatrikkel" class="shadow" style="margin-top: 1rem; border: 1px solid black; padding: 1rem 1rem; border-radius: 20px; background-color: #CFEBF2;">
+        <Loading title="Kontaker matrikkelen" message="Henter enheter innenfor polygon"/>
+      </div>
+      <div v-else class="centeredColumn" style="margin-top: 1rem;">
+        <!-- Cards som viser stats om informasjonen -->
+        <StatCards :items="statItems"/>
+        <!-- Matrikkel table -->
+        <MatrikkelTable :items="parsedItems" item-key="bruksnavn" />
+        <!-- Angreknapp -->
+        <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
+        <!-- Aksept for at matrikkel info ser ok ut -->
+        <VTFKCheckbox
+          v-if="dispatch.matrikkel.affectedCount"
+          :value="'false'"
+          name="matrikkelOk"
+          label="Matrikkelinformasjonen ser korrekt ut"
+          :passedProps="{ onChange: () => { isMatrikkelApproved = !isMatrikkelApproved; }}"
+        />
       </div>
       <!-- Prosjekt informasjon -->
-      <div v-if="isMatrikkelApproved" class="card shadow centeredColumn mt-1">
+      <div v-if="isMatrikkelApproved || mode === 'edit'" class="card shadow centeredColumn" style="margin-top: 1rem;">
         <h1>Masseutsendelse</h1>
         <VTFKSelect
           label="Velg dokument mal"
@@ -92,7 +91,7 @@
   import UploadField from '../components/UploadField.vue'
   import Map from '../components/Map.vue'
   import StatCards from '../components/StatCards.vue'
-  import Loading from '../components/Loadig.vue'
+  import Loading from './Loading.vue'
   import MatrikkelTable from '../components/MatrikkelTable.vue';
   import Error from '../components/Error.vue'
 
@@ -119,6 +118,11 @@
       Loading,
       Error
     },
+    props: {
+      dispatchObject: {
+        type: Object
+      }
+    },
     data() {
       return {
         dispatch: {
@@ -130,7 +134,8 @@
             area: null,
             totalOwners: null,
             privateOwners: null,
-            businessOwners: null
+            businessOwners: null,
+            units: []
           },
           polygon: {
             coordinatesystem: 'EUREF89 UTM Sone 32',
@@ -164,6 +169,8 @@
         isContactingMatrikkel: false,
         statItems: [],
         parsedItems: [],
+        eierforhold: [],
+        eiere: [],
         isTemplateSelectorOpen: true,
         selectedTemplate: undefined,
         templateItems: [
@@ -219,128 +226,186 @@
         this.error = undefined;
       },
       async getDataFromMatrikkelAPI(polygon) {
-        if(!polygon) {
-          polygon = [
-            {
-                x: 9.061226825863429,
-                y: 59.417888839303345,
-                z: 0
-            },
-            {
-                x: 9.06059789499838,
-                y: 59.41877340387384,
-                z: 0
-            },
-            {
-                x: 9.062418554835972,
-                y: 59.41876773278693,
-                z: 0
-            },
-            {
-                x: 9.062615483212653,
-                y: 59.418047496800966,
-                z: 0
-            },
-            {
-                x: 9.061226825863429,
-                y: 59.417888839303345,
-                z: 0
-            }
-          ]
-        }
-        this.isContactingMatrikkel = true;
-        let matrikkelClient = new MatrikkelProxyClient();
-
-        // Hent ut alle MatrikkelEnhet-IDer innenfor polygonet
-        let matrikkelEnhetIds = await matrikkelClient.getMatrikkelEnheter(polygon, { query: { flatten: true, metadata: false } });
-        if(!matrikkelEnhetIds && matrikkelEnhetIds.length) { this.error = 'Kunne ikke laste inn noen matrikkelenheter innenfor dette polygonet. '; return; }
-
-        // Lag ett request for å kontakte store-service for informasjon om enhetene
-        let matrikkelEnhetItems = [];
-        matrikkelEnhetIds.forEach((item) => {
-          matrikkelEnhetItems.push({
-            type: 'MatrikkelenhetId',
-            namespace: 'http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet',
-            value: item
-          })
-        })
-
-        this.statItems.push({ text: 'Enheter', value: matrikkelEnhetItems.length })
-
-        this.dispatch.matrikkel.affectedCount = matrikkelEnhetItems.length;
-
-        // Hent ut data for alle matrikkel enhetene
-        let matrikkelEnheter = await matrikkelClient.getStoreItems(matrikkelEnhetItems, { query: { flatten: true, metadata: false } });
-        if(!matrikkelEnheter && matrikkelEnheter.length) { this.error = 'Kunne ikke laste inn noen matrikkelenheter innenfor dette polygonet. '; return; }
-        
-        // Parse the matrikkelenhet data
-        let parsedMatrikkelEnheter = this.parseMatrikkelEnheter(matrikkelEnheter);
-
-        // Hent ut alle eiere fra dataene
-        let eiere = [];
-        parsedMatrikkelEnheter.forEach((enhet) => {
-          enhet.eiere.forEach((eier) => {
-            if(!eiere.find((e) => e.eierId === eier.eierId && e.type === eier.type)) {
-              eiere.push(eier);
-            }
-          })
-        })
-
-        // Legg ut ett stat-card for hver av de unike eierne
-        this.statItems.push({ text: 'Unike eiere', value: eiere.length })
-
-        let antallJuridiskeEiere = eiere.filter((e) => e.type.toLowerCase().includes('juridisk'));
-        this.statItems.push({ text: 'Juridiske eiere', value: antallJuridiskeEiere.length })
-        this.statItems.push({ text: 'Private eiere', value: eiere.length - antallJuridiskeEiere.length })
-
-        this.dispatch.matrikkel.privateOwners = eiere.length - antallJuridiskeEiere.length;
-        this.dispatch.matrikkel.businessOwners = antallJuridiskeEiere.length;
-        this.dispatch.matrikkel.totalOwners = eiere.length;
-
-        // Kontakt matrikkelen og hent ut alle eiere
-        let ownerRequest = [];
-        eiere.forEach((eier) => {
-          ownerRequest.push({
-            type: 'PersonId',
-            namespace: 'http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person',
-            value: eier.eierId
-          })
-        })
-
-        const matrikkelEiere = await matrikkelClient.getStoreItems(ownerRequest, { query: { flatten: true, metadata: false } });
-
-        // Match eiere og matrikkelEiere
-        if(ownerRequest.length !== matrikkelEiere.length) {
-          throw new AppError('Mismatch i mellom antall forespurte eiere og motatte eiere', 'Vi spurte matrikkel APIet om informasjon om ' + ownerRequest.length + ' eiere, men fikk svar på ' + matrikkelEiere.length + ' eiere.')
-        }
-
-        let ikkeMatchetEiere = [];  // array som holder på antallet eiere som ikke er matchet om noen
-        eiere.forEach((eierforhold) => {
-          let match = undefined;
-
-          matrikkelEiere.forEach((eier) => {
-            let type = this.getItemType(eier);
-            let id = this.getItemValue(eier.id);
-
-            if(id === eierforhold.eierId) { match = eier; }
-            else { return; }
-
-            eier.type = type;
-            eierforhold.eier = eier;
-          })
-
-          if(!match) {
-            ikkeMatchetEiere.push(eierforhold);
+        try {
+          /*
+            Input validatering
+          */
+          if(!polygon) {
+            polygon = [
+              {
+                  x: 9.061226825863429,
+                  y: 59.417888839303345,
+                  z: 0
+              },
+              {
+                  x: 9.06059789499838,
+                  y: 59.41877340387384,
+                  z: 0
+              },
+              {
+                  x: 9.062418554835972,
+                  y: 59.41876773278693,
+                  z: 0
+              },
+              {
+                  x: 9.062615483212653,
+                  y: 59.418047496800966,
+                  z: 0
+              },
+              {
+                  x: 9.061226825863429,
+                  y: 59.417888839303345,
+                  z: 0
+              }
+            ]
           }
-        })
 
-        if(ikkeMatchetEiere.length > 0) {
-          throw new AppError('Klarte ikke finne alle eiere', 'Vi klarte ikke å finne ' + ikkeMatchetEiere.length + ' eiere')
+          /*
+            Initialiser
+          */
+          this.isContactingMatrikkel = true;
+          let matrikkelClient = new MatrikkelProxyClient();
+
+          /*
+            Hent MatrikkelEnhetIDer som finnes innenfor polygonet
+          */
+          let matrikkelEnhetIds = await matrikkelClient.getMatrikkelEnheter(polygon, { query: { flatten: true, metadata: false } });
+          if(!matrikkelEnhetIds && matrikkelEnhetIds.length) {
+            throw new AppError('Ingen MatrikkelIDer funnet', 'Vi klarte ikke å finne noen matrikkelinformasjon innenfor dette polygonet');
+          }
+
+          /*
+            Hent MatrikkelData på hver av IDene
+          */
+          // Lag ett request for å kontakte store-service for informasjon om IDene
+          let matrikkelEnhetRequestItems = [];
+          matrikkelEnhetIds.forEach((item) => {
+            matrikkelEnhetRequestItems.push({
+              type: 'MatrikkelenhetId',
+              namespace: 'http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet',
+              value: item
+            })
+          })
+
+          // Hent ut data for alle matrikkel enhetene
+          let matrikkelEnheter = await matrikkelClient.getStoreItems(matrikkelEnhetRequestItems);
+
+          // Håndter feil
+          if(!matrikkelEnheter || matrikkelEnheter.length === 0) {
+            throw new AppError('Ingen MatrikkelEnheter funnet', 'Vi klarte ikke å finne noen matrikkelinformasjon for de ' + matrikkelEnhetIds.length + ' idene');
+          } else if (matrikkelEnhetIds.length > matrikkelEnheter.length) {
+            let deviation = matrikkelEnhetIds.length - matrikkelEnheter.length;
+            let notFoundIDs = [];
+            matrikkelEnhetIds.forEach((id) => {
+              let match = matrikkelEnheter.find((m) => m.id === id);
+              if(!match) { notFoundIDs.push(id); }
+            })
+            throw new AppError('Færre matrikkel enheter er returnert', 'MatrikkelAPIet returnerte ' + deviation + ' færre enheter enn det vi etterspurte \n' + notFoundIDs);
+          }
+          else if(matrikkelEnheter.length > matrikkelEnhetIds.length) {
+            throw new AppError('For mange matrikkelenheter er returnert', 'Vi fant ' + matrikkelEnheter.length + ' IDer, men skulle kun hatt ' + matrikkelEnheter.length + '.');
+          }
+
+          /*
+            Hent ut alle eierforhold innad for MatrikkelEnhetene
+          */
+          let matrikkelEierforhold = []
+          matrikkelEnheter.forEach((enhet) => {
+            if(!Array.isArray(enhet.eierforhold)) {
+              enhet.eierforhold = [enhet.eierforhold];
+            }
+            enhet.eierforhold.forEach((eierforhold) => {
+              matrikkelEierforhold.push(eierforhold)
+            })
+          })
+          this.eierforhold = matrikkelEierforhold;
+
+          /*
+            Hent ut alle eier-informasjon for hver av eierforholdene
+          */
+          // Finn all unike eier IDer i alle eierforholdene
+          let unikeEierIDer = [];
+          matrikkelEierforhold.forEach((eierforhold) => {
+            if(!unikeEierIDer.find((id) => id === eierforhold.eierId)) {
+              unikeEierIDer.push(eierforhold.eierId);
+            }
+          })
+
+          // Lag en API request for de forskjellige eierne
+          let matrikkelEierRequestItems = [];
+          unikeEierIDer.forEach((id) => {
+            matrikkelEierRequestItems.push({
+              type: 'PersonId',
+              namespace: 'http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person',
+              value: id
+            })
+          })
+
+          // Hent ut alle eiere fra Matrikkel API
+          let matrikkelEiere = await matrikkelClient.getStoreItems(matrikkelEierRequestItems);
+          this.eiere = matrikkelEiere;
+          console.log(matrikkelEiere);
+
+          if(!matrikkelEiere || matrikkelEiere.length === 0) {
+            throw new AppError('Ingen eiere er funnet', 'Vi spurte matrikkelen om ' + matrikkelEierRequestItems.length + ' eiere, men fikk ingen tilbake');
+          } else if(matrikkelEierRequestItems.length > matrikkelEiere.length) {
+            throw new AppError('Ingen eiere er funnet', 'Vi spurte matrikkelen om ' + matrikkelEierRequestItems.length + ' eiere, men fikk kun ' + matrikkelEiere.length + ' tilbake');
+          }
+
+          /*
+            Oppdater hovedmatrikkel objekt med innhentet eierinformasjon
+          */
+          matrikkelEnheter.forEach((enhet) => {
+            enhet.eierforhold.forEach((eierforhold) => {
+              let match = matrikkelEiere.find((eier) => MatrikkelProxyClient.getItemValue(eier.id) == eierforhold.eierId)
+              eierforhold.eier = match;
+            })
+          })
+
+          /*
+            Legg til stat cards
+          */
+          this.statItems.push({ text: 'Enheter', value: matrikkelEnhetIds.length })
+          this.statItems.push({ text: 'Unike eiere', value: matrikkelEiere.length })
+          let juridiskeEiere = matrikkelEiere.filter((e) => e.$type.toLowerCase().includes('juridisk'));
+          this.statItems.push({ text: 'Juridiske eiere', value: juridiskeEiere.length })
+          this.statItems.push({ text: 'Private eiere', value: matrikkelEiere.length - juridiskeEiere.length })
+
+          /*
+            Fyll data inn i dispatch objekt
+          */
+          this.dispatch.matrikkel.affectedCount = matrikkelEnhetIds.length;
+          this.dispatch.matrikkel.privateOwners = matrikkelEiere.length - juridiskeEiere.length;
+          this.dispatch.matrikkel.businessOwners = juridiskeEiere.length;
+          this.dispatch.matrikkel.totalOwners = matrikkelEiere.length;
+
+          matrikkelEnheter.forEach((enhet) => {
+            // Hent ut generell informasjon om matrikkel enheten som skal lagres i databasen
+            let matrikkelUnit = {
+              id: enhet.id,
+              type: enhet.type,
+              bruksnavn: enhet.bruksnavn,
+              bruksnummer: enhet.bruksnummer,
+              gardsnummer: enhet.gardsnummer,
+              festenummer: enhet.festenummer,
+              kommuneId: enhet.kommuneId,
+              utgatt: enhet.utgatt,
+              antallEiere: 1
+            }
+            // Kalkuler antall eiere
+            if(enhet.eierforhold && Array.isArray(enhet.eierforhold)) {
+              matrikkelUnit.antallEiere = enhet.eierforhold.length;
+            }
+            this.dispatch.matrikkel.units.push(matrikkelUnit);
+          })
+
+          this.parsedItems = matrikkelEnheter;
+
+          this.isContactingMatrikkel = false;
+        } catch(err) {
+          this.setError(err);
+          console.error(err.stack);
         }
-
-        this.parsedItems = parsedMatrikkelEnheter;
-
-        this.isContactingMatrikkel = false;
       },
       async readFile(file) {
         // Always return a Promise
@@ -487,28 +552,6 @@
           console.error(err.stack);
         }
       },
-      getItemType(item) {
-        if(!item) { return 'unresolved'; }
-
-        let type = 'unresolved';
-        if(item && item.$ && item.$['xsi:type']) { type = item.$['xsi:type']; }
-        if(type.includes(':')) { type = type.split(':')[1]; }
-
-        return type;
-      },
-      getItemValue(item) {
-        if(!item) { return; }
-
-        if(Object.keys(item).length === 1) {
-          return item[Object.keys(item)[0]]
-        }
-        else if(Object.keys(item).length === 2 && item.$) {
-          let key = Object.keys(item).find((k) => k !== '$');
-          if(key) { return item[key]; }
-        }
-        
-        return item;
-      },
       parseMatrikkelEnheter(Enheter) {
         if(!Enheter) { return; }
         if(!Array.isArray(Enheter)) { Enheter = [Enheter]; }
@@ -516,7 +559,7 @@
         let parsed = [];
         Enheter.forEach((enhet) => {
           let item = {}
-          let type = this.getItemType(enhet);
+          let type = MatrikkelProxyClient.getItemType(enhet);
 
           let id = 'unresolved';
           if(enhet && enhet.id) {
@@ -533,10 +576,10 @@
 
           // Hent ut matrikkel informasjon
           if(enhet.matrikkelnummer) {
-            item.gardsnummer = this.getItemValue(enhet.matrikkelnummer.gardsnummer);
-            item.bruksnummer = this.getItemValue(enhet.matrikkelnummer.bruksnummer);
-            item.festenummer = this.getItemValue(enhet.matrikkelnummer.festenummer);
-            item.kommuneId = this.getItemValue(enhet.matrikkelnummer.kommuneId);
+            item.gardsnummer = enhet.matrikkelnummer.gardsnummer;
+            item.bruksnummer = enhet.matrikkelnummer.bruksnummer;
+            item.festenummer = enhet.matrikkelnummer.festenummer;
+            item.kommuneId = enhet.matrikkelnummer.kommuneId;
           }
 
           // Hent ut eierinformasjon
@@ -547,13 +590,13 @@
             let eiere = [];
             enhet.eierforhold.forEach((eierforhold) => {
               eiere.push({
-                datoFra: this.getItemValue(eierforhold.datoFra),
-                type: this.getItemType(eierforhold),
-                eierId: this.getItemValue(eierforhold.eierId),
-                eierforholdKode: this.getItemValue(eierforhold.eierforholdKodeId),
-                kommuneId: this.getItemValue(eierforhold.kommuneId),
-                andelsnummer: this.getItemValue(eierforhold.andelsnummer),
-                andel: this.getItemValue(eierforhold.andel),
+                datoFra: eierforhold.datoFra,
+                type: MatrikkelProxyClient.getItemType(eierforhold),
+                eierId: eierforhold.eierId,
+                eierforholdKode: eierforhold.eierforholdKodeId,
+                kommuneId: eierforhold.kommuneId,
+                andelsnummer: eierforhold.andelsnummer,
+                andel: eierforhold.andel,
               })
             })
             item.eiere = eiere;
@@ -579,6 +622,11 @@
         console.log('Setting "' + key + '" to "' + value + '"');
         this.$set(this.project, key, value)
       }
+    },
+    created() {
+      if(this.$props.dispatchObject) {
+        this.$props.dispatch = this.$props.dispatchObject;
+      }
     }
   }
 </script>
@@ -590,5 +638,9 @@
     background-color: white;
     min-height: 250px;
     padding: 1rem 1rem;
+  }
+
+  .mt-1 {
+    margin-top: 1rem;
   }
 </style>
