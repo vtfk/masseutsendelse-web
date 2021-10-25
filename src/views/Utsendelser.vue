@@ -62,6 +62,7 @@
     <!-- MODALER/DIALOGER -->
     <!-- Edit dialog -->
     <v-dialog
+    v-if="dialogEdit"
     v-model="dialogEdit"
     width="50%"
     >
@@ -112,6 +113,7 @@
     </v-dialog>
     <!-- Map dialog -->
     <v-dialog
+    v-if="dialogMap"
     v-model="dialogMap"
     width="50%"
     >
@@ -119,9 +121,11 @@
       <v-card-title>
         Kart
       </v-card-title>
-        <v-img class="map-wrapper">
-          <Map/>
-        </v-img>
+      <v-card-text>
+        <div class="map-wrapper">
+          <Map />
+        </div>
+      </v-card-text>
         <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
           <VTFKButton 
             type='secondary' size='small' style="padding-bottom: 1rem;"
@@ -134,6 +138,7 @@
 
     <!-- Doc dialog -->
     <v-dialog
+    v-if="dialogDoc"
     v-model="dialogDoc"
     width="50%"
     >
@@ -188,6 +193,8 @@ import Map from '../components/Map.vue';
         dialogMap:false,
         loading:false,
         alert_success: false,
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
         headers: [
           {
             text: 'Prosjekt',
@@ -260,6 +267,13 @@ import Map from '../components/Map.vue';
         fetchStatus: '',
       }
     },
+    // mounted: {
+    //   created() {
+    //     setTimeout(function () {
+    //       map.invalidateSize();
+    //     }, 10);
+    //   }
+    // },
     methods: {
       getColor (status) {
         if (status == "Godkjent") return '#91B99F'
@@ -346,6 +360,8 @@ import Map from '../components/Map.vue';
   margin: 0 auto;
 }
 .map-wrapper {
-    box-shadow: 0px 1px 5px 1px #888888;
+  position: relative;
+  box-shadow: 0px 1px 5px 1px #888888;
+    
 }
 </style>
