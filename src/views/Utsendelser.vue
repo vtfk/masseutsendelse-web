@@ -119,9 +119,9 @@
       <v-card-title>
         Kart
       </v-card-title>
-        <div class="wrapper">
-          <Map />
-        </div>
+        <v-img class="map-wrapper">
+          <Map/>
+        </v-img>
         <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
           <VTFKButton 
             type='secondary' size='small' style="padding-bottom: 1rem;"
@@ -154,18 +154,16 @@
     </v-card>
     </v-dialog>
     <!-- Alerts -->
-    <div class="v-alert-style">
-      <v-alert 
-      :value="alert_success" 
-      type="success"
-      color="#91B99F"
-      width="50%"
-      rounded="xl"
-      transition="slide-y-transition"
-      >
-        Statusen er lagret.
-      </v-alert>
-    </div>
+    <v-alert 
+    :value="alert_success" 
+    type="success"
+    color="#91B99F"
+    width="50%"
+    rounded="xl"
+    transition="slide-y-transition"
+    >
+      Statusen er lagret.
+    </v-alert>
   </div>
 </template>
 
@@ -271,53 +269,53 @@ import Map from '../components/Map.vue';
         else return '#FFFFF'
       },
       editItem (item) {
-        this.clickedIndex = this.prosjekter.indexOf(item)
-        this.clickedItem = Object.assign({}, item)
+        this.editedIndex = this.prosjekter.indexOf(item)
+        this.editedItem = Object.assign({}, item)
         this.dialogEdit = true
-        this.fetchStatus = `${this.clickedItem.status}`
+        this.fetchStatus = `${this.editedItem.status}`
         this.select = this.fetchStatus
-        // console.log(this.clickedItem.status)
-        // console.log(this.clickedIndex)
-        // console.log(this.clickedItem)
+        // console.log(this.editedItem.status)
+        // console.log(this.editedIndex)
+        // console.log(this.editedItem)
       },
       openMap(item){
         // TODO
         // En funksjon som åpner kartet til polygonet til det valgte prosjektet
         // Henter prosjekt nr fra table, sender til DB får tilbake kart info og passer dene til kartet.
-        this.clickedIndex = this.prosjekter.indexOf(item)
-        this.clickedItem = Object.assign({}, item)
+        this.editedIndex = this.prosjekter.indexOf(item)
+        this.editedItem = Object.assign({}, item)
         this.dialogMap = true
-        this.fetchProsjektNr = `${this.clickedItem.prosjektnr}`
+        this.fetchProsjektNr = `${this.editedItem.prosjektnr}`
         console.log(this.fetchProsjektNr)
       },
       openDoc(item){
         //TODO
         // Henter prosjekt nr fra table, sender dette til DB og fær tilbake brevet/dokumentene som er sendt. 
-        this.clickedIndex = this.prosjekter.indexOf(item)
-        this.clickedItem = Object.assign({}, item)
+        this.editedIndex = this.prosjekter.indexOf(item)
+        this.editedItem = Object.assign({}, item)
         this.dialogDoc = true
-        this.fetchProsjektNr = `${this.clickedItem.prosjektnr}`
+        this.fetchProsjektNr = `${this.editedItem.prosjektnr}`
         console.log(this.fetchProsjektNr)
       },
       saveEdit() {
         this.dialogEdit = false
         this.alert_success = true
         this.hide_alert();
-        // console.log(this.clickedItem.status)
-        // this.clickedItem.status = this.select.status_value
-        // console.log(this.clickedItem.status)
-        // console.log(this.clickedItem)
+        // console.log(this.editedItem.status)
+        // this.editedItem.status = this.select.status_value
+        // console.log(this.editedItem.status)
+        // console.log(this.editedItem)
         // console.log(this.select.status_value)
       },
       selectedItem() {
-        return this.clickedItem.status
+        return this.editedItem.status
       },
       clear(){
           this.select = this.clear
       },
       test(){
         this.editItem.status = this.select
-        // console.log(this.clickedItem.status)
+        // console.log(this.editedItem.status)
         // console.log(this.select.status_value)
       },
       hide_alert: function () {
@@ -342,9 +340,12 @@ import Map from '../components/Map.vue';
 }
 .v-alert {
   position: fixed;
-  bottom: 1rem;
   left: 50%;
+  bottom: 1rem;
   transform: translate(-50%, -50%);
   margin: 0 auto;
+}
+.map-wrapper {
+    box-shadow: 0px 1px 5px 1px #888888;
 }
 </style>
