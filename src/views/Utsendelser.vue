@@ -122,9 +122,7 @@
         Kart
       </v-card-title>
       <v-card-text>
-        <div class="map-wrapper">
-          <Map />
-        </div>
+        <Map />
       </v-card-text>
         <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
           <VTFKButton 

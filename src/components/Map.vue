@@ -1,6 +1,6 @@
 <template>
   <div class="map-wrapper">
-    <l-map style="height: 400px; width: 750px; max-width: 800px; z-index: 1;" :zoom="mapZoom" :center="mapCenter">
+    <l-map ref="mymap" style="height: 100%; min-height: 400px; width: 100%; z-index: 1;" :zoom="mapZoom" :center="mapCenter">
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
       <l-marker v-for="(marker, i) in markers" :key="i" :lat-lng="marker"></l-marker>
       <l-polygon :lat-lngs="polygon.coordinates" :fillColor="polygon.fillColor" :color="polygon.color"></l-polygon>
@@ -68,12 +68,30 @@ export default {
         coordinates: this.$props.coordinates
       }
     }
+  },
+  methods: {
+    invalidateMapSize() {
+      this.$refs.mymap.mapObject.invalidateSize(); 
+    }
+  },
+  created() {
+    // document.addEventListener('resize', () => console.log('Hei'));
+  },
+  beforeDestroy() {
+    // document.removeEventListener('resize', () => this.invalidateMapSize());
+  },
+  mounted() {
+    setTimeout(() => {
+      this.invalidateMapSize();
+    }, 100);
   }
 }
 </script>
 
 <style scoped>
   .map-wrapper {
+    height: 100%;
+    width: 100%;
     box-shadow: 0px 1px 5px 1px #888888;
   }
 </style>
