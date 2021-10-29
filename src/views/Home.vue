@@ -18,7 +18,7 @@
     </div>
     <!-- Innhold -->
     <div style="margin-top: 1rem;">
-      <DispatchEditor :dispatchObject="dispatch"/>
+      <DispatchEditor />
     </div>
   </div>
 </template>
@@ -67,7 +67,6 @@
   methods: {
   },
   created() {
-    this.dispatch = require('../mocks/data/Dispatches.json')[0];
   }
 }
 </script>

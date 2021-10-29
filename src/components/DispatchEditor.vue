@@ -3,7 +3,7 @@
     <!-- Feilmelding -->
     <Error v-if="error" :error="error" v-on:resetClicked="reset(true)" />
     <!-- Fil opplasting -->
-    <div v-else-if="!dispatch || !dispatch.geopolygon || !dispatch.geopolygon.vertices">
+    <div v-else-if="!dispatch || dispatch.geopolygon.vertices.length === 0">
       <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
     </div>
     <div v-else-if="isParsingFile">
@@ -25,7 +25,7 @@
         <StatCards :items="statItems"/>
         <!-- Matrikkel table -->
         <MatrikkelTable :items="dispatch.matrikkelEnheter" item-key="bruksnavn" />
-        <div v-if="mode === 'new'">
+        <div v-if="mode === 'new'" class="centeredColumn">
           <!-- Angreknapp -->
           <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
           <!-- Aksept for at matrikkel info ser ok ut -->
@@ -71,7 +71,7 @@
           :disabled="!isDispatchFilledInn"
           :passedProps="{onClick: () => {}}">Se forhåndsvisning
         </VTFKButton>
-        <div v-if="mode === 'new'">
+        <div v-if="mode === 'new'" class="centeredColumn">
           <VTFKCheckbox
             v-if="isAllRequiredMatrikkelInfoRetreived"
             class="mt-1"

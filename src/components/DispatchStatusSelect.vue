@@ -55,16 +55,10 @@ export default {
       if(match) { return match }
 
       return { text: 'Ukjent', value: 'unknown', color: '#555555' }
-    },
-    text() {
-      let match = this.items.find((i) => i.value === this.$props.value);
-      if(match && match.text) { return match.text }
-
-      return 'unknown';
     }
   },
   created() {
-    if(this.$props.value === 'approved') {
+    if(this.$props.value === 'completed') {
       this.items = [{ text: 'Fullført', value: 'completed', color: '#91B99F', hint: 'Utsendelsen er gjennomført' }]
     } else if(this.$props.value === 'inprogress') {
       this.items = [{ text: 'Kjører', value: 'inprogress', color: '#91B99F', hint: 'Utsendelsen kjører nå' }]
