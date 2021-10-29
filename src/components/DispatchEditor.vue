@@ -3,7 +3,7 @@
     <!-- Feilmelding -->
     <Error v-if="error" :error="error" v-on:resetClicked="reset(true)" />
     <!-- Fil opplasting -->
-    <div v-else-if="!uploadedFile">
+    <div v-else-if="!dispatch || dispatch.geopolygon.vertices.length === 0">
       <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
     </div>
     <div v-else-if="isParsingFile">
@@ -24,21 +24,24 @@
         <!-- Cards som viser stats om informasjonen -->
         <StatCards :items="statItems"/>
         <!-- Matrikkel table -->
-        <MatrikkelTable :items="parsedItems" item-key="bruksnavn" />
-        <!-- Angreknapp -->
-        <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
-        <!-- Aksept for at matrikkel info ser ok ut -->
-        <VTFKCheckbox
-          v-if="dispatch.stats.affectedCount"
-          :value="'false'"
-          name="matrikkelOk"
-          label="Matrikkelinformasjonen ser korrekt ut"
-          :passedProps="{ onChange: () => { isMatrikkelApproved = !isMatrikkelApproved; }}"
-        />
+        <MatrikkelTable :items="dispatch.matrikkelEnheter" item-key="bruksnavn" />
+        <div v-if="mode === 'new'" class="centeredColumn">
+          <!-- Angreknapp -->
+          <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
+          <!-- Aksept for at matrikkel info ser ok ut -->
+          <VTFKCheckbox
+            v-if="dispatch.stats.affectedCount"
+            :value="'false'"
+            name="matrikkelOk"
+            label="Matrikkelinformasjonen ser korrekt ut"
+            :passedProps="{ onChange: () => { isMatrikkelApproved = !isMatrikkelApproved; }}"
+          />
+        </div>
       </div>
       <!-- Prosjekt informasjon -->
       <div v-if="isMatrikkelApproved || mode === 'edit'" class="card shadow centeredColumn" style="margin-top: 1rem;">
         <h1>Masseutsendelse</h1>
+        <DispatchStatusSelect v-if="mode === 'edit'" v-model="dispatch.status"/>
         <VTFKSelect
           label="Velg dokument mal"
           :items="templateItems"
@@ -53,12 +56,14 @@
           placeholder="Tittel"
           :value="dispatch.title"
           :passedProps="{ onChange: (e) => { dispatch.title = e.target.value } }"
+          :disabled="isReadOnly"
           style="max-width: 750px; width: 100%; margin-top: 1rem;"
         />
         <VTFKTextField 
           placeholder="Brødtekst"
           :value="dispatch.body"
           :passedProps="{ onChange: (e) => { dispatch.body = e.target.value } }"
+          :disabled="isReadOnly"
           :rows="8" style="max-width: 750px; width: 100%; margin-top: 1rem;"
         />
         <VTFKButton
@@ -66,15 +71,17 @@
           :disabled="!isDispatchFilledInn"
           :passedProps="{onClick: () => {}}">Se forhåndsvisning
         </VTFKButton>
-        <VTFKCheckbox
-          v-if="isAllRequiredMatrikkelInfoRetreived"
-          class="mt-1"
-          name="dispatchApproved"
-          :label="'Følgende informasjon skal sendes ut til ' + dispatch.stats.totalOwners + ' mottakere'"
-          :passedProps="{ onChange: () => { isFirstLevelDispatchApproved = !isFirstLevelDispatchApproved; }}"
-        />
-        <VTFKButton style="margin-top: 1rem;" :disabled="!isFirstLevelDispatchApproved || !isDispatchFilledInn" :passedProps="{onClick: () => { submitMassDispatch(); }}">Send til godkjenning</VTFKButton>
-        <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {reset()}}">Start på nytt</VTFKButton>
+        <div v-if="mode === 'new'" class="centeredColumn">
+          <VTFKCheckbox
+            v-if="isAllRequiredMatrikkelInfoRetreived"
+            class="mt-1"
+            name="dispatchApproved"
+            :label="'Følgende informasjon skal sendes ut til ' + dispatch.stats.totalOwners + ' mottakere'"
+            :passedProps="{ onChange: () => { isFirstLevelDispatchApproved = !isFirstLevelDispatchApproved; }}"
+          />
+          <VTFKButton style="margin-top: 1rem;" :disabled="!isFirstLevelDispatchApproved || !isDispatchFilledInn" :passedProps="{onClick: () => { submitMassDispatch(); }}">Send til godkjenning</VTFKButton>
+          <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {reset()}}">Start på nytt</VTFKButton>
+        </div>
       </div>
     </div>
   </div>
@@ -93,6 +100,7 @@
   import StatCards from '../components/StatCards.vue'
   import Loading from './Loading.vue'
   import MatrikkelTable from '../components/MatrikkelTable.vue';
+  import DispatchStatusSelect from '../components/DispatchStatusSelect.vue';
   import Error from '../components/Error.vue'
 
   // Libraries
@@ -115,6 +123,7 @@
       Map,
       StatCards,
       MatrikkelTable,
+      DispatchStatusSelect,
       Loading,
       Error
     },
@@ -169,7 +178,6 @@
         hasLoadedFile: false,
         isContactingMatrikkel: false,
         statItems: [],
-        parsedItems: [],
         eierforhold: [],
         eiere: [],
         isTemplateSelectorOpen: true,
@@ -200,8 +208,12 @@
         return false;
       },
       mode() {
-        if(!this.dispatch || this.dispatch.id === undefined) { return 'new'; }
+        if(!this.dispatch || this.dispatch._id === undefined) { return 'new'; }
         return 'edit';
+      },
+      isReadOnly() {
+        if(this.dispatch && (this.dispatch.status === 'inprogress' || this.dispatch.status === 'completed')) { return true; }
+        return false;
       }
     },
     methods: {
@@ -399,7 +411,6 @@
             this.dispatch.stats.units.push(matrikkelUnit);
           })
 
-          this.parsedItems = matrikkelEnheter;
           this.dispatch.matrikkelEnheter = matrikkelEnheter;
 
           this.isContactingMatrikkel = false;
@@ -625,7 +636,7 @@
     },
     created() {
       if(this.$props.dispatchObject) {
-        this.$props.dispatch = this.$props.dispatchObject;
+        this.$set(this, 'dispatch', this.$props.dispatchObject)
       }
     }
   }
