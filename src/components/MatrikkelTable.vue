@@ -7,10 +7,10 @@
           <template v-slot:[`item.$type`]="{ item }">
             <div v-if="item.$type">
               <div v-if="item.$type.toLowerCase().includes('juridisk')">
-                Juridisk 🏢
+                🏢 Juridisk 
               </div>
               <div v-else>
-                Privat 🏠
+                🏠 Privat 
               </div>
             </div>
           </template>
