@@ -300,7 +300,6 @@ import Map from '../components/Map.vue';
         this.dispatches = response.data;
 
       } catch (err) {
-        
         this.error = err;
       }
     },

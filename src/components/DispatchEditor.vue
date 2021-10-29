@@ -405,7 +405,6 @@
           this.isContactingMatrikkel = false;
         } catch(err) {
           this.setError(err);
-          console.error(err.stack);
         }
       },
       async readFile(file) {

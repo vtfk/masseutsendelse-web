@@ -1,10 +1,12 @@
 [
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns6:Grunneiendom"
+        "$type": "Grunneiendom",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "id": {
+            "$type": "GrunneiendomId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "68581735"
         },
-        "id": "68581735",
         "oppdateringsdato": "2020-06-15T20:26:34.378000000+02:00",
         "versjonId": "6",
         "oppdatertAv": "smatmynd",
@@ -35,9 +37,8 @@
             }
         },
         "eierforhold": {
-            "$": {
-                "xsi:type": "ns6:JuridiskPersonTinglystEierforhold"
-            },
+            "$type": "JuridiskPersonTinglystEierforhold",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
             "oppdateringsdato": "2020-06-17T22:54:03.024000000+02:00",
             "versjonId": "3",
             "oppdatertAv": "smatmynd",
@@ -87,11 +88,13 @@
         }
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns6:Festegrunn"
+        "$type": "Festegrunn",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "id": {
+            "$type": "FestegrunnId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "68575189"
         },
-        "id": "68575189",
         "oppdateringsdato": "2020-06-15T20:24:05.913000000+02:00",
         "versjonId": "4",
         "oppdatertAv": "smatmynd",
@@ -122,9 +125,8 @@
             }
         },
         "eierforhold": {
-            "$": {
-                "xsi:type": "ns6:JuridiskPersonTinglystEierforhold"
-            },
+            "$type": "JuridiskPersonTinglystEierforhold",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
             "oppdateringsdato": "2020-06-17T23:57:19.245000000+02:00",
             "versjonId": "2",
             "oppdatertAv": "smatmynd",
@@ -176,11 +178,13 @@
         "punktfeste": "false"
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns6:Grunneiendom"
+        "$type": "Grunneiendom",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "id": {
+            "$type": "GrunneiendomId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525222618"
         },
-        "id": "525222618",
         "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
         "versjonId": "9",
         "oppdatertAv": "smatmynd",
@@ -212,9 +216,8 @@
         },
         "eierforhold": [
             {
-                "$": {
-                    "xsi:type": "ns6:JuridiskPersonIkkeTinglystEierforhold"
-                },
+                "$type": "JuridiskPersonIkkeTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T23:26:42.648000000+02:00",
                 "versjonId": "5",
                 "oppdatertAv": "smatmynd",
@@ -229,9 +232,8 @@
                 "eierId": "9278455"
             },
             {
-                "$": {
-                    "xsi:type": "ns6:JuridiskPersonTinglystEierforhold"
-                },
+                "$type": "JuridiskPersonTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T23:35:45.518000000+02:00",
                 "versjonId": "3",
                 "oppdatertAv": "smatmynd",
@@ -282,11 +284,13 @@
         }
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns6:Grunneiendom"
+        "$type": "Grunneiendom",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "id": {
+            "$type": "GrunneiendomId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525217531"
         },
-        "id": "525217531",
         "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
         "versjonId": "9",
         "oppdatertAv": "smatmynd",
@@ -318,9 +322,8 @@
         },
         "eierforhold": [
             {
-                "$": {
-                    "xsi:type": "ns6:PersonTinglystEierforhold"
-                },
+                "$type": "PersonTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T23:27:58.412000000+02:00",
                 "versjonId": "3",
                 "oppdatertAv": "smatmynd",
@@ -340,9 +343,8 @@
                 "andelsnummer": "3"
             },
             {
-                "$": {
-                    "xsi:type": "ns6:JuridiskPersonIkkeTinglystEierforhold"
-                },
+                "$type": "JuridiskPersonIkkeTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T23:26:27.475000000+02:00",
                 "versjonId": "5",
                 "oppdatertAv": "smatmynd",
@@ -357,9 +359,8 @@
                 "eierId": "9278455"
             },
             {
-                "$": {
-                    "xsi:type": "ns6:PersonTinglystEierforhold"
-                },
+                "$type": "PersonTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T23:27:58.412000000+02:00",
                 "versjonId": "3",
                 "oppdatertAv": "smatmynd",
@@ -410,11 +411,13 @@
         }
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns6:Grunneiendom"
+        "$type": "Grunneiendom",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "id": {
+            "$type": "GrunneiendomId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525213751"
         },
-        "id": "525213751",
         "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
         "versjonId": "10",
         "oppdatertAv": "smatmynd",
@@ -446,9 +449,8 @@
         },
         "eierforhold": [
             {
-                "$": {
-                    "xsi:type": "ns6:JuridiskPersonIkkeTinglystEierforhold"
-                },
+                "$type": "JuridiskPersonIkkeTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T22:20:39.958000000+02:00",
                 "versjonId": "5",
                 "oppdatertAv": "smatmynd",
@@ -463,9 +465,8 @@
                 "eierId": "9278455"
             },
             {
-                "$": {
-                    "xsi:type": "ns6:PersonTinglystEierforhold"
-                },
+                "$type": "PersonTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T23:54:06.346000000+02:00",
                 "versjonId": "2",
                 "oppdatertAv": "smatmynd",
@@ -485,9 +486,8 @@
                 "andelsnummer": "4"
             },
             {
-                "$": {
-                    "xsi:type": "ns6:PersonTinglystEierforhold"
-                },
+                "$type": "PersonTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T23:54:06.346000000+02:00",
                 "versjonId": "2",
                 "oppdatertAv": "smatmynd",
@@ -538,11 +538,13 @@
         }
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns6:Grunneiendom"
+        "$type": "Grunneiendom",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "id": {
+            "$type": "GrunneiendomId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "68577932"
         },
-        "id": "68577932",
         "oppdateringsdato": "2021-01-07T04:05:44.890000000+01:00",
         "versjonId": "5",
         "oppdatertAv": "eksternregister2",
@@ -599,9 +601,8 @@
             }
         ],
         "eierforhold": {
-            "$": {
-                "xsi:type": "ns6:PersonTinglystEierforhold"
-            },
+            "$type": "PersonTinglystEierforhold",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
             "oppdateringsdato": "2021-01-07T04:05:44.890000000+01:00",
             "versjonId": "1",
             "oppdatertAv": "eksternregister2",
@@ -651,11 +652,13 @@
         }
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns6:Grunneiendom"
+        "$type": "Grunneiendom",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "id": {
+            "$type": "GrunneiendomId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525214804"
         },
-        "id": "525214804",
         "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
         "versjonId": "9",
         "oppdatertAv": "smatmynd",
@@ -687,9 +690,8 @@
         },
         "eierforhold": [
             {
-                "$": {
-                    "xsi:type": "ns6:JuridiskPersonIkkeTinglystEierforhold"
-                },
+                "$type": "JuridiskPersonIkkeTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T23:26:42.648000000+02:00",
                 "versjonId": "5",
                 "oppdatertAv": "smatmynd",
@@ -704,9 +706,8 @@
                 "eierId": "9278455"
             },
             {
-                "$": {
-                    "xsi:type": "ns6:PersonTinglystEierforhold"
-                },
+                "$type": "PersonTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T23:29:48.262000000+02:00",
                 "versjonId": "3",
                 "oppdatertAv": "smatmynd",
@@ -726,9 +727,8 @@
                 "andelsnummer": "3"
             },
             {
-                "$": {
-                    "xsi:type": "ns6:PersonTinglystEierforhold"
-                },
+                "$type": "PersonTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T23:29:48.262000000+02:00",
                 "versjonId": "3",
                 "oppdatertAv": "smatmynd",
@@ -779,11 +779,13 @@
         }
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns6:Grunneiendom"
+        "$type": "Grunneiendom",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "id": {
+            "$type": "GrunneiendomId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "68577752"
         },
-        "id": "68577752",
         "oppdateringsdato": "2020-06-15T20:27:06.679000000+02:00",
         "versjonId": "8",
         "oppdatertAv": "smatmynd",
@@ -828,9 +830,8 @@
             }
         ],
         "eierforhold": {
-            "$": {
-                "xsi:type": "ns6:JuridiskPersonIkkeTinglystEierforhold"
-            },
+            "$type": "JuridiskPersonIkkeTinglystEierforhold",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
             "oppdateringsdato": "2020-06-17T22:57:39.793000000+02:00",
             "versjonId": "4",
             "oppdatertAv": "smatmynd",
@@ -874,11 +875,13 @@
         }
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns6:Grunneiendom"
+        "$type": "Grunneiendom",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "id": {
+            "$type": "GrunneiendomId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "68579848"
         },
-        "id": "68579848",
         "oppdateringsdato": "2020-06-15T20:26:34.378000000+02:00",
         "versjonId": "6",
         "oppdatertAv": "smatmynd",
@@ -909,9 +912,8 @@
             }
         },
         "eierforhold": {
-            "$": {
-                "xsi:type": "ns6:JuridiskPersonTinglystEierforhold"
-            },
+            "$type": "JuridiskPersonTinglystEierforhold",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
             "oppdateringsdato": "2020-06-17T23:29:17.634000000+02:00",
             "versjonId": "3",
             "oppdatertAv": "smatmynd",
@@ -961,11 +963,13 @@
         }
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns6:Grunneiendom"
+        "$type": "Grunneiendom",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "id": {
+            "$type": "GrunneiendomId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525205379"
         },
-        "id": "525205379",
         "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
         "versjonId": "13",
         "oppdatertAv": "smatmynd",
@@ -997,9 +1001,8 @@
         },
         "eierforhold": [
             {
-                "$": {
-                    "xsi:type": "ns6:JuridiskPersonTinglystEierforhold"
-                },
+                "$type": "JuridiskPersonTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T23:05:57.432000000+02:00",
                 "versjonId": "3",
                 "oppdatertAv": "smatmynd",
@@ -1019,9 +1022,8 @@
                 "andelsnummer": "3"
             },
             {
-                "$": {
-                    "xsi:type": "ns6:JuridiskPersonIkkeTinglystEierforhold"
-                },
+                "$type": "JuridiskPersonIkkeTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T23:25:51.987000000+02:00",
                 "versjonId": "5",
                 "oppdatertAv": "smatmynd",
@@ -1067,11 +1069,13 @@
         }
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns6:Grunneiendom"
+        "$type": "Grunneiendom",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "id": {
+            "$type": "GrunneiendomId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525222624"
         },
-        "id": "525222624",
         "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
         "versjonId": "10",
         "oppdatertAv": "smatmynd",
@@ -1103,9 +1107,8 @@
         },
         "eierforhold": [
             {
-                "$": {
-                    "xsi:type": "ns6:JuridiskPersonTinglystEierforhold"
-                },
+                "$type": "JuridiskPersonTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T22:37:57.748000000+02:00",
                 "versjonId": "3",
                 "oppdatertAv": "smatmynd",
@@ -1125,9 +1128,8 @@
                 "andelsnummer": "2"
             },
             {
-                "$": {
-                    "xsi:type": "ns6:JuridiskPersonIkkeTinglystEierforhold"
-                },
+                "$type": "JuridiskPersonIkkeTinglystEierforhold",
+                "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
                 "oppdateringsdato": "2020-06-17T23:25:51.987000000+02:00",
                 "versjonId": "5",
                 "oppdatertAv": "smatmynd",
