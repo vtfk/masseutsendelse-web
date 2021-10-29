@@ -212,63 +212,17 @@ import Map from '../components/Map.vue';
             text: 'Prosjekt',
             align: 'start',
             sortable: true,
-            value: 'navn',
+            value: 'title',
           },
-          {text: 'Prosjekt Nr', value: 'prosjektnr'},
-          {text: 'Dato', value: 'dato'},
+          {text: 'Prosjekt Nr', value: 'nummer'},
+          {text: 'Dato', value: 'createdDate'},
           {text: 'Status', value: 'status'},
-          {text: 'Oppretshaver', value: 'oppretshaver'},
-          {text: 'Behandlet av', value: 'behandletav'},
-          {text: 'Filnavn', value: 'filnavn'},
+          {text: 'Oppretshaver', value: 'createdBy'},
+          {text: 'Behandlet av', value: 'modifiedBy'},
+          {text: 'Filnavn', value: 'polygon.filename'},
           {text: 'Handlinger', value: 'handlinger', sortable:false}
         ],
-        prosjekter: [
-          {
-            navn:'Ulefoss',
-            prosjektnr:'1',
-            dato:'01.02.2021',
-            status:'Godkjent',
-            oppretshaver:'Per',
-            behandletav: 'Lars',
-            filnavn:'Ulefoss Polygon.dfx',
-          },
-          {
-            navn:'Gvarv',
-            prosjektnr:'2',
-            dato:'02.03.2021',
-            status:'Godkjent',
-            oppretshaver:'Per',
-            behandletav: 'Lars',
-            filnavn:'Gvarv Polygon.dfx',
-          },
-          {
-            navn:'Gvarv',
-            prosjektnr:'2',
-            dato:'01.03.2021',
-            status:'Ikke Godkjent',
-            oppretshaver:'Per',
-            behandletav: 'Lars',
-            filnavn:'Gvarv Polygon.dfx',
-          },
-          {
-            navn:'Bø i Telemark',
-            prosjektnr:'3',
-            dato:'01.01.2020',
-            status:'Sendt',
-            oppretshaver:'Per',
-            behandletav: 'Lars',
-            filnavn:'Bø Polygon.dfx',
-          },
-          {
-            navn:'Skien',
-            prosjektnr:'4',
-            dato:'05.02.2021',
-            status:'Til Behandling',
-            oppretshaver:'Lars',
-            behandletav: 'Per',
-            filnavn:'Skien Polygon.dfx',
-          },
-        ],
+        prosjekter: [],
         select: {status_valg: '', status_value: ''},
         items: [
           { status_valg: 'Godkjent', status_value: 'Godkjent'},
@@ -296,8 +250,8 @@ import Map from '../components/Map.vue';
         if(!Array.isArray(response.data) || response.data.length <= 0) {
           throw new AppError('Manglende data', 'Utsendelses APIet svarte, men sendte ingen data');
         }
-
-        this.dispatches = response.data;
+        this.dispatches = response.data
+        this.prosjekter = this.dispatches
 
       } catch (err) {
         this.error = err;
@@ -324,7 +278,7 @@ import Map from '../components/Map.vue';
       openMap(item){
         // TODO
         // En funksjon som åpner kartet til polygonet til det valgte prosjektet
-        // Henter prosjekt nr fra table, sender til DB får tilbake kart info og passer dene til kartet.
+        // Henter prosjekt nr fra table, sender til DB får tilbake kart info og passer denne til kartet.
         this.editedIndex = this.prosjekter.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogMap = true
@@ -339,6 +293,8 @@ import Map from '../components/Map.vue';
         this.dialogDoc = true
         this.fetchProsjektNr = `${this.editedItem.prosjektnr}`
         console.log(this.fetchProsjektNr)
+        console.log(this.dispatches[0].status)
+        console.log(this.dispatches[1].status)
       },
       saveEdit() {
         this.dialogEdit = false
@@ -360,6 +316,15 @@ import Map from '../components/Map.vue';
         this.editItem.status = this.select
         // console.log(this.editedItem.status)
         // console.log(this.select.status_value)
+      },
+      titleCase(str) {
+        var splitStr = str.toLowerCase().split(' ');
+        for (var i = 0; i < splitStr.length; i++) {
+          // Assign it back to the array
+          splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+        }
+      // Directly return the joined string
+        return splitStr.join(' '); 
       },
       hide_alert: function () {
         window.setInterval(() => {
