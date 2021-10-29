@@ -102,6 +102,8 @@
   import MatrikkelProxyClient from '../lib/matrikkelProxyClient'
   import DxfParser from 'dxf-parser'
   import proj4 from 'proj4';
+  import { polygon as turfPolygon }  from '@turf/helpers';
+  import turfArea from '@turf/area';
 
   // Custom error class
   import AppError from '../lib/AppError';
@@ -377,6 +379,12 @@
           let juridiskeEiere = matrikkelEiere.filter((e) => e.$type.toLowerCase().includes('juridisk'));
           this.statItems.push({ text: 'Juridiske eiere', value: juridiskeEiere.length })
           this.statItems.push({ text: 'Private eiere', value: matrikkelEiere.length - juridiskeEiere.length })
+          if(this.dispatch.stats.area > 1000) {
+            this.statItems.push({ text: 'Areal', value: this.dispatch.stats.area / 1000, postvalue: ' KM²'})
+          } else {
+            this.statItems.push({ text: 'Areal', value: this.dispatch.stats.area, postvalue: ' M²'})
+          }
+          
 
           /*
             Fyll data inn i dispatch objekt
@@ -477,19 +485,23 @@
             ]
           ]);
 
+          // Values for keeping track of the lowest and highest coordinate-values
           let lowX = vertices[0].x;
           let highX = vertices[0].x;
           let lowY = vertices[0].y;
           let highY = vertices[0].y;
           
+          // Points for all the 4 extreme coordinates in the polygon
           let northPoint = undefined;
           let westPoint = undefined;
           let eastPoint = undefined;
           let southPoint = undefined;
 
+          // An array version of the non-transformed vertices (using [123, 321] instead of { x: 123, y: 321})
           let arrayifiedVertices = [];
+          // The array that stores all the transformed vertices
           let transformedVertices = [];
-          // let firstLatitude = vertices[0].y;
+
           vertices.forEach((vertice) => {
             // Make a copy of the vertice to not modify the source object
             let vCopy = JSON.parse(JSON.stringify(vertice))
@@ -505,26 +517,35 @@
             // Add the transformed points to the transformed array
             transformedVertices.push([transformed.y, transformed.x]);
           })
-
+          // Closing the polygon if necessary
+          if(transformedVertices[0] != transformedVertices[transformedVertices.length - 1]) {
+            transformedVertices.push(transformedVertices[0]);
+          }
+          
+          // Calculate the center of the polygon
           let center = {
             x: (lowX + highX) / 2,
             y: (lowY + highY) / 2
           }
-
-          // Calculate midpoint
           let transformedCenter = proj4('EPSG:25832', 'EPSG:4326', JSON.parse(JSON.stringify(center)));
 
+          // Calculate the area of the polygon in square meters
+          let tp = turfPolygon([transformedVertices])
+          let area = turfArea(tp);
+          if(area) {
+            this.dispatch.polygon.area = Math.round(area);
+            this.dispatch.stats.area = this.dispatch.polygon.area;
+            this.dispatch.geopolygon.area = this.dispatch.polygon.area;
+          }
+
           // Calculate the coordinates for the outmost points
-          /* eslint-disable */
           let translatedNorth = proj4('EPSG:25832', 'EPSG:4326', {x: northPoint.x , y: northPoint.y});
           let translatedWest = proj4('EPSG:25832', 'EPSG:4326', {x: westPoint.x , y: westPoint.y});
           let translatedEast = proj4('EPSG:25832', 'EPSG:4326', {x: eastPoint.x , y: eastPoint.y});
           let translatedSouth = proj4('EPSG:25832', 'EPSG:4326', {x: southPoint.x , y: southPoint.y});
-          /* eslint-enable */
 
           // Set the polygon for the dispatch object
           this.dispatch.polygon.coordinatesystem = 'EUREF89 UTM Sone 32';
-          this.dispatch.polygon.area = 100;
           this.dispatch.polygon.vertices = arrayifiedVertices;
           this.dispatch.polygon.extremes = {
             north: [northPoint.y, northPoint.x],
@@ -536,7 +557,6 @@
 
           // Set the geopolygon for the dispatch object
           this.dispatch.geopolygon.coordinateSystem = 'WGS84';
-          this.dispatch.geopolygon.area = 100;
           this.dispatch.geopolygon.vertices = transformedVertices;
           this.dispatch.geopolygon.extremes = {
             north: [translatedNorth.y, translatedNorth.x],
@@ -546,16 +566,11 @@
             center: [transformedCenter.y, transformedCenter.x]
           }
 
-
-          // Kalkuler polygonets areal
-          // TODO: Dette må finnes ut av
-          this.dispatch.stats.area = 100;
-
           // Set that the file has been parsed
           this.isParsingFile = false;
         } catch (err) {
           this.setError(err);
-          console.error(err.stack);
+          console.error(err);
         }
       },
       parseMatrikkelEnheter(Enheter) {

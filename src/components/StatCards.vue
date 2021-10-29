@@ -7,6 +7,9 @@
       <div class="card-body">
         <div class="typography heading-three">
           {{item.value}}
+          <span v-if="item.postvalue">
+            {{item.postvalue}}
+          </span>
         </div>
       </div>
     </div>
