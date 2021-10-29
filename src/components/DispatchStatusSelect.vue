@@ -44,7 +44,7 @@ export default {
   data() {
     return {
       items: [
-        { text: 'Til godkjenning', value: 'toapproval', color: '#E7827E', hint: 'Utsendelsen vil ikke skje før den er godkjent' },
+        { text: 'Ikke godkjenning', value: 'notapproved', color: '#E7827E', hint: 'Utsendelsen vil ikke skje før den er godkjent' },
         { text: 'Godkjent', value: 'approved', color: '#E0C38B', hint: 'Utsendelsen vil gjennomføres ved neste kjøring 00:00' }
       ]
     }
