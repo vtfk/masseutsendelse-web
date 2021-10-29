@@ -12,12 +12,12 @@
     </div>
     <!-- Kart og matrikkel -->
     <div v-else class="center-content">
-      <Map :coordinates="dispatch.geopolygon.vertices" :center="dispatch.geopolygon.extremes.center" :markers="[dispatch.geopolygon.extremes.center]"/>  
+      <Map style="max-width: 750px" :coordinates="dispatch.geopolygon.vertices" :center="dispatch.geopolygon.extremes.center" :markers="[dispatch.geopolygon.extremes.center]"/>  
       <div v-if="!isAllRequiredMatrikkelInfoRetreived && !isContactingMatrikkel" class="centeredColumn" style="margin-top: 1rem;">
         <VTFKButton :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
         <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
       </div>
-      <div v-else-if="isContactingMatrikkel" class="shadow" style="margin-top: 1rem; border: 1px solid black; padding: 1rem 1rem; border-radius: 20px; background-color: #CFEBF2;">
+      <div v-else-if="isContactingMatrikkel" class="shadow" style="margin-top: 1rem; padding: 1rem 1rem; border-radius: 20px; background-color: #CFEBF2;">
         <Loading title="Kontaker matrikkelen" message="Henter enheter innenfor polygon"/>
       </div>
       <div v-else class="centeredColumn" style="margin-top: 1rem;">
@@ -29,7 +29,7 @@
         <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
         <!-- Aksept for at matrikkel info ser ok ut -->
         <VTFKCheckbox
-          v-if="dispatch.matrikkel.affectedCount"
+          v-if="dispatch.stats.affectedCount"
           :value="'false'"
           name="matrikkelOk"
           label="Matrikkelinformasjonen ser korrekt ut"
@@ -70,7 +70,7 @@
           v-if="isAllRequiredMatrikkelInfoRetreived"
           class="mt-1"
           name="dispatchApproved"
-          :label="'Følgende informasjon skal sendes ut til ' + dispatch.matrikkel.totalOwners + ' mottakere'"
+          :label="'Følgende informasjon skal sendes ut til ' + dispatch.stats.totalOwners + ' mottakere'"
           :passedProps="{ onChange: () => { isFirstLevelDispatchApproved = !isFirstLevelDispatchApproved; }}"
         />
         <VTFKButton style="margin-top: 1rem;" :disabled="!isFirstLevelDispatchApproved || !isDispatchFilledInn" :passedProps="{onClick: () => { submitMassDispatch(); }}">Send til godkjenning</VTFKButton>
@@ -129,7 +129,8 @@
           title: '',
           body: '',
           template: undefined,
-          matrikkel: {
+          matrikkelEnheter: undefined,
+          stats: {
             affectedCount: null,
             area: null,
             totalOwners: null,
@@ -188,7 +189,7 @@
     },
     computed: {
       isAllRequiredMatrikkelInfoRetreived() {
-        const m = this.dispatch.matrikkel;
+        const m = this.dispatch.stats;
         if(m.affectedCount !== null && m.area !== null && m.totalOwners !== null) {
           return true;
         }
@@ -344,7 +345,6 @@
           // Hent ut alle eiere fra Matrikkel API
           let matrikkelEiere = await matrikkelClient.getStoreItems(matrikkelEierRequestItems);
           this.eiere = matrikkelEiere;
-          console.log(matrikkelEiere);
 
           if(!matrikkelEiere || matrikkelEiere.length === 0) {
             throw new AppError('Ingen eiere er funnet', 'Vi spurte matrikkelen om ' + matrikkelEierRequestItems.length + ' eiere, men fikk ingen tilbake');
@@ -374,10 +374,10 @@
           /*
             Fyll data inn i dispatch objekt
           */
-          this.dispatch.matrikkel.affectedCount = matrikkelEnhetIds.length;
-          this.dispatch.matrikkel.privateOwners = matrikkelEiere.length - juridiskeEiere.length;
-          this.dispatch.matrikkel.businessOwners = juridiskeEiere.length;
-          this.dispatch.matrikkel.totalOwners = matrikkelEiere.length;
+          this.dispatch.stats.affectedCount = matrikkelEnhetIds.length;
+          this.dispatch.stats.privateOwners = matrikkelEiere.length - juridiskeEiere.length;
+          this.dispatch.stats.businessOwners = juridiskeEiere.length;
+          this.dispatch.stats.totalOwners = matrikkelEiere.length;
 
           matrikkelEnheter.forEach((enhet) => {
             // Hent ut generell informasjon om matrikkel enheten som skal lagres i databasen
@@ -396,10 +396,11 @@
             if(enhet.eierforhold && Array.isArray(enhet.eierforhold)) {
               matrikkelUnit.antallEiere = enhet.eierforhold.length;
             }
-            this.dispatch.matrikkel.units.push(matrikkelUnit);
+            this.dispatch.stats.units.push(matrikkelUnit);
           })
 
           this.parsedItems = matrikkelEnheter;
+          this.dispatch.matrikkelEnheter = matrikkelEnheter;
 
           this.isContactingMatrikkel = false;
         } catch(err) {
@@ -543,7 +544,7 @@
 
           // Kalkuler polygonets areal
           // TODO: Dette må finnes ut av
-          this.dispatch.matrikkel.area = 100;
+          this.dispatch.stats.area = 100;
 
           // Set that the file has been parsed
           this.isParsingFile = false;

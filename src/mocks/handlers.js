@@ -13,5 +13,8 @@ export default [
         } else if(req.body[0].type === 'PersonId') {
             return res(ctx.json(require('./data/PersonerIBø.json')));
         }
+    }),
+    rest.get('*/api/v1/dispatches', (req, res, ctx) => {
+        return res(ctx.json(require('./data/Dispatches.json')));
     })
 ]

@@ -1,161 +1,164 @@
 <template>
   <div class="container">
     <h2 class="typography heading-two" style="margin: 2rem;">Utsendelser</h2>
-    <v-card style="padding-bottom:2rem;">
-      <v-card-title class="typography heading-three">
-        Prosjekter
-        <v-spacer/>
-        <v-text-field
-          v-model="search"
-          label="Søk i tabell"
-          append-icon="mdi-magnify"
-          single-line
-          hide-details
-          style="margin-right: 1rem"
-        ></v-text-field>
-      </v-card-title>
-      <v-data-table
-        :headers="headers"
-        :items="prosjekter"
-        :items-per-page="5"
-        fixed-header
-        class="elevation-1"
-        style="margin: 2rem;"
-        :search="search"
-        :loading="loading"
-        loading-text="Laster data fra databasen "
-      >
-        <template v-slot:[`item.status`]="{ item }">
-          <v-chip
-            :color="getColor(item.status)"
-            dark
-          >
-            {{ item.status }}
-          </v-chip>
-        </template>
-        <template v-slot:[`item.handlinger`]="{ item }">
-          <v-icon
-            medium
-            style="padding-right:0.2rem;"
-            tag='test'
-            @click="editItem(item)"
-            v-on:click="test"
-          >
-            mdi-pencil
-          </v-icon>
-          <v-icon
-            medium
-            style="padding-right:0.2rem;"
-            @click="openDoc(item)"
-          >
-            mdi-note-search 
-          </v-icon>
-          <v-icon
-            medium
-            @click="openMap(item)"
-          >
-            mdi-map-search 
-          </v-icon>
-      </template>
-      </v-data-table>
-    </v-card>
-    <!-- MODALER/DIALOGER -->
-    <!-- Edit dialog -->
-    <v-dialog
-    v-if="dialogEdit"
-    v-model="dialogEdit"
-    width="50%"
-    >
-    <v-card>
-      <v-card-title>
-        Sett status
-      </v-card-title>
-        <v-card-text>
-          <v-select
-          v-model="select"
-          :hint="`Prosjektets status vil bli satt til ${select.status_valg}`"
-          :items="items"
-          item-text="status_valg"
-          item-value="status_value"
-          label="Sett status for prosjektet"
-          :menu-props="{ bottom: true, offsetY: true }"
-          chips
-          persistent-hint
-          hide-selected
-          outlined
-          rounded
-          return-object
-          single-line
+    <Error v-if="error" :error="error"/>
+    <Loading v-else-if="dispatches.length === 0" title="Laster utsendelser" message="Dette kan ta noen sekunder" />
+    <div v-else>
+      <v-card style="padding-bottom:2rem;">
+        <v-card-title class="typography heading-three">
+          Prosjekter
+          <v-spacer/>
+          <v-text-field
+            v-model="search"
+            label="Søk i tabell"
+            append-icon="mdi-magnify"
+            single-line
+            hide-details
+            style="margin-right: 1rem"
+          ></v-text-field>
+        </v-card-title>
+        <v-data-table
+          :headers="headers"
+          :items="prosjekter"
+          :items-per-page="5"
+          fixed-header
+          class="elevation-1"
+          style="margin: 2rem;"
+          :search="search"
+          :loading="loading"
+          loading-text="Laster data fra databasen "
         >
-          <template #selection="{item}">
-          <v-chip
-           :color="getColor(item.status_value)"
-          >
-            {{ item.status_value }}
-          </v-chip>
+          <template v-slot:[`item.status`]="{ item }">
+            <v-chip
+              :color="getColor(item.status)"
+              dark
+            >
+              {{ item.status }}
+            </v-chip>
+          </template>
+          <template v-slot:[`item.handlinger`]="{ item }">
+            <v-icon
+              medium
+              style="padding-right:0.2rem;"
+              tag='test'
+              @click="editItem(item)"
+              v-on:click="test"
+            >
+              mdi-pencil
+            </v-icon>
+            <v-icon
+              medium
+              style="padding-right:0.2rem;"
+              @click="openDoc(item)"
+            >
+              mdi-note-search 
+            </v-icon>
+            <v-icon
+              medium
+              @click="openMap(item)"
+            >
+              mdi-map-search 
+            </v-icon>
         </template>
-        </v-select>
-        </v-card-text>
-        <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
-          <VTFKButton 
-            type='secondary' size='small' style="padding-bottom: 1rem;"
-            :passedProps="{ onClick: () => [saveEdit(), clear()] }"
-            v-on:click="clear"
-            >Lagre
-          </VTFKButton>
-          <VTFKButton 
-            type='secondary' size='small' style="padding-bottom: 1rem;"
-            :passedProps="{ onClick: () => [dialogEdit = false, clear()] }"
-            >Avbryt
-          </VTFKButton>
-        </v-card-actions>
-    </v-card>
-    </v-dialog>
-    <!-- Map dialog -->
-    <v-dialog
-    v-if="dialogMap"
-    v-model="dialogMap"
-    width="50%"
-    >
-    <v-card>
-      <v-card-title>
-        Kart
-      </v-card-title>
-      <v-card-text>
-        <Map />
-      </v-card-text>
-        <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
-          <VTFKButton 
-            type='secondary' size='small' style="padding-bottom: 1rem;"
-            :passedProps="{ onClick: () => [dialogMap = false] }"
-            >Lukk
-          </VTFKButton>
-        </v-card-actions>
-    </v-card>
-    </v-dialog>
-
-    <!-- Doc dialog -->
-    <v-dialog
-    v-if="dialogDoc"
-    v-model="dialogDoc"
-    width="50%"
-    >
-    <v-card>
-      <v-card-title>
-        Dokumenter
-      </v-card-title>
+        </v-data-table>
+      </v-card>
+      <!-- MODALER/DIALOGER -->
+      <!-- Edit dialog -->
+      <v-dialog
+      v-if="dialogEdit"
+      v-model="dialogEdit"
+      width="50%"
+      >
+      <v-card>
+        <v-card-title>
+          Sett status
+        </v-card-title>
+          <v-card-text>
+            <v-select
+            v-model="select"
+            :hint="`Prosjektets status vil bli satt til ${select.status_valg}`"
+            :items="items"
+            item-text="status_valg"
+            item-value="status_value"
+            label="Sett status for prosjektet"
+            :menu-props="{ bottom: true, offsetY: true }"
+            chips
+            persistent-hint
+            hide-selected
+            outlined
+            rounded
+            return-object
+            single-line
+          >
+            <template #selection="{item}">
+            <v-chip
+            :color="getColor(item.status_value)"
+            >
+              {{ item.status_value }}
+            </v-chip>
+          </template>
+          </v-select>
+          </v-card-text>
+          <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
+            <VTFKButton 
+              type='secondary' size='small' style="padding-bottom: 1rem;"
+              :passedProps="{ onClick: () => [saveEdit(), clear()] }"
+              v-on:click="clear"
+              >Lagre
+            </VTFKButton>
+            <VTFKButton 
+              type='secondary' size='small' style="padding-bottom: 1rem;"
+              :passedProps="{ onClick: () => [dialogEdit = false, clear()] }"
+              >Avbryt
+            </VTFKButton>
+          </v-card-actions>
+      </v-card>
+      </v-dialog>
+      <!-- Map dialog -->
+      <v-dialog
+      v-if="dialogMap"
+      v-model="dialogMap"
+      width="50%"
+      >
+      <v-card>
+        <v-card-title>
+          Kart
+        </v-card-title>
         <v-card-text>
-          Noe greier her
+          <Map />
         </v-card-text>
-        <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
-          <VTFKButton 
-            type='secondary' size='small' style="padding-bottom: 1rem;"
-            :passedProps="{ onClick: () => [dialogDoc = false] }"
-            >Lukk
-          </VTFKButton>
-        </v-card-actions>
-    </v-card>
-    </v-dialog>
+          <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
+            <VTFKButton 
+              type='secondary' size='small' style="padding-bottom: 1rem;"
+              :passedProps="{ onClick: () => [dialogMap = false] }"
+              >Lukk
+            </VTFKButton>
+          </v-card-actions>
+      </v-card>
+      </v-dialog>
+      <!-- Doc dialog -->
+      <v-dialog
+      v-if="dialogDoc"
+      v-model="dialogDoc"
+      width="50%"
+      >
+      <v-card>
+        <v-card-title>
+          Dokumenter
+        </v-card-title>
+          <v-card-text>
+            Noe greier her
+          </v-card-text>
+          <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
+            <VTFKButton 
+              type='secondary' size='small' style="padding-bottom: 1rem;"
+              :passedProps="{ onClick: () => [dialogDoc = false] }"
+              >Lukk
+            </VTFKButton>
+          </v-card-actions>
+      </v-card>
+      </v-dialog>
+    </div>
     <!-- Alerts -->
     <v-alert 
     :value="alert_success" 
@@ -171,20 +174,31 @@
 </template>
 
 <script>
-//VTFK
+// Dependencies
+import axios from 'axios'
+import AppError from '../lib/AppError';
+
+// VTFK komponenter
 import { Button } from '@vtfk/components'
 
-//Prosjekt
+// Prosjekt komponenter
+import Loading from '../components/Loading.vue';
+import Error from '../components/Error.vue';
 import Map from '../components/Map.vue';
 
   export default {
     name: 'UtsendelserView',
     components: {
         'VTFKButton': Button,
+        Loading,
+        Error,
         Map,
     },
     data () {
       return {
+        isLoading: true,
+        error: undefined,
+        dispatches: [],
         search: '',
         dialogDoc: false,
         dialogEdit: false,
@@ -265,13 +279,31 @@ import Map from '../components/Map.vue';
         fetchStatus: '',
       }
     },
-    // mounted: {
-    //   created() {
-    //     setTimeout(function () {
-    //       map.invalidateSize();
-    //     }, 10);
-    //   }
-    // },
+    async mounted() {
+      // Hent alle dispatches fra matrikkel APIet
+      const request = {
+        url: 'https://ikkeLagetEnda/api/v1/dispatches',
+        method: 'GET',
+      }
+
+      try {
+        const response = await axios.request(request);
+
+        if(!response || !response.data) {
+          throw new AppError('Ingen respons mottatt', 'Utsendelses APIet rapporterte ingen data');
+        }
+
+        if(!Array.isArray(response.data) || response.data.length <= 0) {
+          throw new AppError('Manglende data', 'Utsendelses APIet svarte, men sendte ingen data');
+        }
+
+        this.dispatches = response.data;
+
+      } catch (err) {
+        
+        this.error = err;
+      }
+    },
     methods: {
       getColor (status) {
         if (status == "Godkjent") return '#91B99F'
