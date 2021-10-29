@@ -1,10 +1,12 @@
 [
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns4:JuridiskPerson"
+        "$type": "JuridiskPerson",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+        "id": {
+            "$type": "JuridiskPersonId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+            "value": "10520065"
         },
-        "id": "10520065",
         "oppdateringsdato": "2020-06-16T05:35:14.595000000+02:00",
         "versjonId": "2",
         "oppdatertAv": "smatmynd",
@@ -31,17 +33,19 @@
         }
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns4:FysiskPerson"
+        "$type": "FysiskPerson",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+        "id": {
+            "$type": "FysiskPersonId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+            "value": "1659450"
         },
-        "id": "1659450",
         "oppdateringsdato": "2020-06-15T22:25:33.808000000+02:00",
         "versjonId": "4",
         "oppdatertAv": "smatmynd",
         "versjon": "1592252733808",
-        "nummer": "03066936278",
-        "navn": "BERGSKÅS TONJE VEDVIK",
+        "nummer": "00000000000",
+        "navn": "ANNA LYSE",
         "postadresse": {
             "adresselinje2": "LIVEGEN 223",
             "adresselinje3": "3803 BØ I TELEMARK",
@@ -52,8 +56,8 @@
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "0ec6e13f-9a01-55b2-93c2-f9035ac06fed"
         },
-        "etternavn": "BERGSKÅS",
-        "fornavn": "TONJE VEDVIK",
+        "etternavn": "LYSE",
+        "fornavn": "ANNA",
         "spesifisertRegTypeKodeId": "1",
         "bostedsadresse": {
             "kommunenummer": "3817",
@@ -68,11 +72,13 @@
         "personStatusKodeId": "1"
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns4:JuridiskPerson"
+        "$type": "JuridiskPerson",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+        "id": {
+            "$type": "JuridiskPersonId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+            "value": "503312057"
         },
-        "id": "503312057",
         "oppdateringsdato": "2020-06-16T16:02:46.237000000+02:00",
         "versjonId": "4",
         "oppdatertAv": "smatmynd",
@@ -99,11 +105,13 @@
         }
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns4:JuridiskPerson"
+        "$type": "JuridiskPerson",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+        "id": {
+            "$type": "JuridiskPersonId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+            "value": "585795431"
         },
-        "id": "585795431",
         "oppdateringsdato": "2020-06-16T16:44:03.188000000+02:00",
         "versjonId": "2",
         "oppdatertAv": "smatmynd",
@@ -130,17 +138,19 @@
         }
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns4:FysiskPerson"
+        "$type": "FysiskPerson",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+        "id": {
+            "$type": "FysiskPersonId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+            "value": "7895912"
         },
-        "id": "7895912",
         "oppdateringsdato": "2020-06-16T03:28:20.431000000+02:00",
         "versjonId": "4",
         "oppdatertAv": "smatmynd",
         "versjon": "1592270900431",
-        "nummer": "30067147525",
-        "navn": "BERGSKÅS TROND",
+        "nummer": "00000000000",
+        "navn": "TRUDE LUTH",
         "postadresse": {
             "adresselinje2": "LIVEGEN 223",
             "adresselinje3": "3803 BØ I TELEMARK",
@@ -151,8 +161,8 @@
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "3daad4f5-97e7-5e32-8ed6-75dc40f1cafa"
         },
-        "etternavn": "BERGSKÅS",
-        "fornavn": "TROND",
+        "etternavn": "LUTH",
+        "fornavn": "TRUDE",
         "spesifisertRegTypeKodeId": "1",
         "bostedsadresse": {
             "kommunenummer": "3817",
@@ -167,17 +177,19 @@
         "personStatusKodeId": "1"
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns4:FysiskPerson"
+        "$type": "FysiskPerson",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+        "id": {
+            "$type": "FysiskPersonId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+            "value": "4929626"
         },
-        "id": "4929626",
         "oppdateringsdato": "2020-06-16T00:50:45.885000000+02:00",
         "versjonId": "6",
         "oppdatertAv": "smatmynd",
         "versjon": "1592261445885",
-        "nummer": "17038929275",
-        "navn": "NYHUS LILL-KATRIN",
+        "nummer": "00000000000",
+        "navn": "SKALLE TOM",
         "postadresse": {
             "adresselinje2": "GYMNASBAKKEN 45",
             "adresselinje3": "3802 BØ I TELEMARK",
@@ -188,8 +200,8 @@
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "678b8386-b0f2-56b8-88fc-167989b1404f"
         },
-        "etternavn": "NYHUS",
-        "fornavn": "LILL-KATRIN",
+        "etternavn": "SKALLE",
+        "fornavn": "TOM",
         "spesifisertRegTypeKodeId": "1",
         "bostedsadresse": {
             "kommunenummer": "3817",
@@ -204,17 +216,19 @@
         "personStatusKodeId": "1"
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns4:FysiskPerson"
+        "$type": "FysiskPerson",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+        "id": {
+            "$type": "FysiskPersonId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+            "value": "5566176"
         },
-        "id": "5566176",
         "oppdateringsdato": "2021-06-30T06:15:58.357000000+02:00",
         "versjonId": "8",
         "oppdatertAv": "eksternregister1",
         "versjon": "1625026558357",
-        "nummer": "20018949742",
-        "navn": "KNATTERUD EIRIK IDLAND",
+        "nummer": "00000000000",
+        "navn": "STOL LENE",
         "postadresse": {
             "adresselinje2": "Prestevegen 2",
             "adresselinje3": "3802 BØ I TELEMARK",
@@ -225,8 +239,8 @@
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "4008ffca-4c96-5e2d-b3c8-5f2431190499"
         },
-        "etternavn": "KNATTERUD",
-        "fornavn": "EIRIK IDLAND",
+        "etternavn": "STOL",
+        "fornavn": "LENE",
         "spesifisertRegTypeKodeId": "10",
         "bostedsadresse": {
             "kommunenummer": "3817",
@@ -241,11 +255,13 @@
         "personStatusKodeId": "1"
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns4:JuridiskPerson"
+        "$type": "JuridiskPerson",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+        "id": {
+            "$type": "JuridiskPersonId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+            "value": "6257903605"
         },
-        "id": "6257903605",
         "oppdateringsdato": "2021-03-24T02:20:19.547000000+01:00",
         "versjonId": "5",
         "oppdatertAv": "eksternregister1",
@@ -272,17 +288,19 @@
         }
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns4:FysiskPerson"
+        "$type": "FysiskPerson",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+        "id": {
+            "$type": "FysiskPersonId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+            "value": "4581299"
         },
-        "id": "4581299",
         "oppdateringsdato": "2020-06-16T00:33:02.202000000+02:00",
         "versjonId": "4",
         "oppdatertAv": "smatmynd",
         "versjon": "1592260382202",
-        "nummer": "15093647944",
-        "navn": "HOLTA BJØRN",
+        "nummer": "00000000000",
+        "navn": "BEIDER VEGARD",
         "postadresse": {
             "adresselinje2": "GYMNASBAKKEN 43",
             "adresselinje3": "3802 BØ I TELEMARK",
@@ -293,8 +311,8 @@
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "ef8ab403-1f6d-53d6-a94d-b5642f40dd27"
         },
-        "etternavn": "HOLTA",
-        "fornavn": "BJØRN",
+        "etternavn": "BEIDER",
+        "fornavn": "VEGARD",
         "spesifisertRegTypeKodeId": "1",
         "bostedsadresse": {
             "kommunenummer": "3817",
@@ -309,17 +327,19 @@
         "personStatusKodeId": "1"
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns4:FysiskPerson"
+        "$type": "FysiskPerson",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+        "id": {
+            "$type": "FysiskPersonId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+            "value": "3222760"
         },
-        "id": "3222760",
         "oppdateringsdato": "2020-06-15T23:23:31.579000000+02:00",
         "versjonId": "5",
         "oppdatertAv": "smatmynd",
         "versjon": "1592256211579",
-        "nummer": "09098539120",
-        "navn": "SANDA TORSTEIN",
+        "nummer": "00000000000",
+        "navn": "ELLEREI TRUDE",
         "postadresse": {
             "adresselinje2": "GYMNASBAKKEN 45",
             "adresselinje3": "3802 BØ I TELEMARK",
@@ -330,8 +350,8 @@
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "04cac8de-3f59-5690-9895-3090e908f1b0"
         },
-        "etternavn": "SANDA",
-        "fornavn": "TORSTEIN",
+        "etternavn": "ELLEREI",
+        "fornavn": "TRUDE",
         "spesifisertRegTypeKodeId": "1",
         "bostedsadresse": {
             "kommunenummer": "3817",
@@ -346,11 +366,13 @@
         "personStatusKodeId": "1"
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns4:JuridiskPerson"
+        "$type": "JuridiskPerson",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+        "id": {
+            "$type": "JuridiskPersonId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+            "value": "9278455"
         },
-        "id": "9278455",
         "oppdateringsdato": "2020-06-16T04:47:17.804000000+02:00",
         "versjonId": "3",
         "oppdatertAv": "smatmynd",
@@ -378,17 +400,19 @@
         "slettetDato": "2015-12-18"
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns4:FysiskPerson"
+        "$type": "FysiskPerson",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+        "id": {
+            "$type": "FysiskPersonId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+            "value": "1131404"
         },
-        "id": "1131404",
         "oppdateringsdato": "2020-06-15T21:58:35.043000000+02:00",
         "versjonId": "4",
         "oppdatertAv": "smatmynd",
         "versjon": "1592251115043",
-        "nummer": "01063448032",
-        "navn": "HOLTA KARI MARIE VREIM",
+        "nummer": "00000000000",
+        "navn": "FARE INGA",
         "postadresse": {
             "adresselinje2": "GYMNASBAKKEN 43",
             "adresselinje3": "3802 BØ I TELEMARK",
@@ -399,8 +423,8 @@
             "navnerom": "https://data.geonorge.no/matrikkel",
             "uuid": "c76789b7-b7d6-50aa-86da-d2f06d070a0c"
         },
-        "etternavn": "HOLTA",
-        "fornavn": "KARI MARIE VREIM",
+        "etternavn": "FARE",
+        "fornavn": "INGA",
         "spesifisertRegTypeKodeId": "1",
         "bostedsadresse": {
             "kommunenummer": "3817",
@@ -415,11 +439,13 @@
         "personStatusKodeId": "1"
     },
     {
-        "$": {
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            "xsi:type": "ns4:JuridiskPerson"
+        "$type": "JuridiskPerson",
+        "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+        "id": {
+            "$type": "JuridiskPersonId",
+            "$namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+            "value": "536597124"
         },
-        "id": "536597124",
         "oppdateringsdato": "2020-06-16T16:18:56.733000000+02:00",
         "versjonId": "2",
         "oppdatertAv": "smatmynd",
