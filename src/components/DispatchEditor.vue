@@ -29,13 +29,7 @@
           <!-- Angreknapp -->
           <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
           <!-- Aksept for at matrikkel info ser ok ut -->
-          <VTFKCheckbox
-            v-if="dispatch.stats.affectedCount"
-            :value="'false'"
-            name="matrikkelOk"
-            label="Matrikkelinformasjonen ser korrekt ut"
-            :passedProps="{ onChange: () => { isMatrikkelApproved = !isMatrikkelApproved; }}"
-          />
+          <v-checkbox v-if="dispatch.stats.affectedCount" v-model="isMatrikkelApproved" :disabled="isMatrikkelApproved" label="Matrikkelinformasjonen ser korrekt ut"/>
         </div>
       </div>
       <!-- Prosjekt informasjon -->
@@ -74,6 +68,7 @@
         <div v-if="mode === 'new'" class="centeredColumn">
           <VTFKCheckbox
             v-if="isAllRequiredMatrikkelInfoRetreived"
+            value="false"
             class="mt-1"
             name="dispatchApproved"
             :label="'Følgende informasjon skal sendes ut til ' + dispatch.stats.totalOwners + ' mottakere'"
