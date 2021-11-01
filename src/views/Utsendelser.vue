@@ -31,9 +31,8 @@
           <template v-slot:[`item.status`]="{ item }">
             <v-chip
               :color="getColor(item.status)"
-              dark
             >
-              {{ item.status }}
+              {{translateStatus(item.status)}}
             </v-chip>
           </template>
           <template v-slot:[`item.handlinger`]="{ item }">
@@ -67,14 +66,14 @@
       <v-dialog
       v-if="dialogEdit"
       v-model="dialogEdit"
-      width="50%"
+      width="80%"
       >
       <v-card>
         <v-card-title>
           Sett status
         </v-card-title>
           <v-card-text>
-            <v-select
+            <!-- <v-select
             v-model="select"
             :hint="`Prosjektets status vil bli satt til ${select.status_valg}`"
             :items="items"
@@ -97,7 +96,12 @@
               {{ item.status_value }}
             </v-chip>
           </template>
-          </v-select>
+          </v-select> -->
+          <dispatch-editor
+          :dispatchObject="editItem"
+          >
+
+          </dispatch-editor>
           </v-card-text>
           <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
             <VTFKButton 
@@ -140,15 +144,16 @@
       <v-dialog
       v-if="dialogDoc"
       v-model="dialogDoc"
-      width="50%"
+      width="80%"
       >
       <v-card>
         <v-card-title>
           Dokumenter
         </v-card-title>
-          <v-card-text>
-            Noe greier her
-          </v-card-text>
+           <dispatch-editor
+          :dispatchObject="openDoc"
+          >
+          </dispatch-editor>
           <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
             <VTFKButton 
               type='secondary' size='small' style="padding-bottom: 1rem;"
@@ -185,6 +190,7 @@ import { Button } from '@vtfk/components'
 import Loading from '../components/Loading.vue';
 import Error from '../components/Error.vue';
 import Map from '../components/Map.vue';
+import DispatchEditor from '../components/DispatchEditor.vue';
 
   export default {
     name: 'UtsendelserView',
@@ -193,6 +199,7 @@ import Map from '../components/Map.vue';
         Loading,
         Error,
         Map,
+        DispatchEditor,
     },
     data () {
       return {
@@ -225,10 +232,10 @@ import Map from '../components/Map.vue';
         prosjekter: [],
         select: {status_valg: '', status_value: ''},
         items: [
-          { status_valg: 'Godkjent', status_value: 'Godkjent'},
-          { status_valg: 'Ikke Godkjent', status_value: 'Ikke Godkjent'},
-          { status_valg: 'Til Behandling', status_value: 'Til Behandling'},
-          { status_valg: 'Sendt', status_value: 'Sendt'},
+          { status_valg: 'Godkjent', status_value: 'approved'},
+          { status_valg: 'Ikke Godkjent', status_value: 'not approved'},
+          { status_valg: 'Til Behandling', status_value: 'inprogress'},
+          { status_valg: 'Sendt', status_value: 'completed'},
         ],
         fetchStatus: '',
       }
@@ -260,18 +267,21 @@ import Map from '../components/Map.vue';
     },
     methods: {
       getColor (status) {
-        if (status == "Godkjent") return '#91B99F'
-        else if (status == "Ikke Godkjent") return '#E7827E'
-        else if (status == "Sendt") return '#D0C788'
-        else if (status == "Til Behandling") return '#E0C38B'
+        if (status == "approved") return '#91B99F'
+        else if (status == "not approved") return '#E7827E'
+        else if (status == "completed") return '#D0C788'
+        else if (status == "inprogress") return '#E0C38B'
         else return '#FFFFF'
       },
+      translateStatus (status) {
+        if (status == "completed") return "Sendt"
+        else if (status == "inprogress") return "Til Behandling"
+        else if (status == "approved") return "Godkjent"
+        else if (status == "not approved") return "Ikke Godkjent"
+      },
       editItem (item) {
-        this.editedIndex = this.prosjekter.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+        this.editItem = item
         this.dialogEdit = true
-        this.fetchStatus = `${this.editedItem.status}`
-        this.select = this.fetchStatus
         // console.log(this.editedItem.status)
         // console.log(this.editedIndex)
         // console.log(this.editedItem)
@@ -289,10 +299,8 @@ import Map from '../components/Map.vue';
       openDoc(item){
         //TODO
         // Henter prosjekt nr fra table, sender dette til DB og fær tilbake brevet/dokumentene som er sendt. 
-        this.editedIndex = this.prosjekter.indexOf(item)
-        this.editedItem = Object.assign({}, item)
         this.dialogDoc = true
-        this.fetchProsjektNr = `${this.editedItem.prosjektnr}`
+        this.openDoc = item
         console.log(this.fetchProsjektNr)
         console.log(this.dispatches[0].status)
         console.log(this.dispatches[1].status)
@@ -319,12 +327,11 @@ import Map from '../components/Map.vue';
         // console.log(this.select.status_value)
       },
       titleCase(str) {
+        // Setter alle forbokstaver til uppercase
         var splitStr = str.toLowerCase().split(' ');
         for (var i = 0; i < splitStr.length; i++) {
-          // Assign it back to the array
-          splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
         }
-      // Directly return the joined string
         return splitStr.join(' '); 
       },
       hide_alert: function () {
