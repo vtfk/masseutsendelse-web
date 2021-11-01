@@ -3,7 +3,7 @@
     "_id": "0b8376f4-31bd-4a18-9971-37377b33c783",
     "title":"Prosjekt #1",
     "nummer": "1",
-    "status": "godkjent",
+    "status": "completed",
     "body":"Dette er noe tekst",
     "template":"omregulering",
     "stats":{
@@ -6254,7 +6254,7 @@
    "_id": "0b8376f4-31bd-4a18-9971-37377b33c783",
    "title":"Prosjekt #2",
    "nummer": 2,
-   "status": "til behandling",
+   "status": "not approved",
    "body":"Dette er noe tekst",
    "template":"omregulering",
    "stats":{
