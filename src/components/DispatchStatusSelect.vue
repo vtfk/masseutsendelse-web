@@ -44,8 +44,8 @@ export default {
   data() {
     return {
       items: [
-        { text: 'Ikke godkjenning', value: 'notapproved', color: '#E7827E', hint: 'Utsendelsen vil ikke skje før den er godkjent' },
-        { text: 'Godkjent', value: 'approved', color: '#E0C38B', hint: 'Utsendelsen vil gjennomføres ved neste kjøring 00:00' }
+        { text: 'Ikke Godkjent', value: 'not approved', color: '#E7827E', hint: 'Utsendelsen vil ikke skje før den er godkjent' },
+        { text: 'Godkjent', value: 'approved', color: '#D0C788', hint: 'Utsendelsen vil gjennomføres ved neste kjøring 00:00' }
       ]
     }
   },
@@ -61,7 +61,7 @@ export default {
     if(this.$props.value === 'completed') {
       this.items = [{ text: 'Fullført', value: 'completed', color: '#91B99F', hint: 'Utsendelsen er gjennomført' }]
     } else if(this.$props.value === 'inprogress') {
-      this.items = [{ text: 'Kjører', value: 'inprogress', color: '#91B99F', hint: 'Utsendelsen kjører nå' }]
+      this.items = [{ text: 'Til Behandling', value: 'inprogress', color: '#E0C38B', hint: 'Utsendelsen kjører nå' }]
     }
   }
 }

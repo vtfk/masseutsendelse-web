@@ -73,35 +73,33 @@
           Sett status
         </v-card-title>
           <v-card-text>
-            <!-- <v-select
-            v-model="select"
-            :hint="`Prosjektets status vil bli satt til ${select.status_valg}`"
-            :items="items"
-            item-text="status_valg"
-            item-value="status_value"
-            label="Sett status for prosjektet"
-            :menu-props="{ bottom: true, offsetY: true }"
-            chips
-            persistent-hint
-            hide-selected
-            outlined
-            rounded
-            return-object
-            single-line
-          >
-            <template #selection="{item}">
-            <v-chip
-            :color="getColor(item.status_value)"
-            >
-              {{ item.status_value }}
-            </v-chip>
-          </template>
-          </v-select> -->
-          <dispatch-editor
-          :dispatchObject="editItem"
-          >
-
-          </dispatch-editor>
+            <div class="card shadow centeredColumn" style="margin-top: 1rem;">
+              <h1>Masseutsendelse</h1>
+              <DispatchStatusSelect v-model="selectedDispatch.status"/>
+              <VTFKSelect
+                label="Velg dokument mal"
+                :passedProps="{ onChange: (e) => { onTemplateChange(e)}}"
+                style="max-width: 750px; width: 100%;"
+                placeholder="Velg mal"
+                :selectedItem="selectedTemplate"
+                :closeOnSelect="true"
+                :isOpen="isTemplateSelectorOpen"
+              />
+              <VTFKTextField
+                placeholder="Tittel"
+                :value="selectedDispatch.title"
+                :passedProps="{ onChange: (e) => { selectedDispatch.title = e.target.value } }"
+                :disabled="isReadOnly"
+                style="max-width: 750px; width: 100%; margin-top: 1rem;"
+              />
+              <VTFKTextField 
+                placeholder="Brødtekst"
+                :value="selectedDispatch.body"
+                :passedProps="{ onChange: (e) => { selectedDispatch.body = e.target.value } }"
+                :disabled="isReadOnly"
+                :rows="8" style="max-width: 750px; width: 100%; margin-top: 1rem;"
+              />
+            </div>
           </v-card-text>
           <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
             <VTFKButton 
@@ -122,14 +120,14 @@
       <v-dialog
       v-if="dialogMap"
       v-model="dialogMap"
-      width="50%"
+      width="80%"
       >
       <v-card>
         <v-card-title>
           Kart
         </v-card-title>
         <v-card-text>
-          <Map />
+          <Map :coordinates="selectedDispatch.geopolygon.vertices" :center="selectedDispatch.geopolygon.extremes.center" :markers="[selectedDispatch.geopolygon.extremes.center]"/>
         </v-card-text>
           <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
             <VTFKButton 
@@ -184,22 +182,26 @@ import axios from 'axios'
 import AppError from '../lib/AppError';
 
 // VTFK komponenter
-import { Button } from '@vtfk/components'
+import { Button, Select, TextField } from '@vtfk/components'
 
 // Prosjekt komponenter
 import Loading from '../components/Loading.vue';
 import Error from '../components/Error.vue';
 import Map from '../components/Map.vue';
 import DispatchEditor from '../components/DispatchEditor.vue';
+import DispatchStatusSelect from '../components/DispatchStatusSelect.vue';
 
   export default {
     name: 'UtsendelserView',
     components: {
         'VTFKButton': Button,
+        'VTFKSelect': Select,
+        'VTFKTextField': TextField,
         Loading,
         Error,
         Map,
         DispatchEditor,
+        DispatchStatusSelect,
     },
     data () {
       return {
@@ -211,7 +213,20 @@ import DispatchEditor from '../components/DispatchEditor.vue';
         dialogEdit: false,
         dialogMap:false,
         loading:false,
+        selectedDispatch: undefined,
         alert_success: false,
+        isTemplateSelectorOpen: true,
+        selectedTemplate: undefined,
+        templateItems: [
+          {
+            label: 'Omregulering',
+            value: 'omregulering'
+          },
+          {
+            label: 'Bygge vei',
+            value: 'vei'
+          }
+        ],
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
         headers: [
@@ -235,7 +250,7 @@ import DispatchEditor from '../components/DispatchEditor.vue';
           { status_valg: 'Godkjent', status_value: 'approved'},
           { status_valg: 'Ikke Godkjent', status_value: 'not approved'},
           { status_valg: 'Til Behandling', status_value: 'inprogress'},
-          { status_valg: 'Sendt', status_value: 'completed'},
+          { status_valg: 'Fullført', status_value: 'completed'},
         ],
         fetchStatus: '',
       }
@@ -265,55 +280,58 @@ import DispatchEditor from '../components/DispatchEditor.vue';
         this.error = err;
       }
     },
+    computed: {
+      isAllRequiredMatrikkelInfoRetreived() {
+        const m = this.selectedDispatch.stats;
+        if(m.affectedCount !== null && m.area !== null && m.totalOwners !== null) {
+          return true;
+        }
+        return false;
+      },
+      isDispatchFilledInn() {
+        if(this.selectedDispatch.title && this.selectedDispatch.body && this.selectedDispatch.template) { return true; }
+        return false;
+      },
+      mode() {
+        if(!this.selectedDispatch || this.selectedDispatch._id === undefined) { return 'new'; }
+        return 'edit';
+      },
+      isReadOnly() {
+        if(this.selectedDispatch && (this.selectedDispatch.status === 'inprogress' || this.selectedDispatch.status === 'completed')) { return true; }
+        return false;
+      }
+    },
     methods: {
       getColor (status) {
-        if (status == "approved") return '#91B99F'
+        if (status == "approved") return '#D0C788'
         else if (status == "not approved") return '#E7827E'
-        else if (status == "completed") return '#D0C788'
+        else if (status == "completed") return '#91B99F'
         else if (status == "inprogress") return '#E0C38B'
         else return '#FFFFF'
       },
       translateStatus (status) {
-        if (status == "completed") return "Sendt"
+        if (status == "completed") return "Fullført"
         else if (status == "inprogress") return "Til Behandling"
         else if (status == "approved") return "Godkjent"
         else if (status == "not approved") return "Ikke Godkjent"
       },
       editItem (item) {
-        this.editItem = item
+        this.$set(this, 'selectedDispatch', item)
         this.dialogEdit = true
-        // console.log(this.editedItem.status)
-        // console.log(this.editedIndex)
-        // console.log(this.editedItem)
       },
       openMap(item){
-        // TODO
-        // En funksjon som åpner kartet til polygonet til det valgte prosjektet
-        // Henter prosjekt nr fra table, sender til DB får tilbake kart info og passer denne til kartet.
-        this.editedIndex = this.prosjekter.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+        this.$set(this, 'selectedDispatch', item)
         this.dialogMap = true
-        this.fetchProsjektNr = `${this.editedItem.prosjektnr}`
-        console.log(this.fetchProsjektNr)
+        
       },
       openDoc(item){
-        //TODO
-        // Henter prosjekt nr fra table, sender dette til DB og fær tilbake brevet/dokumentene som er sendt. 
         this.dialogDoc = true
         this.openDoc = item
-        console.log(this.fetchProsjektNr)
-        console.log(this.dispatches[0].status)
-        console.log(this.dispatches[1].status)
       },
       saveEdit() {
         this.dialogEdit = false
         this.alert_success = true
         this.hide_alert();
-        // console.log(this.editedItem.status)
-        // this.editedItem.status = this.select.status_value
-        // console.log(this.editedItem.status)
-        // console.log(this.editedItem)
-        // console.log(this.select.status_value)
       },
       selectedItem() {
         return this.editedItem.status
@@ -323,8 +341,6 @@ import DispatchEditor from '../components/DispatchEditor.vue';
       },
       test(){
         this.editItem.status = this.select
-        // console.log(this.editedItem.status)
-        // console.log(this.select.status_value)
       },
       titleCase(str) {
         // Setter alle forbokstaver til uppercase
@@ -363,7 +379,13 @@ import DispatchEditor from '../components/DispatchEditor.vue';
 }
 .map-wrapper {
   position: relative;
-  box-shadow: 0px 1px 5px 1px #888888;
-    
+  box-shadow: 0px 1px 5px 1px #888888;   
+}
+.card {
+    width: 100%;
+    border-radius: 20px;
+    background-color: white;
+    min-height: 250px;
+    padding: 1rem 1rem;
 }
 </style>
