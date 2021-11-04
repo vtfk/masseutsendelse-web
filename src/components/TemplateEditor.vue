@@ -93,47 +93,47 @@ class TemplateClient {
 /*
   ToastUI placeholder plugin
 */
-function vtfkPlaceholderPlugin() {
-  const toHTMLRenderers = {
-    text(node) {
-      if(!node.literal) return [{ type: 'text', content: '' }]
+// function vtfkPlaceholderPlugin() {
+//   const toHTMLRenderers = {
+//     text(node) {
+//       if(!node.literal) return [{ type: 'text', content: '' }]
 
-      let markdown = node.literal;
+//       let markdown = node.literal;
 
-      // Split markdown on placeholders
-      let splitted = markdown.split(TemplateClient.strictPlaceholderRegex);
+//       // Split markdown on placeholders
+//       let splitted = markdown.split(TemplateClient.strictPlaceholderRegex);
 
-      if(splitted.length == 1) {
-        return [
-          { type: 'text', content: markdown },
-        ]
-      }
+//       if(splitted.length == 1) {
+//         return [
+//           { type: 'text', content: markdown },
+//         ]
+//       }
 
-      let tags = [];
-      splitted.forEach((part) => {
-        if(part.match(TemplateClient.strictPlaceholderRegex)){
-          tags.push(...[
-            { type: 'openTag', tagName: 'span', classNames: ['placeholderChip']},
-            { type: 'text', content: '[PLACEHOLDER]' },
-            { type: 'closeTag', tagName: 'span' },
-          ])
-        } else {
-          tags.push(...[
-            { type: 'openTag', tagName: 'span'},
-            { type: 'text', content: part },
-            { type: 'closeTag', tagName: 'span' },
-          ])
-        }
-      })
+//       let tags = [];
+//       splitted.forEach((part) => {
+//         if(part.match(TemplateClient.strictPlaceholderRegex)){
+//           tags.push(...[
+//             { type: 'openTag', tagName: 'span', classNames: ['placeholderChip']},
+//             { type: 'text', content: '[PLACEHOLDER]' },
+//             { type: 'closeTag', tagName: 'span' },
+//           ])
+//         } else {
+//           tags.push(...[
+//             { type: 'openTag', tagName: 'span'},
+//             { type: 'text', content: part },
+//             { type: 'closeTag', tagName: 'span' },
+//           ])
+//         }
+//       })
 
-      // console.log('Tags');
-      // console.log(tags);
+//       // console.log('Tags');
+//       // console.log(tags);
 
-      return tags
-    }
-  }
-  return { toHTMLRenderers }
-}
+//       return tags
+//     }
+//   }
+//   return { toHTMLRenderers }
+// }
 
   // const toHTMLRenderers = {
   //   text() {
@@ -190,7 +190,7 @@ export default {
     },
     height: {
       type: String,
-      default: '200px'
+      default: '500px'
     }
   },
   data() {
@@ -207,7 +207,7 @@ export default {
           ['hr'],
           ['ul', 'ol', 'indent', 'outdent']
         ],
-        plugins: [ vtfkPlaceholderPlugin ]
+        // plugins: [ vtfkPlaceholderPlugin ]
       },
       mainTemplates: [
         {
@@ -449,6 +449,43 @@ export default {
   },
   created() {
     this.activeOptions = this.$props.options || this.defaultOptions;
+    this.activeOptions.customHTMLRenderer = {
+      text(node) {
+        if(!node.literal) return [{ type: 'text', content: '' }]
+        let markdown = node.literal;
+
+        // Split markdown on placeholders
+        let splitted = markdown.split(TemplateClient.strictPlaceholderRegex);
+
+        if(splitted.length == 1) {
+          return [
+            { type: 'text', content: markdown },
+          ]
+        }
+
+        let tags = [];
+        splitted.forEach((part) => {
+          if(part.match(TemplateClient.strictPlaceholderRegex)){
+            tags.push(...[
+              { type: 'openTag', tagName: 'span', classNames: ['placeholderChip']},
+              { type: 'text', content: '[PLACEHOLDER]' },
+              { type: 'closeTag', tagName: 'span' },
+            ])
+          } else {
+            tags.push(...[
+              { type: 'openTag', tagName: 'span'},
+              { type: 'text', content: part },
+              { type: 'closeTag', tagName: 'span' },
+            ])
+          }
+        })
+
+        // console.log('Tags');
+        // console.log(tags);
+
+        return tags
+      }
+    }
     this.activeTemplate = JSON.parse(JSON.stringify(this.$props.template));
     this.activeTemplate.markdown = this.activeTemplate.markdown || '';
     this.activeTemplate.schema = this.activeTemplate.schema || {};
@@ -493,7 +530,7 @@ export default {
     cursor: pointer;
     border: 1px solid black;
     background-color: #B4DCDA;
-    border-radius: 20px;
+    border-radius: 10px;
     font-weight: bold;
     margin-left: 0.2rem;
     margin-right: 0.2rem;
