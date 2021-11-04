@@ -46,7 +46,7 @@
         </template>
       </VDataTable>
       <!-- Modals -->
-      <VDialog v-if="isShowEditor" v-model="isShowEditor" width="50%" style="text-align: left;">
+      <VDialog v-if="isShowEditor" v-model="isShowEditor" width="60%" style="text-align: left;">
         <VCard>
           <VCardTitle>
             Endre mal
