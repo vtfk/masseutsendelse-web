@@ -8,6 +8,7 @@ Vue.use(VueRouter);
 */
 import HomeView from './views/Home'
 import UtsendelserView from './views/Utsendelser'
+import TemplateView from './views/Templates'
 
 const router = new VueRouter({
   mode: 'history',
@@ -19,6 +20,10 @@ const router = new VueRouter({
     {
       path: '/utsendelser',
       component: UtsendelserView
+    },
+    {
+      path: '/maler',
+      component: TemplateView
     }
   ]
 });
