@@ -258,7 +258,7 @@ import DispatchStatusSelect from '../components/DispatchStatusSelect.vue';
     async mounted() {
       // Hent alle dispatches fra matrikkel APIet
       const request = {
-        url: 'https://ikkeLagetEnda/api/v1/dispatches',
+        url: 'https://test-func-masseutsendelse.azurewebsites.net/api/test-func-masseutsendelse',
         method: 'GET',
       }
 
