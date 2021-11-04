@@ -1,10 +1,21 @@
+/*
+  Import dependencies
+*/
 import Vue from 'vue'
 import App from './App.vue'
 import { VuePlugin } from 'vuera'
-import 'leaflet/dist/leaflet.css';
 import Config from '../config';
 import vuetify from './plugins/vuetify'
 
+/*
+  Import CSS
+*/
+import 'leaflet/dist/leaflet.css';                    // Used by leaflet for displaying maps
+import '@toast-ui/editor/dist/toastui-editor.css';    // Used by the ToastUI markdown editor
+
+/*
+  Setup
+*/
 // Add global accessible object
 Vue.prototype.$config = Config;
 

@@ -16,8 +16,9 @@
       <div class="header-part">
         <VTFKIconDropdownNav>
           <VTFKIconDropdownNavItem title='Hjelp' :onClick="() => { }" />
-          <VTFKIconDropdownNavItem title="Logg ut" href="https://www.vtfk.no" />
           <VTFKIconDropdownNavItem title='Utsendelser' :onClick="() => { route('/utsendelser') }" />
+          <VTFKIconDropdownNavItem title='Maler' :onClick="() => { route('/maler') }" />
+          <VTFKIconDropdownNavItem title="Logg ut" href="https://www.vtfk.no" />
         </VTFKIconDropdownNav>
       </div>
     </div>

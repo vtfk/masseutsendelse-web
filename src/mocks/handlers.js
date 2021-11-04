@@ -16,5 +16,8 @@ export default [
     }),
     rest.get('*/api/v1/dispatches', (req, res, ctx) => {
         return res(ctx.json(require('./data/Dispatches.json')));
+    }),
+    rest.get('*/api/v1/templates', (req, res, ctx) => {
+        return res(ctx.json(require('./data/Templates.json')));
     })
 ]

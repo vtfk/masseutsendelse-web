@@ -1,0 +1,24 @@
+[
+  {
+    "_id": "fc6e2c34-5dce-4809-9569-bff9d3bd7ff4",
+    "name": "Omregulering",
+    "description": "Brukes ved omregulering av ett område",
+    "language": "nb",
+    "mainTemplate": {
+      "id": "brevmal"
+    },
+    "markdown": "",
+    "schema": {}
+  },
+  {
+    "_id": "587cecb8-8f74-4c1b-847d-a8e045577e0f",
+    "name": "Veiarbeid",
+    "mainTemplate": {
+      "id": "notatmal"
+    },
+    "language": "nb",
+    "description": "Brukes ved veiarbeid i ett område",
+    "markdown": "",
+    "schema": {}
+  }
+]
