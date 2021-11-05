@@ -260,6 +260,7 @@ export default {
         hideModeSwitch: this.$props.hideModeSwitch,
         language: 'no-NB',
         usageStatistics: false,
+        frontMatter: true,
         toolbarItems: [
           ['heading', 'bold', 'italic', 'strike'],
           ['hr'],
