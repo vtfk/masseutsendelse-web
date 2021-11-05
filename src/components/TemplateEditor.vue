@@ -54,7 +54,7 @@
     />
     <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
       <VTFKButton size="small" :passedProps="{ onClick: () => { onSaveTemplate(); }}">Lagre</VTFKButton>
-      <VTFKButton size="small">Forhåndsvisning</VTFKButton>
+      <VTFKButton size="small" :passedProps="{ onClick: () => { onPreviewTemplate(); }}">Forhåndsvisning</VTFKButton>
       <VTFKButton v-if="$props.showCloseButton" size="small" type="secondary" :passedProps="{ onClick: () => { close() } }">Lukk</VTFKButton>
     </div>
   </div>
@@ -62,98 +62,153 @@
 
 <script>
 import set from 'lodash.set';
+import get from 'lodash.get';
+import axios from 'axios';
 import { Editor } from '@toast-ui/vue-editor';
 import { Button, TextField } from '@vtfk/components';
-import AppError from '../lib/AppError';
 
 /*
   Template client
 */
 class TemplateClient {
+  /*
+    Regex expressions
+  */
   static generalPlaceholderRegex = /({{.+?}})/gm
-  static strictPlaceholderRegex = /({{.+?=".+?"}})/gm
+  static v1PlaceholderRegex = /{{\s*(\w+\.?)+?\s*}}/gm
+  static v2PlaceholderRegex = /({{.+?=".+?"}})/gm
 
   static parsePlaceholderString(markdown) {
-    // Get one or more placeholders from the string
-    const placeholders = markdown.match(this.strictPlaceholderRegex);
+    // Input validation
+    if(!markdown || !markdown.startsWith('{{') || !markdown.endsWith('}}')) { return; }
 
+    // Remove the  {{ }}
+    let p = markdown.substring(2, markdown.length - 2);
 
-    return placeholders;
+    // Split the text
+    let split = p.split(':');
+
+    // Get all the placeholder properties
+    let placeholder = {};
+    if(markdown.match(this.v1PlaceholderRegex)) {
+      // Version 1 - Only path
+      placeholder.v = 1;
+      p = p.trim();
+
+      let pathSplit = p.split('.');
+
+      let label='';
+      pathSplit.forEach((part) => label += part.charAt(0).toUpperCase() + part.slice(1))
+      
+      placeholder.label = label;
+      placeholder.path = p;
+    } else if(markdown.match(this.v2PlaceholderRegex)) {
+      // Version 2
+      placeholder.v = 2;
+      split.forEach((kvp) => {
+        if(!kvp.includes('=')) { return }
+
+        const type = kvp.split('=')[0];
+        let value = kvp.split('=')[1];
+
+        if(value.startsWith('"') && value.endsWith('"')) {
+          value = value.substring(1, value.length - 1);
+        }
+
+        placeholder[type.toLowerCase()] = value;
+      })
+    } else {
+      return;
+    }
+    
+    // Validate that requred fields are present
+    if(!placeholder.label) { throw new Error('Placeholder does not contain label: ' + markdown); }
+    if(typeof placeholder.label !== 'string') { throw new Error('Placeholder label is not a string: ' + markdown); }
+    if(!placeholder.path) { throw new Error('Placeholder does not contain a path: ' + markdown); }
+    if(typeof placeholder.path !== 'string') { throw new Error('Placeholder path is not a string: ' + markdown); }
+
+    // Set default values
+    placeholder.type = placeholder.type || 'text';
+    
+    // Return the parsed placeholder object
+    return placeholder;
   }
+
   static getPlaceholdersFromString(text) {
+    // Input validation
+    if(!text) { return []; }
+
     // Check that there are placeholders
-    let placeholders = text.match(this.strictPlaceholderRegex);
-    if(!placeholders) { return undefined; }
-    console.log('Found placeholders');
-    console.log(placeholders);
-    return placeholders;
+    let placeholders = text.match(this.generalPlaceholderRegex);
+    if(!placeholders || (Array.isArray(placeholders) && placeholders.length === 0)) { return []; }
+
+    // Enumurate through all placeholders and parse them
+    let parsedPlaceholders = [];
+    placeholders.forEach((p) => {
+      let parsed = this.parsePlaceholderString(p);
+
+      if(parsed) { parsedPlaceholders.push(parsed); }
+    })
+    console.log(parsedPlaceholders);
+    return parsedPlaceholders;
+  }
+
+  static generateSchemaFromMarkdown(markdown) {
+    // Input validation
+    if(!markdown) { throw new Error('Markdown was not provided'); }
+
+    // Retreive all placeholders from the markdown
+    const placeholders = this.getPlaceholdersFromString(markdown);
+
+    // Generate the schema
+    let schema = {};
+    placeholders.forEach((p) => {
+      if(!p.path) { return; }
+      set(schema, p.path, p)
+    })
+
+    // Return the schema
+    return schema;
+  }
+
+  /**
+   * Replaces all placeholders in the text with data from the dataobject
+   * @param {string} text A text string with placeholders
+   * @param {object} data A javascript object that matches the placeholders
+   * @param {bool} preview Should preview data be used where applicable?
+   */
+  static replacePlaceholdersInText(text, data, preview=false) {
+    // Input validation
+    if(!text || !data) { return text; }
+
+    // Get all v2 placeholders
+    let placeholders = text.match(this.v2PlaceholderRegex);
+
+    // Replace all the placeholders
+    placeholders.forEach((p) => {
+      // Parse the placeholder
+      let placeholder = this.parsePlaceholderString(p);
+      if(!placeholder) { return; }
+
+      // Split the text on the placeholder
+      let parts = text.split(p);
+
+      // Determine what to replace the data with
+      let replaceWith = '';
+      let value = get(data, placeholder.path);
+      if(value !== undefined) { replaceWith = value; }
+      else if(placeholder.default) { replaceWith = placeholder.default; }
+      else if(preview && placeholder.preview) { replaceWith = placeholder.preview; }
+      else if(preview && placeholder.label) { replaceWith = placeholder.label; }
+
+      // Reconstruct the text with the replacement value
+      text = parts[0] + replaceWith + parts[1];
+    })
+
+    // Return the updated text
+    return text;
   }
 }
-
-/*
-  ToastUI placeholder plugin
-*/
-// function vtfkPlaceholderPlugin() {
-//   const toHTMLRenderers = {
-//     text(node) {
-//       if(!node.literal) return [{ type: 'text', content: '' }]
-
-//       let markdown = node.literal;
-
-//       // Split markdown on placeholders
-//       let splitted = markdown.split(TemplateClient.strictPlaceholderRegex);
-
-//       if(splitted.length == 1) {
-//         return [
-//           { type: 'text', content: markdown },
-//         ]
-//       }
-
-//       let tags = [];
-//       splitted.forEach((part) => {
-//         if(part.match(TemplateClient.strictPlaceholderRegex)){
-//           tags.push(...[
-//             { type: 'openTag', tagName: 'span', classNames: ['placeholderChip']},
-//             { type: 'text', content: '[PLACEHOLDER]' },
-//             { type: 'closeTag', tagName: 'span' },
-//           ])
-//         } else {
-//           tags.push(...[
-//             { type: 'openTag', tagName: 'span'},
-//             { type: 'text', content: part },
-//             { type: 'closeTag', tagName: 'span' },
-//           ])
-//         }
-//       })
-
-//       // console.log('Tags');
-//       // console.log(tags);
-
-//       return tags
-//     }
-//   }
-//   return { toHTMLRenderers }
-// }
-
-  // const toHTMLRenderers = {
-  //   text() {
-  //     const tags = [
-  //       { type: 'openTag', tagName: 'span'},
-  //       { type: 'text', content: 'Text before placeholder' },
-  //       { type: 'closeTag', tagName: 'span' },
-  //       { type: 'openTag', tagName: 'span', classNames:["placeholderChip"]},
-  //       { type: 'text', content: '[PLACEHOLDER]', onClick: () => { alert('test'); } },
-  //       { type: 'closeTag', tagName: 'span' },
-  //       { type: 'openTag', tagName: 'span'},
-  //       { type: 'text', content: 'Text after placeholder' },
-  //       { type: 'closeTag', tagName: 'span' },
-  //     ]
-  //     return tags
-  //   }
-  // }
-  // return { toHTMLRenderers }
-
-
 
 export default {
   name: 'TemplateEditor',
@@ -277,6 +332,7 @@ export default {
     onChange() {
       this.hasChanged = true;
       this.$set(this.activeTemplate, 'markdown', this.$refs.editor.editor.getMarkdown());
+      this.$set(this.activeTemplate, 'endocedMarkdown', Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64'));
       this.$emit('input', this.activeTemplate);
       this.$emit('onChange', this.activeTemplate);
     },
@@ -338,102 +394,53 @@ export default {
       // Register the change
       this.onChange();
     },
-    getPlaceholdersFromString(markdown) {
-      const placeholderRegex = /{{.+}}/gm
+    onPreviewTemplate() {
+      // Hent markdown
+      let markdown = this.activeTemplate.markdown;
+      
+      const request = {
+        url: 'http://localhost:3001/api/v1/generatepdf',
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: {
+          'template_data': markdown,
+          data: {}
+        }
+      }
 
-      let placeholders = markdown.match(placeholderRegex);
+      axios.request(request)
+      .then((response) => {
+        console.log('Response');
+        console.log(response.data);
+      })
 
-      return placeholders;
+      // Bytt ut placeholdere med preview informasjon
+      const testData = {
+        description: '🤓'
+      }
+      markdown = TemplateClient.replacePlaceholdersInText(markdown, testData, true);
+
+      // Output preview
+      console.log(markdown);
     },
     onSaveTemplate() {
       if(this.activeTemplate.markdown == '' && !confirm('Malen er uten innhold, vil du fortsatt lagre?')) {
         return;
       }
 
-      // Get all placeholders from the markdown
-      const placeholders = this.getPlaceholdersFromString(this.activeTemplate.markdown);
-      console.log('Placeholders');
-      console.log(placeholders);
-
-      if(placeholders && Array.isArray(placeholders)) {
-        // Create a schema entry for each placeholder
-        let schema = {};
-        let placeholderErrors = [];
-        placeholders.forEach((placeholder) => {
-          // Valider at utfyllingsfeltet inneholder en label
-          if(!placeholder.includes(':')) {
-            placeholderErrors.push({
-              placeholder: placeholder,
-              label: 'Malformated placeholder',
-              message: 'The placeholder does not contain ":"'
-            })
-            return;
-          }
-
-          // Strip away the {{ }}
-          let p = placeholder.substring(2, placeholder.length - 2);
-          // Split the text
-          let split = p.split(':');
-
-          if(split.length < 2) {
-            placeholderErrors.push({
-              placeholder: placeholder,
-              label: 'Malformated placeholder',
-              message: 'Utfyllingsfeltet inneholder under 2 felter'
-            })
-            return;
-          }
-
-          let schemaEntry = {};
-          split.forEach((kvp) => {
-            if(!kvp.includes('=')) { return }
-
-            const type = kvp.split('=')[0];
-            const value = kvp.split('=')[1];
-
-            switch(type.toLowerCase()) {
-              case 'label':
-                schemaEntry.label = value;
-                break;
-              case 'type':
-                schemaEntry.type = value;
-                break;
-              case 'path':
-                schemaEntry.path = value;
-                break;
-              case 'description':
-                schemaEntry.description = value;
-                break;
-              case 'default':
-                schemaEntry.description = value;
-                break;
-            }
-
-          })
-
-          if(!schemaEntry.label) {
-            placeholderErrors.push({ placeholder: placeholder, label: 'Malformated placeholder', message: 'Utfyllingsfeltet inneholder ikke en label-attributt'})
-            return;
-          }
-          if(!schemaEntry.path) {
-            placeholderErrors.push({ placeholder: placeholder, label: 'Malformated placeholder', message: 'Utfyllingsfeltet inneholder ikke en path-attributt'})
-            return;
-          }
-          schemaEntry.type = schemaEntry.type || 'text';
-
-          set(schema, schemaEntry.path, schemaEntry)
-        })
-
-        if(placeholderErrors && placeholderErrors.length > 0) {
-          throw new AppError('Error validating placeholder', 'Det ble oppdaget en eller flere feil under validering av utfyllingsfelter ' + placeholderErrors.toString());
-        }
-        
-        console.log('Schema');
-        console.log(schema);
-
+      // Generate a schema
+      const schema = TemplateClient.generateSchemaFromMarkdown(this.activeTemplate.markdown);
+      if(schema) {
         this.activeTemplate.schema = schema;
         this.$set(this.activeTemplate, 'schema', schema);
       }
+
+      // TODO: Validering
+
+      // TODO: Skriv til databasen
+
     },
     insertPlaceholder() {
       console.log('Inserting placeholder');
@@ -455,7 +462,7 @@ export default {
         let markdown = node.literal;
 
         // Split markdown on placeholders
-        let splitted = markdown.split(TemplateClient.strictPlaceholderRegex);
+        let splitted = markdown.split(TemplateClient.v2PlaceholderRegex);
 
         if(splitted.length == 1) {
           return [
@@ -465,24 +472,26 @@ export default {
 
         let tags = [];
         splitted.forEach((part) => {
-          if(part.match(TemplateClient.strictPlaceholderRegex)){
-            tags.push(...[
-              { type: 'openTag', tagName: 'span', classNames: ['placeholderChip']},
-              { type: 'text', content: '[PLACEHOLDER]' },
-              { type: 'closeTag', tagName: 'span' },
-            ])
-          } else {
-            tags.push(...[
-              { type: 'openTag', tagName: 'span'},
-              { type: 'text', content: part },
-              { type: 'closeTag', tagName: 'span' },
-            ])
-          }
+          // Check if the part matches the regex
+          let match = part.match(TemplateClient.v2PlaceholderRegex);
+          if(match) {
+            try {
+              // Attempt to parse the match
+              let parsedPlaceholder = TemplateClient.parsePlaceholderString(part);
+              tags.push(...[
+                { type: 'openTag', tagName: 'span', classNames: ['placeholderChip']},
+                { type: 'text', content: '[' + parsedPlaceholder.label + ']:' + parsedPlaceholder.type },
+                { type: 'closeTag', tagName: 'span' },
+              ])
+              return;
+            } catch { match = undefined; }
+          } 
+          tags.push(...[
+            { type: 'openTag', tagName: 'span'},
+            { type: 'text', content: part },
+            { type: 'closeTag', tagName: 'span' },
+          ])
         })
-
-        // console.log('Tags');
-        // console.log(tags);
-
         return tags
       }
     }
@@ -528,12 +537,12 @@ export default {
 <style>
   .placeholderChip {
     cursor: pointer;
-    border: 1px solid black;
+    border: 1px solid #5a9491;
     background-color: #B4DCDA;
-    border-radius: 10px;
+    border-radius: 8px;
     font-weight: bold;
-    margin-left: 0.2rem;
-    margin-right: 0.2rem;
-    padding: 0.2rem 0.5rem;
+    margin-left: 0.05rem;
+    margin-right: 0.05rem;
+    padding: 0.08rem 0.5rem;
   }
 </style>

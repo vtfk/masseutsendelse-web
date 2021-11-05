@@ -7,7 +7,7 @@
     "mainTemplate": {
       "id": "brevmal"
     },
-    "markdown": "",
+    "markdown": "Hei\n\n\nDu kontaktes fordi du har eiendom i ett område som nå skal omreguleres\n\n### Beskrivelse\n{{label=\"Beskrivelse\":path=\"description\"}}\n\n### Hva som kan forventes\n{{label=\"Forventelser\":path=\"expectations\"}}\n\n### Ved spørsmål\nHvis du har noen spørsmål eller innvendinger rundt dette vennligst kontakt **noen.andré@vtfk.no**",
     "schema": {}
   },
   {
