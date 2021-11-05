@@ -44,7 +44,7 @@
     <h2 style="margin-top: 2rem;">Innholdsmal</h2>
     <p>Mal for innholdet i masseutsendelsene som skal sendes ut</p>
     <Editor
-      :initialValue="activeTemplate.markdown"
+      :initialValue="editedMarkdown"
       ref="editor"
       :height="$props.height"
       initialEditType="markdown"
@@ -57,6 +57,7 @@
       <VTFKButton size="small" :passedProps="{ onClick: () => { onPreviewTemplate(); }}">Forhåndsvisning</VTFKButton>
       <VTFKButton v-if="$props.showCloseButton" size="small" type="secondary" :passedProps="{ onClick: () => { close() } }">Lukk</VTFKButton>
     </div>
+    <VTFKPDFPreviewModal :open="pdfPreview !== undefined" :base64="pdfPreview" title='Lukk modal' :passedProps="{ onDismiss: () => { pdfPreview = undefined; }}"/>
   </div>
 </template>
 
@@ -65,7 +66,7 @@ import set from 'lodash.set';
 import get from 'lodash.get';
 import axios from 'axios';
 import { Editor } from '@toast-ui/vue-editor';
-import { Button, TextField } from '@vtfk/components';
+import { Button, TextField, PDFPreviewModal } from '@vtfk/components';
 
 /*
   Template client
@@ -216,6 +217,7 @@ export default {
     Editor,
     'VTFKButton': Button,
     'VTFKTextField': TextField,
+    'VTFKPDFPreviewModal': PDFPreviewModal
   },
   props: {
     template: {
@@ -250,6 +252,7 @@ export default {
   },
   data() {
     return {
+      pdfPreview: undefined,
       hasChanged: false,
       activeTemplate: {},
       activeOptions: undefined,
@@ -261,8 +264,7 @@ export default {
           ['heading', 'bold', 'italic', 'strike'],
           ['hr'],
           ['ul', 'ol', 'indent', 'outdent']
-        ],
-        // plugins: [ vtfkPlaceholderPlugin ]
+        ]
       },
       mainTemplates: [
         {
@@ -331,8 +333,8 @@ export default {
   methods: {
     onChange() {
       this.hasChanged = true;
-      this.$set(this.activeTemplate, 'markdown', this.$refs.editor.editor.getMarkdown());
-      this.$set(this.activeTemplate, 'endocedMarkdown', Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64'));
+      this.editedMarkdown = this.$refs.editor.editor.getMarkdown();
+      this.$set(this.activeTemplate, 'markdown', Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64'));
       this.$emit('input', this.activeTemplate);
       this.$emit('onChange', this.activeTemplate);
     },
@@ -396,42 +398,29 @@ export default {
     },
     onPreviewTemplate() {
       // Hent markdown
-      let markdown = this.activeTemplate.markdown;
+      let markdown =  Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64');
       
-      const request = {
-        url: 'http://localhost:3001/api/v1/generatepdf',
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: {
-          'template_data': markdown,
-          data: {}
+      axios.post('http://localhost:3001/api/v1/generatepdf', {
+        preview: true,
+        'template_data': markdown,
+        data: {
+          title: 'Tittel test'
         }
-      }
-
-      axios.request(request)
-      .then((response) => {
-        console.log('Response');
-        console.log(response.data);
       })
-
-      // Bytt ut placeholdere med preview informasjon
-      const testData = {
-        description: '🤓'
-      }
-      markdown = TemplateClient.replacePlaceholdersInText(markdown, testData, true);
-
-      // Output preview
-      console.log(markdown);
+      .then((response) => {
+        if(response.data && response.data.base64) {
+          this.pdfPreview = response.data.base64;
+        }
+        // TODO - Håndter feil
+      })
     },
     onSaveTemplate() {
-      if(this.activeTemplate.markdown == '' && !confirm('Malen er uten innhold, vil du fortsatt lagre?')) {
+      if(this.editedMarkdown == '' && !confirm('Malen er uten innhold, vil du fortsatt lagre?')) {
         return;
       }
 
       // Generate a schema
-      const schema = TemplateClient.generateSchemaFromMarkdown(this.activeTemplate.markdown);
+      const schema = TemplateClient.generateSchemaFromMarkdown(this.editedMarkdown);
       if(schema) {
         this.activeTemplate.schema = schema;
         this.$set(this.activeTemplate, 'schema', schema);
@@ -496,7 +485,7 @@ export default {
       }
     }
     this.activeTemplate = JSON.parse(JSON.stringify(this.$props.template));
-    this.activeTemplate.markdown = this.activeTemplate.markdown || '';
+    this.editedMarkdown = this.activeTemplate.markdown.toString('utf8');
     this.activeTemplate.schema = this.activeTemplate.schema || {};
     this.activeTemplate.mainTemplate.id = this.activeTemplate.mainTemplate.id || 'brevmal';
     this.activeTemplate.mainTemplate.language = this.activeTemplate.mainTemplate.language || 'nb';
