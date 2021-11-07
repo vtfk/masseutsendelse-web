@@ -405,7 +405,12 @@ export default {
         preview: true,
         'template_data': markdown,
         data: {
-          title: 'Tittel test'
+          title: 'Tittel test',
+          list: [
+            'Item #1',
+            'Item #2',
+            'Item #3'
+          ]
         }
       })
       .then((response) => {
@@ -486,7 +491,11 @@ export default {
       }
     }
     this.activeTemplate = JSON.parse(JSON.stringify(this.$props.template));
-    this.editedMarkdown = this.activeTemplate.markdown.toString('utf8');
+    // Decode the base64 markdown to utf8
+    if(this.activeTemplate.markdown && typeof this.activeTemplate.markdown === 'string') {
+      this.editedMarkdown = Buffer.from(this.activeTemplate.markdown, 'base64').toString('utf8');
+    }
+    // Set other default values
     this.activeTemplate.schema = this.activeTemplate.schema || {};
     this.activeTemplate.mainTemplate.id = this.activeTemplate.mainTemplate.id || 'brevmal';
     this.activeTemplate.mainTemplate.language = this.activeTemplate.mainTemplate.language || 'nb';
