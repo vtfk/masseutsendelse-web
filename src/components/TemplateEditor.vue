@@ -63,153 +63,11 @@
 
 <script>
 import set from 'lodash.set';
-import get from 'lodash.get';
 import axios from 'axios';
 import { Editor } from '@toast-ui/vue-editor';
 import { Button, TextField, PDFPreviewModal } from '@vtfk/components';
+import sjablong from 'sjablong';
 
-/*
-  Template client
-*/
-class TemplateClient {
-  /*
-    Regex expressions
-  */
-  static generalPlaceholderRegex = /({{.+?}})/gm
-  static v1PlaceholderRegex = /{{\s*(\w+\.?)+?\s*}}/gm
-  static v2PlaceholderRegex = /({{.+?=".+?"}})/gm
-
-  static parsePlaceholderString(markdown) {
-    // Input validation
-    if(!markdown || !markdown.startsWith('{{') || !markdown.endsWith('}}')) { return; }
-
-    // Remove the  {{ }}
-    let p = markdown.substring(2, markdown.length - 2);
-
-    // Split the text
-    let split = p.split(':');
-
-    // Get all the placeholder properties
-    let placeholder = {};
-    if(markdown.match(this.v1PlaceholderRegex)) {
-      // Version 1 - Only path
-      placeholder.v = 1;
-      p = p.trim();
-
-      let pathSplit = p.split('.');
-
-      let label='';
-      pathSplit.forEach((part) => label += part.charAt(0).toUpperCase() + part.slice(1))
-      
-      placeholder.label = label;
-      placeholder.path = p;
-    } else if(markdown.match(this.v2PlaceholderRegex)) {
-      // Version 2
-      placeholder.v = 2;
-      split.forEach((kvp) => {
-        if(!kvp.includes('=')) { return }
-
-        const type = kvp.split('=')[0];
-        let value = kvp.split('=')[1];
-
-        if(value.startsWith('"') && value.endsWith('"')) {
-          value = value.substring(1, value.length - 1);
-        }
-
-        placeholder[type.toLowerCase()] = value;
-      })
-    } else {
-      return;
-    }
-    
-    // Validate that requred fields are present
-    if(!placeholder.label) { throw new Error('Placeholder does not contain label: ' + markdown); }
-    if(typeof placeholder.label !== 'string') { throw new Error('Placeholder label is not a string: ' + markdown); }
-    if(!placeholder.path) { throw new Error('Placeholder does not contain a path: ' + markdown); }
-    if(typeof placeholder.path !== 'string') { throw new Error('Placeholder path is not a string: ' + markdown); }
-
-    // Set default values
-    placeholder.type = placeholder.type || 'text';
-    
-    // Return the parsed placeholder object
-    return placeholder;
-  }
-
-  static getPlaceholdersFromString(text) {
-    // Input validation
-    if(!text) { return []; }
-
-    // Check that there are placeholders
-    let placeholders = text.match(this.generalPlaceholderRegex);
-    if(!placeholders || (Array.isArray(placeholders) && placeholders.length === 0)) { return []; }
-
-    // Enumurate through all placeholders and parse them
-    let parsedPlaceholders = [];
-    placeholders.forEach((p) => {
-      let parsed = this.parsePlaceholderString(p);
-
-      if(parsed) { parsedPlaceholders.push(parsed); }
-    })
-    console.log(parsedPlaceholders);
-    return parsedPlaceholders;
-  }
-
-  static generateSchemaFromMarkdown(markdown) {
-    // Input validation
-    if(!markdown) { throw new Error('Markdown was not provided'); }
-
-    // Retreive all placeholders from the markdown
-    const placeholders = this.getPlaceholdersFromString(markdown);
-
-    // Generate the schema
-    let schema = {};
-    placeholders.forEach((p) => {
-      if(!p.path) { return; }
-      set(schema, p.path, p)
-    })
-
-    // Return the schema
-    return schema;
-  }
-
-  /**
-   * Replaces all placeholders in the text with data from the dataobject
-   * @param {string} text A text string with placeholders
-   * @param {object} data A javascript object that matches the placeholders
-   * @param {bool} preview Should preview data be used where applicable?
-   */
-  static replacePlaceholdersInText(text, data, preview=false) {
-    // Input validation
-    if(!text || !data) { return text; }
-
-    // Get all v2 placeholders
-    let placeholders = text.match(this.v2PlaceholderRegex);
-
-    // Replace all the placeholders
-    placeholders.forEach((p) => {
-      // Parse the placeholder
-      let placeholder = this.parsePlaceholderString(p);
-      if(!placeholder) { return; }
-
-      // Split the text on the placeholder
-      let parts = text.split(p);
-
-      // Determine what to replace the data with
-      let replaceWith = '';
-      let value = get(data, placeholder.path);
-      if(value !== undefined) { replaceWith = value; }
-      else if(placeholder.default) { replaceWith = placeholder.default; }
-      else if(preview && placeholder.preview) { replaceWith = placeholder.preview; }
-      else if(preview && placeholder.label) { replaceWith = placeholder.label; }
-
-      // Reconstruct the text with the replacement value
-      text = parts[0] + replaceWith + parts[1];
-    })
-
-    // Return the updated text
-    return text;
-  }
-}
 
 export default {
   name: 'TemplateEditor',
@@ -327,7 +185,7 @@ export default {
       }
 
       flattenObject(schema, '');
-
+    
       return flatSchema;
     }
   },
@@ -425,12 +283,20 @@ export default {
         return;
       }
 
+      let valid = sjablong.validateTemplate(this.editedMarkdown);
+
+      console.log('Is template valid?');
+      console.log(valid);
+
+
       // Generate a schema
-      const schema = TemplateClient.generateSchemaFromMarkdown(this.editedMarkdown);
+      const schema = sjablong.generateJSONSchemaFromText(this.editedMarkdown);
       if(schema) {
         this.activeTemplate.schema = schema;
         this.$set(this.activeTemplate, 'schema', schema);
       }
+      console.log('Schema');
+      console.log(schema);
 
       // TODO: Validering
 
@@ -450,37 +316,43 @@ export default {
     },
   },
   created() {
+    console.log('== Sjablong ==');
+    console.log(typeof sjablong);
+    console.log(sjablong.regexPatterns);
+
     this.activeOptions = this.$props.options || this.defaultOptions;
     this.activeOptions.customHTMLRenderer = {
       text(node) {
         if(!node.literal) return [{ type: 'text', content: '' }]
         let markdown = node.literal;
 
-        // Split markdown on placeholders
-        let splitted = markdown.split(TemplateClient.v2PlaceholderRegex);
-
-        if(splitted.length == 1) {
-          return [
-            { type: 'text', content: markdown },
-          ]
-        }
+        // Split markdown on sjablong entries
+        let splitted = markdown.split(sjablong.regexPatterns.sjablong.brackets);
 
         let tags = [];
         splitted.forEach((part) => {
           // Check if the part matches the regex
-          let match = part.match(TemplateClient.v2PlaceholderRegex);
+          let match = part.match(sjablong.regexPatterns.sjablong.brackets);
+
           if(match) {
             try {
-              // Attempt to parse the match
-              let parsedPlaceholder = TemplateClient.parsePlaceholderString(part);
+              let parsedPlaceholder = sjablong.parsePlaceholderString(part);
               tags.push(...[
                 { type: 'openTag', tagName: 'span', classNames: ['placeholderChip']},
-                { type: 'text', content: '[' + parsedPlaceholder.label + ']:' + parsedPlaceholder.type },
+                { type: 'text', content: '[' + parsedPlaceholder.label + ']' },
                 { type: 'closeTag', tagName: 'span' },
               ])
               return;
-            } catch { match = undefined; }
-          } 
+            } catch {
+              tags.push(...[
+              { type: 'openTag', tagName: 'span', classNames: ['incompletePlaceholderChip']},
+              { type: 'text', content: '[Uferdig]' },
+              { type: 'closeTag', tagName: 'span' },
+            ])
+            return;
+            }
+          }
+
           tags.push(...[
             { type: 'openTag', tagName: 'span'},
             { type: 'text', content: part },
@@ -540,6 +412,17 @@ export default {
     background-color: #B4DCDA;
     border-radius: 8px;
     font-weight: bold;
+    margin-left: 0.05rem;
+    margin-right: 0.05rem;
+    padding: 0.08rem 0.5rem;
+  }
+
+  .incompletePlaceholderChip {
+    cursor: pointer;
+    border: 1px solid #F3B5B2;
+    background-color: #E7827E;
+    font-weight: bold;
+    border-radius: 8px;
     margin-left: 0.05rem;
     margin-right: 0.05rem;
     padding: 0.08rem 0.5rem;
