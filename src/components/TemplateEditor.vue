@@ -1,5 +1,6 @@
 <template>
-  <div style="text-align: left; align-items: flex-start;">
+  <Error v-if="error" :error="error" :showResetButton="false" />
+  <div v-else style="text-align: left; align-items: flex-start;">
     <h2>Generelt</h2>
     <p>Generell informasjon om malen</p>
     <VTFKTextField
@@ -14,11 +15,11 @@
       :value="activeTemplate.description"
       style="margin-bottom: 0.5rem;"
     />
-    <h2 style="margin-top: 2rem;">Hovedmal</h2>
+    <h2 style="margin-top: 2rem;">Dokumentmal</h2>
     <p>Dette er dokumentmalen som omberammer denne innholdsmalen<p>
     <VSelect
-      v-model="activeTemplate.mainTemplate.id"
-      :items="mainTemplates"
+      v-model="activeTemplate.documentTemplate.id"
+      :items="documentTemplates"
       label="Hovedmal"
       hint="Dette er hovedmalen som omfavner innholdet i denne innholdsmalen"
       persistent-hint
@@ -27,19 +28,10 @@
       style="justify-content: flex-start!important;"
     />
     <!-- Dyanamic template -->
-    <div v-if="flattenedMainTemplateSchema">
+    <div v-if="mainTemplateSchema">
       <h3>Felter i hovedmalen</h3>
       <p>Hovedmalen har noen dynamiske felter, hva som skal stå i disse kan du sette her</p>
-        <div v-for="(schema, i) in flattenedMainTemplateSchema" :key="i" style="margin-top: 0.5rem;">
-          <VTextField 
-            v-if="schema.type === 'text'"
-            :value="schema.default || ''"
-            :placeholder="schema.label"
-            :label="schema.label"
-            @input="(e) => { updatemainTemplate(schema.path, e) }"
-            :required="true"
-          />
-        </div>
+        <SchemaFields v-model="activeTemplate.documentTemplate.data" :schema="mainTemplateSchema" @error="(e) => error = e" />
     </div>
     <h2 style="margin-top: 2rem;">Innholdsmal</h2>
     <p>Mal for innholdet i masseutsendelsene som skal sendes ut</p>
@@ -62,20 +54,22 @@
 </template>
 
 <script>
-import set from 'lodash.set';
+import Error from './Error';
 import axios from 'axios';
 import { Editor } from '@toast-ui/vue-editor';
 import { Button, TextField, PDFPreviewModal } from '@vtfk/components';
-import sjablong from 'sjablong';
-
+import Sjablong from 'sjablong';
+import SchemaFields from './SchemaFields.vue';
 
 export default {
   name: 'TemplateEditor',
   components: {
+    Error,
     Editor,
     'VTFKButton': Button,
     'VTFKTextField': TextField,
-    'VTFKPDFPreviewModal': PDFPreviewModal
+    'VTFKPDFPreviewModal': PDFPreviewModal,
+    SchemaFields
   },
   props: {
     template: {
@@ -110,6 +104,7 @@ export default {
   },
   data() {
     return {
+      error: undefined,
       pdfPreview: undefined,
       hasChanged: false,
       activeTemplate: {},
@@ -125,27 +120,33 @@ export default {
           ['ul', 'ol', 'indent', 'outdent']
         ]
       },
-      mainTemplates: [
+      documentTemplates: [
         {
           label: 'Brevmal',
           value: 'brevmal',
           schema: {
-            info: {
-              'our-date': {
-                label: 'Vår dato',
-                type: 'text'
-              },
-              'our-reference': {
-                label: 'Vår referanse',
-                type: 'text'
-              },
-              paragraph: {
-                label: 'Paragraf',
-                type: 'text',
-                default: 'Offl. § 13 jf. fvl. §13 (1)',
-                required: true
+            type: 'object',
+            properties: {
+              info: {
+                type: 'object',
+                properties: {
+                  'our-date': {
+                    label: 'Vår dato',
+                    type: 'string'
+                  },
+                  'our-reference': {
+                    label: 'Vår referanse',
+                    type: 'string'
+                  },
+                  paragraph: {
+                    label: 'Paragraf',
+                    type: 'string',
+                    default: 'Offl. § 13 jf. fvl. §13 (1)',
+                    required: true
+                  }
+                }
               }
-            }
+            } 
           }
         },
         {
@@ -156,38 +157,9 @@ export default {
     }
   },
   computed: {
-    flattenedMainTemplateSchema() {
-      // Input validation
-      if(!this.mainTemplates) { return undefined; }
-      if(!this.activeTemplate.mainTemplate.id) { return undefined; }
-      
-      // Get the schema
-      let template = this.mainTemplates.find((i) => i.value == this.activeTemplate.mainTemplate.id);
-      if(!template || !template.schema) { return undefined }
-      const schema = template.schema;
-      
-      // Recursively flatten the schema
-      let flatSchema = [];
-      function flattenObject(obj, path) {
-        if(typeof obj !== 'object') {
-          return;
-        }
-        for(let key in obj) {
-          if(obj[key].label !== undefined && obj[key].type !== undefined) {
-            flatSchema.push({
-              path: path === '' ? key : path + '.' + key,
-              ...obj[key]
-            })
-          } else {
-            flattenObject(obj[key], path === '' ? key : path + '.' + key)
-          }
-        } 
-      }
-
-      flattenObject(schema, '');
-    
-      return flatSchema;
-    }
+    mainTemplateSchema() {
+      return this.getmainTemplateSchema() || undefined;
+    },
   },
   methods: {
     onChange() {
@@ -197,18 +169,13 @@ export default {
       this.$emit('input', this.activeTemplate);
       this.$emit('onChange', this.activeTemplate);
     },
-    updatemainTemplate(keyPath, value) {
-      if(!keyPath || !value) { return; }
-      set(this.activeTemplate.mainTemplate.data, keyPath, value);
-      this.$set(this.activeTemplate.mainTemplate, 'data', this.activeTemplate.mainTemplate.data);
-    },
     getmainTemplateSchema() {
       // Input validation
-      if(!this.mainTemplates) { return undefined; }
-      if(!this.activeTemplate.mainTemplate.id) { return undefined; }
+      if(!this.documentTemplates) { return undefined; }
+      if(!this.activeTemplate.documentTemplate.id) { return undefined; }
       
       // Get the schema
-      let template = this.mainTemplates.find((i) => i.value == this.activeTemplate.mainTemplate.id);
+      let template = this.documentTemplates.find((i) => i.value == this.activeTemplate.documentTemplate.id);
       if(!template || !template.schema) { return undefined }
 
       // Return the schema
@@ -219,38 +186,9 @@ export default {
       const schema = this.getmainTemplateSchema();
       if(!schema) { return; }
 
-      // Create a default object from a schema
-      function createDefaultObjectFromSchema(currentSchemaObject, path, currentKey, finalObject) {
-        // If the current key is not an objekt, just return
-        if(typeof currentSchemaObject !== 'object') { return; }
-
-        // Iterate through all keys
-        for(let key in currentSchemaObject) {
-          // If the key is not an object, just return
-          if(typeof currentSchemaObject[key] !== 'object') { return; }
-          // 
-          const childObj = currentSchemaObject[key];
-          const newPath = path === '' ? key : path + '.' + key;
-
-          // If the key is a schema-entry with a default value, add it to the final object
-          if(childObj['default'] !== undefined && childObj['default'] !== '') {
-            finalObject[key] = currentSchemaObject[key].default;
-            return;
-          }
-          
-          // If the child has children, recursively step down and attempt to find more default values
-          if(Object.keys(childObj).length > 0) {
-            finalObject[key] = {}
-            createDefaultObjectFromSchema(currentSchemaObject[key], newPath, key, finalObject[key])
-            if(Object.keys(finalObject[key]).length <= 0) { delete finalObject[key]; }
-          }
-        }
-        return finalObject;
-      }
-      
-      // Generate the default object ad assign it to the object
-      let defaultObject = createDefaultObjectFromSchema(schema, '', '', {})
-      this.activeTemplate.mainTemplate.data = defaultObject;
+      // Create a default data object
+      let defaultData = Sjablong.createObjectFromSchema(schema);
+      if(defaultData) this.activeTemplate.documentTemplate.data = defaultData;
 
       // Register the change
       this.onChange();
@@ -264,6 +202,7 @@ export default {
         'template_data': markdown,
         data: {
           title: 'Tittel test',
+          definition: 'brevmal',
           list: [
             'Item #1',
             'Item #2',
@@ -283,22 +222,21 @@ export default {
         return;
       }
 
-      let valid = sjablong.validateTemplate(this.editedMarkdown);
-
+      let valid = Sjablong.validateTemplate(this.editedMarkdown);
       console.log('Is template valid?');
       console.log(valid);
 
-
       // Generate a schema
-      const schema = sjablong.generateJSONSchemaFromText(this.editedMarkdown);
+      const schema = Sjablong.generateSchema(this.editedMarkdown);
       if(schema) {
         this.activeTemplate.schema = schema;
         this.$set(this.activeTemplate, 'schema', schema);
       }
-      console.log('Schema');
+      console.log('== Schema ==');
       console.log(schema);
 
-      // TODO: Validering
+      console.log('== Flatten ==');
+      Sjablong.flattenSchema(schema);
 
       // TODO: Skriv til databasen
 
@@ -316,27 +254,23 @@ export default {
     },
   },
   created() {
-    console.log('== Sjablong ==');
-    console.log(typeof sjablong);
-    console.log(sjablong.regexPatterns);
-
     this.activeOptions = this.$props.options || this.defaultOptions;
     this.activeOptions.customHTMLRenderer = {
       text(node) {
         if(!node.literal) return [{ type: 'text', content: '' }]
         let markdown = node.literal;
 
-        // Split markdown on sjablong entries
-        let splitted = markdown.split(sjablong.regexPatterns.sjablong.brackets);
+        // Split markdown on Sjablong entries
+        let splitted = markdown.split(Sjablong.regexPatterns.sjablong.brackets);
 
         let tags = [];
         splitted.forEach((part) => {
           // Check if the part matches the regex
-          let match = part.match(sjablong.regexPatterns.sjablong.brackets);
+          let match = part.match(Sjablong.regexPatterns.sjablong.brackets);
 
           if(match) {
             try {
-              let parsedPlaceholder = sjablong.parsePlaceholderString(part);
+              let parsedPlaceholder = Sjablong.parsePlaceholder(part);
               tags.push(...[
                 { type: 'openTag', tagName: 'span', classNames: ['placeholderChip']},
                 { type: 'text', content: '[' + parsedPlaceholder.label + ']' },
@@ -364,14 +298,14 @@ export default {
     }
     this.activeTemplate = JSON.parse(JSON.stringify(this.$props.template));
     // Decode the base64 markdown to utf8
-    if(this.activeTemplate.markdown && typeof this.activeTemplate.markdown === 'string') {
-      this.editedMarkdown = Buffer.from(this.activeTemplate.markdown, 'base64').toString('utf8');
+    if(this.activeTemplate.template && typeof this.activeTemplate.template === 'string') {
+      this.editedMarkdown = Buffer.from(this.activeTemplate.template, 'base64').toString('utf8');
     }
     // Set other default values
     this.activeTemplate.schema = this.activeTemplate.schema || {};
-    this.activeTemplate.mainTemplate.id = this.activeTemplate.mainTemplate.id || 'brevmal';
-    this.activeTemplate.mainTemplate.language = this.activeTemplate.mainTemplate.language || 'nb';
-    this.activeTemplate.mainTemplate.data = this.activeTemplate.mainTemplate.data || {};
+    this.activeTemplate.documentTemplate.id = this.activeTemplate.documentTemplate.id || 'brevmal';
+    this.activeTemplate.documentTemplate.language = this.activeTemplate.documentTemplate.language || 'nb';
+    this.activeTemplate.documentTemplate.data = this.activeTemplate.documentTemplate.data || {};
   },
   mounted() {
     this.$refs.editor.editor.addCommand('markdown', 'insertPlaceholder', () => {

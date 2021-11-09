@@ -61,14 +61,6 @@ export default {
     margin: 0 auto;
   }
 
-  .error-card {
-    width: 100%;
-    min-height: 250px;
-    background-color: #F8D3D1;
-    border-radius: 10px; 
-    padding: 1rem 1rem;
-  }
-
   .shadow {
     box-shadow: 0px 1px 5px 1px #888888;
   }
