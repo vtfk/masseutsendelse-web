@@ -40,10 +40,11 @@
   .error-card {
     width: 100%;
     height: 100%;
-    background-color: #F8D3D1;
+    margin: 0rem 1rem;
     border-radius: 10px; 
     padding: 1rem 1rem;
     padding-bottom: 2rem;
+    background-color: #F8D3D1;
     display: flex;
     flex-direction: column;
     align-items: center;

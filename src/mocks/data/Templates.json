@@ -17,22 +17,11 @@
     "data": {}
   },
   {
-    "_id": "587cecb8-8f74-4c1b-847d-a8e045577e0f",
-    "name": "Veiarbeid",
-    "mainTemplate": {
-      "id": "notatmal"
-    },
-    "language": "nb",
-    "description": "Brukes ved veiarbeid i ett område",
-    "markdown": "",
-    "schema": {}
-  },
-  {
     "_id": "587cecb8-8f74-4c1b-847d-a8e045577e0g",
     "documentTemplate": {
-      "id": "notatmal"
+      "id": "brevmal"
     },
-    "name": "Feature eksempler",
+    "name": "Veiarbeid",
     "description": "Demonstrerer template muligheter",
     "template": "IyMjIyBFa3NlbXBlbCAjMSAtIEVua2VsIGxpbmplCltbbGFiZWw9Ik5hdm4iOnBhdGg9Im5hbWUiXV0KIyMjIyBFa3NlbXBlbCAjMiAtIEVua2VsIGxpbmplIG1lZCBjaGlsZApbW2xhYmVsPSJGb3JuYXZuIjpwYXRoPSJuYW1lLmZpcnN0bmFtZSJdXQojIyMjIEVrc2VtcGVsICMzIC0gTXVsdGkgbGluZQpbWwpsYWJlbD0iRXR0ZXJuYXZuIgpwYXRoPSJuYW1lLmxhc3RuYW1lIgpdXQo="
   }
