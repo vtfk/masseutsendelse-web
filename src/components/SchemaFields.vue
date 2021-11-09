@@ -1,12 +1,13 @@
 <template>
+  <div style="width: 100%;">
   <Error v-if="error" :error="error" :showResetButton="false" />
-  <div v-else>
     <!-- Inputs -->
-    <div v-for="(property, i) in schemaProperties" :key="i">
+    <div v-else v-for="(property, i) in schemaProperties" :key="i">
       <VTextField 
         v-if="property.type === 'string'"
         :value="getInitialData(property.path)"
         :placeholder="property.description || undefined"
+        :hint="property.description || undefined"
         :label="determinePropertyLabel(property)"
         @input="(e) => updateData(property.path, e)"
         :required="true"

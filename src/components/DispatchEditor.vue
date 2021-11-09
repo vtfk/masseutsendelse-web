@@ -48,10 +48,13 @@
           @change="(e) => onTemplateChanged(e)"
           style="max-width: 750px; width: 100%;"
         />
-        <SchemaFields
-          v-if="selectedTemplateSchema"
-          :schema="selectedTemplateSchema"
-        />
+        <div v-if="selectedTemplateSchema" style="max-width: 750px; width: 100%;">
+          <h2>Flettefelter</h2>
+          <SchemaFields
+            v-if="selectedTemplateSchema"
+            :schema="selectedTemplateSchema"
+          />
+        </div>
         <VTFKButton
           class="mt-1"
           :disabled="!isDispatchFilledInn"
@@ -637,16 +640,10 @@
         this.dispatch.template = e._id;
         this.selectedTemplate = e;
 
-        console.log('== Template ==')
-        console.log(e.template);
-
         if(e.template) {
-          const tmp = Buffer.from(e.template, 'utf8');
-          
+          const tmp = Buffer.from(e.template, 'base64').toString('utf8');
           this.selectedTemplateSchema = Sjablong.generateSchema(tmp);
         }
-        
-        
       },
       onTextChange(e) {
         console.log(e);
