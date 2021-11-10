@@ -52,7 +52,9 @@
           <h2>Flettefelter</h2>
           <SchemaFields
             v-if="selectedTemplateSchema"
+            v-model="dispatch.templateData"
             :schema="selectedTemplateSchema"
+            @changed="$forceUpdate()"
           />
         </div>
         <VTFKButton
@@ -69,7 +71,7 @@
             :label="'Følgende informasjon skal sendes ut til ' + dispatch.stats.totalOwners + ' mottakere'"
             :passedProps="{ onChange: () => { isFirstLevelDispatchApproved = !isFirstLevelDispatchApproved; }}"
           />
-          <VTFKButton style="margin-top: 1rem;" :disabled="!isFirstLevelDispatchApproved || !isDispatchFilledInn" :passedProps="{onClick: () => { submitMassDispatch(); }}">Send til godkjenning</VTFKButton>
+          <VTFKButton style="margin-top: 1rem;" :disabled="!isFirstLevelDispatchApproved || !isRequiredTemplateDataFilledIn" :passedProps="{onClick: () => { submitMassDispatch(); }}">Send til godkjenning</VTFKButton>
           <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {reset()}}">Start på nytt</VTFKButton>
         </div>
       </div>
@@ -133,6 +135,7 @@
           title: '',
           body: '',
           template: undefined,
+          templateData: {},
           matrikkelEnheter: undefined,
           stats: {
             affectedCount: null,
@@ -214,6 +217,20 @@
       },
       availableTemplates() {
         return this.templates;
+      },
+      isRequiredTemplateDataFilledIn() {
+        if(!this.selectedTemplateSchema) { return false }
+        const isValid = Sjablong.validateData(this.selectedTemplateSchema, this.dispatch.templateData);
+        console.log('Is valid?');
+        console.log(isValid);
+        // try {
+          
+        // } catch(err) {
+        //   console.log(err);
+        //   return false;
+        // }
+        
+        return true;
       }
     },
     methods: {

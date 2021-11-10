@@ -4,13 +4,21 @@
     <!-- Inputs -->
     <div v-else v-for="(property, i) in schemaProperties" :key="i">
       <VTextField 
-        v-if="property.type === 'string'"
+        v-if="property.type === 'string' && property.lines == undefined"
         :value="getInitialData(property.path)"
         :placeholder="property.description || undefined"
         :hint="property.description || undefined"
         :label="determinePropertyLabel(property)"
         @input="(e) => updateData(property.path, e)"
         :required="true"
+      />
+      <VTextarea
+        v-if="property.type === 'string' && property.lines"
+        :value="getInitialData(property.path)"
+        :hint="property.description || undefined"
+        :label="determinePropertyLabel(property)"
+        :rows="property.lines"
+        @input="(e) => updateData(property.path, e)"
       />
     </div>
   </div>
@@ -59,6 +67,9 @@ export default {
 
       // Get the default data from the schema
       let defaultData = Sjablong.createObjectFromSchema(this.$props.schema);
+
+      console.log('== Schema ==');
+      console.log(this.$props.schema);
 
       // Merge the provided data with the default data
       this.data = merge(this.$props.value, defaultData);
