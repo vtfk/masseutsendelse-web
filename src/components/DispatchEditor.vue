@@ -2,6 +2,8 @@
   <div style="margin-top: 1rem;">
     <!-- Feilmelding -->
     <Error v-if="error" :error="error" v-on:resetClicked="reset(true)" />
+    <!-- Loaders -->
+    <Loading v-else-if="isLoadingTemplates" title="Laster inn maler" />
     <!-- Fil opplasting -->
     <div v-else-if="!dispatch || dispatch.geopolygon.vertices.length === 0">
       <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
@@ -36,30 +38,25 @@
       <div v-if="isMatrikkelApproved || mode === 'edit'" class="card shadow centeredColumn" style="margin-top: 1rem;">
         <h1>Masseutsendelse</h1>
         <DispatchStatusSelect v-if="mode === 'edit'" v-model="dispatch.status"/>
-        <VTFKSelect
-          label="Velg dokument mal"
-          :items="templateItems"
-          :passedProps="{ onChange: (e) => { onTemplateChange(e)}}"
-          style="max-width: 750px; width: 100%;"
+        <VSelect
+          label="Velg mal"
           placeholder="Velg mal"
-          :selectedItem="selectedTemplate"
-          :closeOnSelect="true"
-          :isOpen="isTemplateSelectorOpen"
+          :items="availableTemplates"
+          item-text="name"
+          item-value="_id"
+          return-object
+          @change="(e) => onTemplateChanged(e)"
+          style="max-width: 750px; width: 100%;"
         />
-        <VTFKTextField
-          placeholder="Tittel"
-          :value="dispatch.title"
-          :passedProps="{ onChange: (e) => { dispatch.title = e.target.value } }"
-          :disabled="isReadOnly"
-          style="max-width: 750px; width: 100%; margin-top: 1rem;"
-        />
-        <VTFKTextField 
-          placeholder="Brødtekst"
-          :value="dispatch.body"
-          :passedProps="{ onChange: (e) => { dispatch.body = e.target.value } }"
-          :disabled="isReadOnly"
-          :rows="8" style="max-width: 750px; width: 100%; margin-top: 1rem;"
-        />
+        <div v-if="selectedTemplateSchema" style="max-width: 750px; width: 100%;">
+          <h2>Flettefelter</h2>
+          <SchemaFields
+            v-if="selectedTemplateSchema"
+            v-model="dispatch.templateData"
+            :schema="selectedTemplateSchema"
+            @changed="$forceUpdate()"
+          />
+        </div>
         <VTFKButton
           class="mt-1"
           :disabled="!isDispatchFilledInn"
@@ -74,7 +71,7 @@
             :label="'Følgende informasjon skal sendes ut til ' + dispatch.stats.totalOwners + ' mottakere'"
             :passedProps="{ onChange: () => { isFirstLevelDispatchApproved = !isFirstLevelDispatchApproved; }}"
           />
-          <VTFKButton style="margin-top: 1rem;" :disabled="!isFirstLevelDispatchApproved || !isDispatchFilledInn" :passedProps="{onClick: () => { submitMassDispatch(); }}">Send til godkjenning</VTFKButton>
+          <VTFKButton style="margin-top: 1rem;" :disabled="!isFirstLevelDispatchApproved || !isRequiredTemplateDataFilledIn" :passedProps="{onClick: () => { submitMassDispatch(); }}">Send til godkjenning</VTFKButton>
           <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {reset()}}">Start på nytt</VTFKButton>
         </div>
       </div>
@@ -87,7 +84,7 @@
     Import dependencies
   */
   // VTFK komponenter
-  import { Button, Spinner, TextField, Select, Checkbox } from '@vtfk/components'
+  import { Button, Spinner, Checkbox } from '@vtfk/components'
 
   // Prosjektkomponenter
   import UploadField from '../components/UploadField.vue'
@@ -96,14 +93,17 @@
   import Loading from './Loading.vue'
   import MatrikkelTable from '../components/MatrikkelTable.vue';
   import DispatchStatusSelect from '../components/DispatchStatusSelect.vue';
+  import SchemaFields from '../components/SchemaFields.vue';
   import Error from '../components/Error.vue'
 
-  // Libraries
+  // Dependencies
   import MatrikkelProxyClient from '../lib/matrikkelProxyClient'
   import DxfParser from 'dxf-parser'
   import proj4 from 'proj4';
   import { polygon as turfPolygon }  from '@turf/helpers';
   import turfArea from '@turf/area';
+  import axios from 'axios';
+  import Sjablong from 'sjablong';
 
   // Custom error class
   import AppError from '../lib/AppError';
@@ -113,14 +113,13 @@
     components: {
       'VTFKButton': Button,
       'VTFKSpinner': Spinner,
-      'VTFKTextField': TextField,
-      'VTFKSelect': Select,
       'VTFKCheckbox': Checkbox,
       UploadField,
       Map,
       StatCards,
       MatrikkelTable,
       DispatchStatusSelect,
+      SchemaFields,
       Loading,
       Error
     },
@@ -131,10 +130,12 @@
     },
     data() {
       return {
+        error: undefined,
         dispatch: {
           title: '',
           body: '',
           template: undefined,
+          templateData: {},
           matrikkelEnheter: undefined,
           stats: {
             affectedCount: null,
@@ -169,6 +170,7 @@
           }
         },
         uploadedFile: undefined,
+        isLoadingTemplates: true,
         isParsingFile: false,
         isMatrikkelApproved: false,
         isFirstLevelDispatchApproved: false,
@@ -178,7 +180,6 @@
         eierforhold: [],
         eiere: [],
         isTemplateSelectorOpen: true,
-        selectedTemplate: undefined,
         templateItems: [
           {
             label: 'Omregulering',
@@ -189,7 +190,9 @@
             value: 'vei'
           }
         ],
-        error: undefined
+        templates: [],
+        selectedTemplate: undefined,
+        selectedTemplateSchema: undefined
       }
     },
     computed: {
@@ -211,6 +214,23 @@
       isReadOnly() {
         if(this.dispatch && (this.dispatch.status === 'inprogress' || this.dispatch.status === 'completed')) { return true; }
         return false;
+      },
+      availableTemplates() {
+        return this.templates;
+      },
+      isRequiredTemplateDataFilledIn() {
+        if(!this.selectedTemplateSchema) { return false }
+        const isValid = Sjablong.validateData(this.selectedTemplateSchema, this.dispatch.templateData);
+        console.log('Is valid?');
+        console.log(isValid);
+        // try {
+          
+        // } catch(err) {
+        //   console.log(err);
+        //   return false;
+        // }
+        
+        return true;
       }
     },
     methods: {
@@ -632,9 +652,15 @@
           console.log('Vil sendes inn');
         }
       },
-      onTemplateChange(e) {
+      onTemplateChanged(e) {
+        console.log(e);
+        this.dispatch.template = e._id;
         this.selectedTemplate = e;
-        this.dispatch.template = e.value;
+
+        if(e.template) {
+          const tmp = Buffer.from(e.template, 'base64').toString('utf8');
+          this.selectedTemplateSchema = Sjablong.generateSchema(tmp);
+        }
       },
       onTextChange(e) {
         console.log(e);
@@ -642,12 +668,35 @@
       updateProject(key, value) {
         console.log('Setting "' + key + '" to "' + value + '"');
         this.$set(this.project, key, value)
+      },
+      loadTemplates() {
+        this.isLoadingTemplates = true;
+
+        const request = {
+          url: 'http://templates.vtfk.no/api/v1/templates',
+          method: 'get'
+        }
+
+        // TODO: Endre url og håndter feil
+        axios.request(request)
+        .then((response) => {
+          this.templates = response.data;
+          this.isLoadingTemplates = false;
+        })
+        .catch(() => {
+          this.setError(new AppError('Kunne ikke laste maler'))
+          this.isLoadingTemplates = false;
+        })
+
+        
       }
     },
     created() {
       if(this.$props.dispatchObject) {
         this.$set(this, 'dispatch', this.$props.dispatchObject)
       }
+
+      this.loadTemplates();
     }
   }
 </script>

@@ -13,26 +13,15 @@
         }
       }
     },
-    "template": "SGVpCgpEdSBrb250YWt0ZXMgZm9yZGkgZHUgaGFyIGVpZW5kb20gaSBldHQgb21yw6VkZSBzb20gbsOlIHNrYWwgb21yZWd1bGVyZXMKCiMjIyBCZXNrcml2ZWxzZQpbW2xhYmVsPSJCZXNrcml2ZWxzZSI6cGF0aD0iZGVzY3JpcHRpb24iXV0KCiMjIyBIdmEgc29tIGthbiBmb3J2ZW50ZXMKW1tsYWJlbD0iRm9ydmVudGVsc2VyIjpwYXRoPSJleHBlY3RhdGlvbnMiXV0KCiMjIyBWZWQgc3DDuHJzbcOlbApIdmlzIGR1IGhhciBub2VuIHNww7hyc23DpWwgZWxsZXIgaW5udmVuZGluZ2VyIHJ1bmR0IGRldHRlIHZlbm5saWdzdCBrb250YWt0ICoqbm9lbi5hbmRyw6lAdnRmay5ubyoq",
+    "template": "SGVpCgpEdSBrb250YWt0ZXMgZm9yZGkgZHUgaGFyIGVpZW5kb20gaSBldHQgb21yw6VkZSBzb20gbsOlIHNrYWwgb21yZWd1bGVyZXMKCiMjIyBCZXNrcml2ZWxzZQpbW2xhYmVsPSJCZXNrcml2ZWxzZSI6cGF0aD0iZGVzY3JpcHRpb24iXV0KCiMjIyBIdmEgc29tIGthbiBmb3J2ZW50ZXMKW1tsYWJlbD0iRm9ydmVudGVsc2VyIjpwYXRoPSJleHBlY3RhdGlvbnMiOmxpbmVzPSI1Il1dCgojIyMgVmVkIHNww7hyc23DpWwKSHZpcyBkdSBoYXIgbm9lbiBzcMO4cnNtw6VsIGVsbGVyIGlubnZlbmRpbmdlciBydW5kdCBkZXR0ZSB2ZW5ubGlnc3Qga29udGFrdCAqKm5vZW4uYW5kcsOpQHZ0Zmsubm8qKg==",
     "data": {}
-  },
-  {
-    "_id": "587cecb8-8f74-4c1b-847d-a8e045577e0f",
-    "name": "Veiarbeid",
-    "mainTemplate": {
-      "id": "notatmal"
-    },
-    "language": "nb",
-    "description": "Brukes ved veiarbeid i ett område",
-    "markdown": "",
-    "schema": {}
   },
   {
     "_id": "587cecb8-8f74-4c1b-847d-a8e045577e0g",
     "documentTemplate": {
-      "id": "notatmal"
+      "id": "brevmal"
     },
-    "name": "Feature eksempler",
+    "name": "Veiarbeid",
     "description": "Demonstrerer template muligheter",
     "template": "IyMjIyBFa3NlbXBlbCAjMSAtIEVua2VsIGxpbmplCltbbGFiZWw9Ik5hdm4iOnBhdGg9Im5hbWUiXV0KIyMjIyBFa3NlbXBlbCAjMiAtIEVua2VsIGxpbmplIG1lZCBjaGlsZApbW2xhYmVsPSJGb3JuYXZuIjpwYXRoPSJuYW1lLmZpcnN0bmFtZSJdXQojIyMjIEVrc2VtcGVsICMzIC0gTXVsdGkgbGluZQpbWwpsYWJlbD0iRXR0ZXJuYXZuIgpwYXRoPSJuYW1lLmxhc3RuYW1lIgpdXQo="
   }

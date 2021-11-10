@@ -232,12 +232,6 @@ export default {
         this.activeTemplate.schema = schema;
         this.$set(this.activeTemplate, 'schema', schema);
       }
-      console.log('== Schema ==');
-      console.log(schema);
-
-      console.log('== Flatten ==');
-      Sjablong.flattenSchema(schema);
-
       // TODO: Skriv til databasen
 
     },
