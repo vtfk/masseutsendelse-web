@@ -34,7 +34,7 @@ export default {
   #app {
     width: 100vw;
     height: 100vh;
-    text-align: center;
+    /* text-align: center; */
     background: rgba(190,218,202,.3);
     overflow: hidden;
     overflow-y: auto;
@@ -55,6 +55,10 @@ export default {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+  }
+
+  .text-center {
+    text-align: center;
   }
 
   .centered {

@@ -49,7 +49,11 @@
       <VTFKButton size="small" :passedProps="{ onClick: () => { onPreviewTemplate(); }}">Forhåndsvisning</VTFKButton>
       <VTFKButton v-if="$props.showCloseButton" size="small" type="secondary" :passedProps="{ onClick: () => { close() } }">Lukk</VTFKButton>
     </div>
+    <!-- Modals -->
     <VTFKPDFPreviewModal :open="pdfPreview !== undefined" :base64="pdfPreview" title='Lukk modal' :passedProps="{ onDismiss: () => { pdfPreview = undefined; }}"/>
+    <VDialog v-if="isShowInsertPlaceholderModal" v-model="isShowInsertPlaceholderModal" width="40%" max-width="750px" height="1000px">
+      <insert-template-form v-model="isShowInsertPlaceholderModal" @insert="(e) => insertPlaceholder(e)"/>
+    </VDialog>
   </div>
 </template>
 
@@ -60,6 +64,7 @@ import { Editor } from '@toast-ui/vue-editor';
 import { Button, TextField, PDFPreviewModal } from '@vtfk/components';
 import Sjablong from 'sjablong';
 import SchemaFields from './SchemaFields.vue';
+import InsertTemplateForm from './templating/InsertTemplateForm.vue';
 
 export default {
   name: 'TemplateEditor',
@@ -69,7 +74,8 @@ export default {
     'VTFKButton': Button,
     'VTFKTextField': TextField,
     'VTFKPDFPreviewModal': PDFPreviewModal,
-    SchemaFields
+    SchemaFields,
+    InsertTemplateForm
   },
   props: {
     template: {
@@ -105,6 +111,7 @@ export default {
   data() {
     return {
       error: undefined,
+      isShowInsertPlaceholderModal: false,
       pdfPreview: undefined,
       hasChanged: false,
       activeTemplate: {},
@@ -235,8 +242,12 @@ export default {
       // TODO: Skriv til databasen
 
     },
-    insertPlaceholder() {
-      console.log('Inserting placeholder');
+    insertPlaceholder(placeholder) {
+      if(!placeholder) { return; }
+
+      let stringified = Sjablong.convertPlaceholderToString(placeholder);
+
+      this.$refs.editor.editor.insertText(stringified);
     },
     close() {
       if(this.hasChanged) {
@@ -303,9 +314,8 @@ export default {
   },
   mounted() {
     this.$refs.editor.editor.addCommand('markdown', 'insertPlaceholder', () => {
-      console.log('Legger til!!');
-      this.$refs.editor.editor.insertText('$$vtfk\nJadda');
-      
+      this.isShowInsertPlaceholderModal = true;
+      // this.$refs.editor.editor.insertText('$$vtfk\nJadda');
     })
     this.$refs.editor.editor.addCommand('wysiwyg', 'insertPlaceholder', () => {
       console.log('Legger til!!');
@@ -355,4 +365,5 @@ export default {
     margin-right: 0.05rem;
     padding: 0.08rem 0.5rem;
   }
+
 </style>
