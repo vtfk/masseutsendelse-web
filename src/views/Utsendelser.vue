@@ -2,7 +2,7 @@
   <div class="container">
     <h2 class="typography heading-two" style="margin: 2rem;">Utsendelser</h2>
     <Error v-if="error" :error="error"/>
-    <Loading v-else-if="dispatches.length === 0" title="Laster utsendelser" message="Dette kan ta noen sekunder" />
+    <Loading v-else-if="dispatches.length === 0 || isLoading" title="Laster utsendelser" message="Dette kan ta noen sekunder" />
     <div v-else>
       <v-card style="padding-bottom:2rem;">
         <v-card-title class="typography heading-three">
@@ -25,7 +25,7 @@
           class="elevation-1"
           style="margin: 2rem;"
           :search="search"
-          :loading="loading"
+          :loading="isLoading"
           loading-text="Laster data fra databasen "
         >
           <template v-slot:[`item.status`]="{ item }">
@@ -39,9 +39,7 @@
             <v-icon
               medium
               style="padding-right:0.2rem;"
-              tag='test'
-              @click="editItem(item)"
-              v-on:click="test"
+              @click="editItem1(item)"
             >
               mdi-pencil
             </v-icon>
@@ -70,47 +68,20 @@
       >
       <v-card>
         <v-card-title>
-          Sett status
+         Rediger 
         </v-card-title>
           <v-card-text>
-            <div class="card shadow centeredColumn" style="margin-top: 1rem;">
-              <h1>Masseutsendelse</h1>
-              <DispatchStatusSelect v-model="selectedDispatch.status"/>
-              <VTFKSelect
-                label="Velg dokument mal"
-                :passedProps="{ onChange: (e) => { onTemplateChange(e)}}"
-                style="max-width: 750px; width: 100%;"
-                placeholder="Velg mal"
-                :selectedItem="selectedTemplate"
-                :closeOnSelect="true"
-                :isOpen="isTemplateSelectorOpen"
-              />
-              <VTFKTextField
-                placeholder="Tittel"
-                :value="selectedDispatch.title"
-                :passedProps="{ onChange: (e) => { selectedDispatch.title = e.target.value } }"
-                :disabled="isReadOnly"
-                style="max-width: 750px; width: 100%; margin-top: 1rem;"
-              />
-              <VTFKTextField 
-                placeholder="Brødtekst"
-                :value="selectedDispatch.body"
-                :passedProps="{ onChange: (e) => { selectedDispatch.body = e.target.value } }"
-                :disabled="isReadOnly"
-                :rows="8" style="max-width: 750px; width: 100%; margin-top: 1rem;"
-              />
-            </div>
+            <DispatchEditor :dispatchObject="editItem"/>
           </v-card-text>
           <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
             <VTFKButton 
               type='secondary' size='small' style="padding-bottom: 1rem;"
-              :passedProps="{ onClick: () => [saveEdit(), clear()] }"
-              v-on:click="clear"
+              :passedProps="{ onClick: () => [saveEdit()] }"
               >Lagre
             </VTFKButton>
             <VTFKButton 
               type='secondary' size='small' style="padding-bottom: 1rem;"
-              :passedProps="{ onClick: () => [dialogEdit = false, clear()] }"
+              :passedProps="{ onClick: () => [dialogEdit = false] }"
               >Avbryt
             </VTFKButton>
           </v-card-actions>
@@ -181,31 +152,28 @@
 import axios from 'axios'
 import AppError from '../lib/AppError';
 
+
 // VTFK komponenter
-import { Button, Select, TextField } from '@vtfk/components'
+import { Button } from '@vtfk/components'
 
 // Prosjekt komponenter
 import Loading from '../components/Loading.vue';
 import Error from '../components/Error.vue';
 import Map from '../components/Map.vue';
 import DispatchEditor from '../components/DispatchEditor.vue';
-import DispatchStatusSelect from '../components/DispatchStatusSelect.vue';
 
   export default {
     name: 'UtsendelserView',
     components: {
         'VTFKButton': Button,
-        'VTFKSelect': Select,
-        'VTFKTextField': TextField,
         Loading,
         Error,
         Map,
         DispatchEditor,
-        DispatchStatusSelect,
     },
     data () {
       return {
-        isLoading: true,
+        isLoading: false,
         error: undefined,
         dispatches: [],
         search: '',
@@ -256,29 +224,8 @@ import DispatchStatusSelect from '../components/DispatchStatusSelect.vue';
       }
     },
     async mounted() {
-      // Hent alle dispatches fra matrikkel APIet
-      const request = {
-        url: 'https://test-func-masseutsendelse.azurewebsites.net/api/test-func-masseutsendelse',
-        method: 'GET',
-      }
-
-      try {
-        const response = await axios.request(request);
-
-        if(!response || !response.data) {
-          throw new AppError('Ingen respons mottatt', 'Utsendelses APIet rapporterte ingen data');
-        }
-
-        if(!Array.isArray(response.data) || response.data.length <= 0) {
-          throw new AppError('Manglende data', 'Utsendelses APIet svarte, men sendte ingen data');
-        }
-        this.dispatches = response.data
-        this.prosjekter = this.dispatches
-
-      } catch (err) {
-        
-        this.error = err;
-      }
+      // Hent alle dispatches fra mongoDB
+      this.loadDataBase()
     },
     computed: {
       isAllRequiredMatrikkelInfoRetreived() {
@@ -315,21 +262,70 @@ import DispatchStatusSelect from '../components/DispatchStatusSelect.vue';
         else if (status == "approved") return "Godkjent"
         else if (status == "not approved") return "Ikke Godkjent"
       },
-      editItem (item) {
+      async loadDataBase() {
+          this.isLoading = true
+          const request = {
+          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/getdispatches?',
+          method: 'GET',
+        }
+
+        try {
+          const response = await axios.request(request);
+
+          if(!response || !response.data) {
+            throw new AppError('Ingen respons mottatt', 'Utsendelses APIet rapporterte ingen data');
+          }
+
+          if(!Array.isArray(response.data) || response.data.length <= 0) {
+            throw new AppError('Manglende data', 'Utsendelses APIet svarte, men sendte ingen data');
+          }
+          this.dispatches = response.data
+          this.prosjekter = JSON.parse(JSON.stringify(this.dispatches))
+
+        } catch (err) {
+          
+          this.error = err;
+        }
+        this.isLoading = false
+      },
+      editItem1 (item) {
         this.$set(this, 'selectedDispatch', item)
+        this.editItem = item
         this.dialogEdit = true
       },
       openMap(item){
         this.$set(this, 'selectedDispatch', item)
         this.dialogMap = true
-        
       },
       openDoc(item){
         this.dialogDoc = true
         this.openDoc = item
       },
-      saveEdit() {
+      async saveEdit() {
         this.dialogEdit = false
+        this.prosjekter = []
+        // TODO må også ta med hvem den er endret av, må gjøre det når vi har fått på plass autentisering. 
+        let id = this.selectedDispatch._id
+        let status = this.selectedDispatch.status
+        let title = this.selectedDispatch.title
+        let body = this.selectedDispatch.body
+
+        console.log(id, status, title, body)
+        this.isLoading = true
+        await axios({
+          method: 'put',
+          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/editdispatches/'+ id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
+          data: {
+            status: `${status}`,
+            title: `${title}`,
+            body: `${body}`
+          }
+        });
+        console.log(this.url)
+        // console.log(status)
+        // console.log(id)
+        // console.log(this.url)
+        await this.loadDataBase()
         this.alert_success = true
         this.hide_alert();
       },
@@ -338,9 +334,6 @@ import DispatchStatusSelect from '../components/DispatchStatusSelect.vue';
       },
       clear(){
           this.select = this.clear
-      },
-      test(){
-        this.editItem.status = this.select
       },
       titleCase(str) {
         // Setter alle forbokstaver til uppercase
