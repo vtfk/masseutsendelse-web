@@ -3,7 +3,7 @@
     <!-- Informasjonstekst -->
     <div style="display: flex; align-items: center; flex-direction: column;">
       <div class="typography heading-two header-title">Masseutsendelse</div>
-      <p class="typography paragraph header-description" style="margin-top: 1rem;">
+      <p class="typography paragraph header-description text-center" style="margin-top: 1rem;">
         Ett verktøy utviklet for Samferdesel og mobilitets sektoren.<br/>
         Verktøyet lar deg laste opp en polygon fil, gjøre oppslag i Matrikkelen og varsle alle eiere som befinner seg innenfor polygonet.
       </p>
