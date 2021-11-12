@@ -17,7 +17,8 @@ import '@toast-ui/editor/dist/toastui-editor.css';    // Used by the ToastUI mar
   Setup
 */
 // Register globally available components
-import Error from './components/Error'; Vue.component('Error', Error);
+import ErrorField from './components/errors/ErrorField'; Vue.component('ErrorField', ErrorField);
+import ErrorModal from './components/errors/ErrorModal'; Vue.component('ErrorModal', ErrorModal);
 
 // Add global accessible object
 Vue.prototype.$config = Config;
