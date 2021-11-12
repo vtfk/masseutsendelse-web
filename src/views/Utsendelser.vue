@@ -185,16 +185,6 @@ import DispatchEditor from '../components/DispatchEditor.vue';
         alert_success: false,
         isTemplateSelectorOpen: true,
         selectedTemplate: undefined,
-        templateItems: [
-          {
-            label: 'Omregulering',
-            value: 'omregulering'
-          },
-          {
-            label: 'Bygge vei',
-            value: 'vei'
-          }
-        ],
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
         headers: [

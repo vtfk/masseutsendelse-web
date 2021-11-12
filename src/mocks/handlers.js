@@ -14,7 +14,7 @@ export default [
             return res(ctx.json(require('./data/PersonerIBø.json')));
         }
     }),
-    rest.get('*/api/test-func-masseutsendelse', (req, res, ctx) => {
+    rest.get('https://test-func-masseutsendelse.azurewebsites.net/api/getdispatches', (req, res, ctx) => {
         return res(ctx.json(require('./data/Dispatches.json')));
     }),
     rest.get('*/api/v1/templates', (req, res, ctx) => {

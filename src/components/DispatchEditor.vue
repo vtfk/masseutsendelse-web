@@ -41,10 +41,12 @@
         <VSelect
           label="Velg mal"
           placeholder="Velg mal"
+          :value="dispatch.template"
           :items="availableTemplates"
           item-text="name"
           item-value="_id"
           return-object
+          :disabled="isReadOnly"
           @change="(e) => onTemplateChanged(e)"
           style="max-width: 750px; width: 100%;"
         />
@@ -664,9 +666,6 @@
         if(e.template) {
           const tmp = Buffer.from(e.template, 'base64').toString('utf8');
           this.selectedTemplateSchema = Sjablong.generateSchema(tmp);
-          console.log('Schema');
-          console.log(this.selectedTemplateSchema);
-          this.$set(this, 'selectedTmpl', this.selectedTemplateSchema);
         }
       },
       onTextChange(e) {
@@ -688,14 +687,18 @@
         axios.request(request)
         .then((response) => {
           this.templates = response.data;
+          if(this.templates) {
+            let sameTemplate = this.templates.find((t) => t._id === this.dispatch.template)
+            console.log('Same template');
+            console.log(sameTemplate);
+            if(sameTemplate) this.onTemplateChanged(sameTemplate);
+          }
           this.isLoadingTemplates = false;
         })
         .catch(() => {
           this.setError(new AppError('Kunne ikke laste maler'))
           this.isLoadingTemplates = false;
         })
-
-        
       }
     },
     created() {
