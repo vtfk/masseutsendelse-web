@@ -62,21 +62,19 @@
 
 <script>
 // Importer dependencies
-import AppError from '../lib/AppError';
+import AppError from '../lib/vtfk-errors/AppError';
 import axios from 'axios';
 
 // Importer VTFK komponenter
 import { Button } from '@vtfk/components';
 
 // Importer prosjektkomponenter
-import Error from '../components/Error.vue';
 import Loading from '../components/Loading.vue';
 import TemplateEditor from '../components/TemplateEditor.vue';
 
 export default {
   name: 'TemplatesView',
   components: {
-    Error,
     Loading,
     TemplateEditor,
     'VTFKButton': Button

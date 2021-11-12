@@ -150,7 +150,7 @@
 <script>
 // Dependencies
 import axios from 'axios'
-import AppError from '../lib/AppError';
+import AppError from '../lib/vtfk-errors/AppError';
 
 
 // VTFK komponenter
@@ -158,7 +158,6 @@ import { Button } from '@vtfk/components'
 
 // Prosjekt komponenter
 import Loading from '../components/Loading.vue';
-import Error from '../components/Error.vue';
 import Map from '../components/Map.vue';
 import DispatchEditor from '../components/DispatchEditor.vue';
 
@@ -167,7 +166,6 @@ import DispatchEditor from '../components/DispatchEditor.vue';
     components: {
         'VTFKButton': Button,
         Loading,
-        Error,
         Map,
         DispatchEditor,
     },
@@ -185,16 +183,6 @@ import DispatchEditor from '../components/DispatchEditor.vue';
         alert_success: false,
         isTemplateSelectorOpen: true,
         selectedTemplate: undefined,
-        templateItems: [
-          {
-            label: 'Omregulering',
-            value: 'omregulering'
-          },
-          {
-            label: 'Bygge vei',
-            value: 'vei'
-          }
-        ],
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
         headers: [

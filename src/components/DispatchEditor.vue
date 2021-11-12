@@ -41,10 +41,12 @@
         <VSelect
           label="Velg mal"
           placeholder="Velg mal"
+          :value="dispatch.template"
           :items="availableTemplates"
           item-text="name"
           item-value="_id"
           return-object
+          :disabled="isReadOnly"
           @change="(e) => onTemplateChanged(e)"
           style="max-width: 750px; width: 100%;"
         />
@@ -61,7 +63,7 @@
         <VTFKButton
           class="mt-1"
           :disabled="!isDispatchFilledInn"
-          :passedProps="{onClick: () => {}}">Se forhåndsvisning
+          :passedProps="{onClick: () => { previewPDF() }}">Se forhåndsvisning
         </VTFKButton>
         <div v-if="mode === 'new'" class="centeredColumn">
           <VTFKCheckbox
@@ -77,6 +79,9 @@
         </div>
       </div>
     </div>
+    <!-- Modals -->
+    <VTFKPDFPreviewModal :open="pdfPreview !== undefined" :base64="pdfPreview" title='Lukk modal' :passedProps="{ onDismiss: () => { pdfPreview = undefined; }}"/>
+    <ErrorModal v-if="modalError" v-model="modalError" :error="modalError" />
   </div>
 </template>
 
@@ -85,7 +90,7 @@
     Import dependencies
   */
   // VTFK komponenter
-  import { Button, Spinner, Checkbox } from '@vtfk/components'
+  import { Button, Spinner, Checkbox, PDFPreviewModal } from '@vtfk/components'
 
   // Prosjektkomponenter
   import UploadField from '../components/UploadField.vue'
@@ -95,7 +100,6 @@
   import MatrikkelTable from '../components/MatrikkelTable.vue';
   import DispatchStatusSelect from '../components/DispatchStatusSelect.vue';
   import SchemaFields from '../components/SchemaFields.vue';
-  import Error from '../components/Error.vue'
 
   // Dependencies
   import MatrikkelProxyClient from '../lib/matrikkelProxyClient'
@@ -107,7 +111,7 @@
   import Sjablong from 'sjablong';
 
   // Custom error class
-  import AppError from '../lib/AppError';
+  import AppError from '../lib/vtfk-errors/AppError';
 
   export default {
     name: 'dispatchEditor',
@@ -115,6 +119,7 @@
       'VTFKButton': Button,
       'VTFKSpinner': Spinner,
       'VTFKCheckbox': Checkbox,
+      'VTFKPDFPreviewModal': PDFPreviewModal,
       UploadField,
       Map,
       StatCards,
@@ -122,7 +127,6 @@
       DispatchStatusSelect,
       SchemaFields,
       Loading,
-      Error
     },
     props: {
       dispatchObject: {
@@ -132,6 +136,7 @@
     data() {
       return {
         error: undefined,
+        modalError: undefined,
         dispatch: {
           title: '',
           body: '',
@@ -180,6 +185,7 @@
         statItems: [],
         eierforhold: [],
         eiere: [],
+        pdfPreview: undefined,
         isTemplateSelectorOpen: true,
         templateItems: [
           {
@@ -664,9 +670,6 @@
         if(e.template) {
           const tmp = Buffer.from(e.template, 'base64').toString('utf8');
           this.selectedTemplateSchema = Sjablong.generateSchema(tmp);
-          console.log('Schema');
-          console.log(this.selectedTemplateSchema);
-          this.$set(this, 'selectedTmpl', this.selectedTemplateSchema);
         }
       },
       onTextChange(e) {
@@ -688,14 +691,35 @@
         axios.request(request)
         .then((response) => {
           this.templates = response.data;
+          if(this.templates) {
+            let sameTemplate = this.templates.find((t) => t._id === this.dispatch.template)
+            console.log('Same template');
+            console.log(sameTemplate);
+            if(sameTemplate) this.onTemplateChanged(sameTemplate);
+          }
           this.isLoadingTemplates = false;
         })
         .catch(() => {
           this.setError(new AppError('Kunne ikke laste maler'))
           this.isLoadingTemplates = false;
         })
-
-        
+      },
+      previewPDF() {
+        if(!this.selectedTemplate && !this.selectedTemplate) {
+          alert('Forhåndsvisning kan ikke gjøres når mal ikke er valgt');
+          return;
+        }
+        axios.post('http://localhost:3001/api/v1/generatepdf', {
+          preview: true,
+          documentDefinitionId: 'brevmal',
+          'template': this.selectedTemplate.template,
+          data: this.dispatch.templateData
+        })
+        .then((response) => {
+          if(response.data && response.data.base64) {
+            this.pdfPreview = response.data.base64;
+          }
+        })
       }
     },
     created() {

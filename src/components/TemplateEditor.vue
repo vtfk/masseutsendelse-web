@@ -58,7 +58,6 @@
 </template>
 
 <script>
-import Error from './Error';
 import axios from 'axios';
 import { Editor } from '@toast-ui/vue-editor';
 import { Button, TextField, PDFPreviewModal } from '@vtfk/components';
@@ -69,7 +68,6 @@ import InsertTemplateForm from './templating/InsertTemplateForm.vue';
 export default {
   name: 'TemplateEditor',
   components: {
-    Error,
     Editor,
     'VTFKButton': Button,
     'VTFKTextField': TextField,
@@ -111,6 +109,7 @@ export default {
   data() {
     return {
       error: undefined,
+      modalError: undefined,
       isShowInsertPlaceholderModal: false,
       pdfPreview: undefined,
       hasChanged: false,
@@ -206,10 +205,10 @@ export default {
       
       axios.post('http://localhost:3001/api/v1/generatepdf', {
         preview: true,
-        'template_data': markdown,
+        documentDefinitionId: 'brevmal',
+        template: markdown,
         data: {
           title: 'Tittel test',
-          definition: 'brevmal',
           list: [
             'Item #1',
             'Item #2',

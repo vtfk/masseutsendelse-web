@@ -38,7 +38,7 @@
 <script>
 // Import VTFK Component
 import { Button } from '@vtfk/components';
-import AppError from '../../lib/AppError';
+import AppError from '../../lib/vtfk-errors/AppError';
 
 export default {
   name: 'InsertTemplateForm',

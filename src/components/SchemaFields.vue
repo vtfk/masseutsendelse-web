@@ -28,19 +28,17 @@
 
 <script>
 // Importer dependencies
-import AppError from '../lib/AppError';
+import AppError from '../lib/vtfk-errors/AppError';
 import Sjablong from 'sjablong';
 import get from 'lodash.get';
 import set from 'lodash.set';
 import merge from 'lodash.merge';
 
-// Import components
-import Error from './Error.vue';
+// Import components;
 
 export default {
   name: 'SchemaFields',
   components: {
-    Error
   },
   props: {
     value: {
