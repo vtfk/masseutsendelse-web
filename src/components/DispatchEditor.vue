@@ -136,7 +136,7 @@
     data() {
       return {
         error: undefined,
-        modalError: new AppError('Dette er tittelen', 'Dette er meldingen', ['asd']),
+        modalError: undefined,
         dispatch: {
           title: '',
           body: '',

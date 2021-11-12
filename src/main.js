@@ -36,6 +36,15 @@ Vue.config.productionTip = false
 // Setup the routes
 import router from './router'
 
+// Global error handler, any uncaught errors will be sent here
+Vue.config.errorHandler = function(err, vm, info) {
+  // TODO: Implement Sentry
+  console.log('Uncaught error');
+  console.log(err);
+  console.log(vm);
+  console.log(info);
+}
+
 new Vue({
   vuetify,
   router,
