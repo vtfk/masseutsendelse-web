@@ -54,6 +54,7 @@
             v-if="selectedTemplateSchema"
             v-model="dispatch.templateData"
             :schema="selectedTemplateSchema"
+            :disabled="isReadOnly"
             @changed="$forceUpdate()"
           />
         </div>
@@ -192,7 +193,11 @@
         ],
         templates: [],
         selectedTemplate: undefined,
-        selectedTemplateSchema: undefined
+        selectedTemplateSchema: undefined,
+        selectedTmpl: {
+          template: undefined,
+          schema: undefined
+        }
       }
     },
     computed: {
@@ -653,13 +658,15 @@
         }
       },
       onTemplateChanged(e) {
-        console.log(e);
         this.dispatch.template = e._id;
         this.selectedTemplate = e;
 
         if(e.template) {
           const tmp = Buffer.from(e.template, 'base64').toString('utf8');
           this.selectedTemplateSchema = Sjablong.generateSchema(tmp);
+          console.log('Schema');
+          console.log(this.selectedTemplateSchema);
+          this.$set(this, 'selectedTmpl', this.selectedTemplateSchema);
         }
       },
       onTextChange(e) {
