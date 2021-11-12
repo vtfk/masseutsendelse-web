@@ -214,7 +214,12 @@ export default {
             'Item #1',
             'Item #2',
             'Item #3'
-          ]
+          ],
+          sak: {
+            saksnavn: 'Møte om ett eller annet',
+            dato: '12.11.2021',
+            beskrivelse: "Dette er en beskrivelse av saken\nDen er over flere linjer\n3 faktisk",
+          }
         }
       })
       .then((response) => {

@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%;">
-  <Error v-if="error" :error="error" :showResetButton="false" />
+    <Error v-if="error" :error="error" :showResetButton="false" />
     <!-- Inputs -->
     <div v-else v-for="(property, i) in schemaProperties" :key="i">
       <VTextField 
@@ -11,6 +11,7 @@
         :label="determinePropertyLabel(property)"
         @input="(e) => updateData(property.path, e)"
         :required="true"
+        :disabled="$props.disabled || property.disabled"
       />
       <VTextarea
         v-if="property.type === 'string' && property.lines"
@@ -19,6 +20,7 @@
         :label="determinePropertyLabel(property)"
         :rows="property.lines"
         @input="(e) => updateData(property.path, e)"
+        :disabled="$props.disabled || property.disabled"
       />
     </div>
   </div>
@@ -48,6 +50,10 @@ export default {
     schema: {
       type: [Object, Array],
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -58,34 +64,7 @@ export default {
     }
   },
   created() {
-    try {
-      // Input validation
-      if(!this.$props.schema) throw new AppError('Skjema mangler', 'Skjemakomponenten har ikke mottatt noe skjema');
-      if(Array.isArray(this.$props.schema)) throw new AppError('Feil skjema type', 'Skjemaet er av typen array, det må være ett vanlig objekt');
-      let schemaType = typeof this.$props.schema;
-      if(schemaType !== 'object') throw new AppError('Feil skjema type', 'Skjemaet skal være av type object eller array, men er av type ' + schemaType);
-
-      // Get the default data from the schema
-      let defaultData = Sjablong.createObjectFromSchema(this.$props.schema);
-
-      console.log('== Schema ==');
-      console.log(this.$props.schema);
-
-      // Merge the provided data with the default data
-      this.data = merge(this.$props.value, defaultData);
-
-      // Emit to the parent that the data might have changed
-      this.onUpdate();
-
-      // Determine how to assign the flattened schema
-      let flattenedSchema = Sjablong.flattenSchema(this.$props.schema);
-      if(!flattenedSchema || !Array.isArray(flattenedSchema) || flattenedSchema.length <= 0) throw new AppError('Skjemaet er tomt', 'Skjema er mottatt, men vi finner ingen felter');
-      
-      // Set skjemaet
-      this.schemaProperties = flattenedSchema;
-    } catch (err) {
-      this.setError(err);
-    }
+    this.setSchema();
   },
   methods: {
     setError(err) {
@@ -93,6 +72,37 @@ export default {
       this.error = err;
       // Emit that an error has occures
       this.$emit('error', this.error);
+    },
+    setSchema() {
+      try {
+        this.error = undefined;
+        // Input validation
+        if(!this.$props.schema) throw new AppError('Skjema mangler', 'Skjemakomponenten har ikke mottatt noe skjema');
+        if(Array.isArray(this.$props.schema)) throw new AppError('Feil skjema type', 'Skjemaet er av typen array, det må være ett vanlig objekt');
+        let schemaType = typeof this.$props.schema;
+        if(schemaType !== 'object') throw new AppError('Feil skjema type', 'Skjemaet skal være av type object eller array, men er av type ' + schemaType);
+
+        // Get the default data from the schema
+        let defaultData = Sjablong.createObjectFromSchema(this.$props.schema);
+
+        console.log('== Schema ==');
+        console.log(this.$props.schema);
+
+        // Merge the provided data with the default data
+        this.data = merge(this.$props.value, defaultData);
+
+        // Emit to the parent that the data might have changed
+        this.onUpdate();
+
+        // Determine how to assign the flattened schema
+        let flattenedSchema = Sjablong.flattenSchema(this.$props.schema);
+        if(!flattenedSchema || !Array.isArray(flattenedSchema) || flattenedSchema.length <= 0) throw new AppError('Skjemaet er tomt', 'Skjema er mottatt, men vi finner ingen felter');
+        
+        // Set skjemaet
+        this.schemaProperties = flattenedSchema;
+      } catch (err) {
+        this.setError(err);
+      }
     },
     updateData(path, value) {
       // Input validation
@@ -116,6 +126,11 @@ export default {
       if(property.path) return property.path; // TODO: Gjør om
 
       return 'Ukjent...'
+    }
+  },
+  watch: {
+    schema: function () {
+      this.setSchema();
     }
   }
 }
