@@ -46,7 +46,7 @@
             <v-icon
               medium
               style="padding-right:0.2rem;"
-              @click="openDoc(item)"
+              @click="previewPDF(item)"
             >
               mdi-note-search 
             </v-icon>
@@ -160,6 +160,7 @@ import { Button } from '@vtfk/components'
 import Loading from '../components/Loading.vue';
 import Map from '../components/Map.vue';
 import DispatchEditor from '../components/DispatchEditor.vue';
+import AppError from '../lib/vtfk-errors/AppError';
 
   export default {
     name: 'UtsendelserView',
@@ -250,6 +251,7 @@ import DispatchEditor from '../components/DispatchEditor.vue';
       },
       async loadDataBase() {
         try {
+          await this.$store.dispatch('getTemplates');
           await this.$store.dispatch('getDispatches');
         } catch(err) {
           this.error = err;
@@ -264,18 +266,27 @@ import DispatchEditor from '../components/DispatchEditor.vue';
         this.$set(this, 'selectedDispatch', item)
         this.dialogMap = true
       },
-      previewPDF() {
-        if(!this.selectedTemplate && !this.selectedTemplate) {
+      previewPDF(item) {
+        if(!item) {
           alert('Forhåndsvisning kan ikke gjøres når mal ikke er valgt');
           return;
         }
 
-        let data = merge(this.dispatch.data, this.selectedTemplate.data);
+        // Get template
+        if(!this.$store.state.templates) { return; }
+        console.log('== Item ==')
+        console.log(item);
+        console.log('== Templates ==');
+        console.log(this.$store.state.templates);
+        let template = this.$store.state.templates.find((t) => t._id === item.template);
+        if(!template) this.error = new AppError('Maler er ikke lastet inn');
+
+        let data = merge(item.data, template.data);
 
         let request = {
           preview: true,
-          documentDefinitionId: this.selectedTemplate.documentDefinitionId,
-          template: this.selectedTemplate.template,
+          documentDefinitionId: template.documentDefinitionId,
+          template: template.template,
           data: data
         }
 
