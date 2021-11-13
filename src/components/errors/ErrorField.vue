@@ -2,7 +2,10 @@
   <div>
     <div v-if="$props.error" class="error-card">
       <!-- <h1>En feil har oppstått</h1> -->
-      <h1 style="margin-bottom: 0.75rem;">{{$props.error.title || $props.defaultTitle}}</h1>
+      <h1 style="margin-bottom: 0.75rem;">
+        <span v-if="statusCode">{{statusCode}} - </span>
+        {{$props.error.title || $props.defaultTitle}}
+      </h1>
       <h3 v-if="$props.error.message">{{$props.error.message}}</h3>
       <div v-if="$props.error.errors" style="margin-top: 0.75rem;">
         <ul>
@@ -54,6 +57,14 @@
       showOkButton: {
         type: Boolean,
         default: false
+      }
+    },
+    computed: {
+      statusCode() {
+        if(!this.$props.error) return '';
+        if(this.$props.error.statusCode) return this.$props.error.statusCode;
+        if(this.$props.error.status) return this.$props.error.status;
+        return '';
       }
     }
   }
