@@ -3,7 +3,7 @@
     <VCardTitle>Legg till flettefelt</VCardTitle>
     <v-card-subtitle>Her kan du legge til ett felt som må fylles ut for å benytte malen</v-card-subtitle>
     <v-card-text>
-      <Error v-if="error" :error="error" :showResetButton="false" />
+      <ErrorField v-if="error" :error="error" :showResetButton="false" />
       <v-text-field v-model="placeholder.label" label="Navn" hint="Navn på feltet">
         <template #label>
           <span style="color: red"><strong>* </strong></span>Navn

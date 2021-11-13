@@ -4,34 +4,28 @@
     "name": "Omregulering",
     "description": "Brukes ved omregulering av ett område",
     "language": "nb",
-    "documentTemplate": {
-      "id": "brevmal",
-      "language": "nb",
-      "data": {
-        "info": {
-          "our-reference": ""
-        }
-      }
-    },
+    "documentDefinitionId": "brevmal",
     "template": "SGVpCgpEdSBrb250YWt0ZXMgZm9yZGkgZHUgaGFyIGVpZW5kb20gaSBldHQgb21yw6VkZSBzb20gbsOlIHNrYWwgb21yZWd1bGVyZXMKCiMjIyBCZXNrcml2ZWxzZQpbW2xhYmVsPSJCZXNrcml2ZWxzZSI6cGF0aD0iZGVzY3JpcHRpb24iXV0KCiMjIyBIdmEgc29tIGthbiBmb3J2ZW50ZXMKW1tsYWJlbD0iRm9ydmVudGVsc2VyIjpwYXRoPSJleHBlY3RhdGlvbnMiOmxpbmVzPSI1Il1dCgojIyMgVmVkIHNww7hyc23DpWwKSHZpcyBkdSBoYXIgbm9lbiBzcMO4cnNtw6VsIGVsbGVyIGlubnZlbmRpbmdlciBydW5kdCBkZXR0ZSB2ZW5ubGlnc3Qga29udGFrdCAqKm5vZW4uYW5kcsOpQHZ0Zmsubm8qKg==",
-    "data": {}
+    "data": {
+      "info": {
+        "our-reference": ""
+      }
+    }
   },
   {
     "_id": "587cecb8-8f74-4c1b-847d-a8e045577e0g",
-    "documentTemplate": {
-      "id": "brevmal"
-    },
     "name": "Veiarbeid",
     "description": "Demonstrerer template muligheter",
-    "template": "IyMjIyBFa3NlbXBlbCAjMSAtIEVua2VsIGxpbmplCltbbGFiZWw9IkZpcm1hIjpwYXRoPSJjb21wYW55Il1dCiMjIyMgRWtzZW1wZWwgIzIgLSBFbmtlbCBsaW5qZSBtZWQgY2hpbGQKW1tsYWJlbD0iRm9ybmF2biI6cGF0aD0ibmFtZS5maXJzdG5hbWUiXV0KIyMjIyBFa3NlbXBlbCAjMyAtIE11bHRpIGxpbmUKW1sKbGFiZWw9IkV0dGVybmF2biIKcGF0aD0ibmFtZS5sYXN0bmFtZSIKXV0KIyMjIyBFa3NlbXBlbCAjMyAtIE11c3RhY2hlL0hhbmRsZWJhcnMKe3sgbGlzdCB9fQojIyMjIEVrc2VtcGVuICM0IC0gSGFuZGxlYmFycyBlYWNoCnt7I2VhY2ggbGlzdH19Cioge3t0aGlzfX0Ke3svZWFjaH19"
+    "documentDefinitionId": "brevmal",
+    "template": "IyMjIyBFa3NlbXBlbCAjMSAtIEVua2VsIGxpbmplCltbbGFiZWw9IkZpcm1hIjpwYXRoPSJjb21wYW55Il1dCiMjIyMgRWtzZW1wZWwgIzIgLSBFbmtlbCBsaW5qZSBtZWQgY2hpbGQKW1tsYWJlbD0iRm9ybmF2biI6cGF0aD0ibmFtZS5maXJzdG5hbWUiXV0KIyMjIyBFa3NlbXBlbCAjMyAtIE11bHRpIGxpbmUKW1sKbGFiZWw9IkV0dGVybmF2biIKcGF0aD0ibmFtZS5sYXN0bmFtZSIKXV0KIyMjIyBFa3NlbXBlbCAjMyAtIE11c3RhY2hlL0hhbmRsZWJhcnMKe3sgbGlzdCB9fQojIyMjIEVrc2VtcGVuICM0IC0gSGFuZGxlYmFycyBlYWNoCnt7I2VhY2ggbGlzdH19Cioge3t0aGlzfX0Ke3svZWFjaH19",
+    "data": {}
   },
   {
     "_id": "587cecb8-8f74-4c1b-847d-a8e045577e0y",
     "name": "Generisk",
     "description": "Vil ta med de verdiene den blir tilsendt",
+    "documentDefinitionId": "brevmal",
     "template": "e3sjZWFjaCBzYWsgfX0KIyMjIHt7dXBwZXJjYXNlRmlyc3QgQGtleX19Cnt7bWFya2Rvd25OZXdsaW5lIHRoaXN9fQp7ey9lYWNofX0=",
-    "documentTemplate": {
-      "id": "brevmal"
-    }
+    "data": {}
   }
 ]

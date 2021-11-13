@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <h2 class="typography heading-two" style="margin: 2rem;">Utsendelser</h2>
-    <Error v-if="error" :error="error"/>
-    <Loading v-else-if="dispatches.length === 0 || isLoading" title="Laster utsendelser" message="Dette kan ta noen sekunder" />
+    <ErrorField v-if="error" :error="error"/>
+    <Loading v-else-if="!$store.state.dispatches" title="Laster utsendelser" message="Dette kan ta noen sekunder" />
     <div v-else>
       <v-card style="padding-bottom:2rem;">
         <v-card-title class="typography heading-three">
@@ -19,13 +19,13 @@
         </v-card-title>
         <v-data-table
           :headers="headers"
-          :items="prosjekter"
+          :items="$store.state.dispatches"
           :items-per-page="5"
           fixed-header
           class="elevation-1"
           style="margin: 2rem;"
           :search="search"
-          :loading="isLoading"
+          :loading="!$store.state.dispatches"
           loading-text="Laster data fra databasen "
         >
           <template v-slot:[`item.status`]="{ item }">
@@ -149,8 +149,8 @@
 
 <script>
 // Dependencies
-import axios from 'axios'
-import AppError from '../lib/vtfk-errors/AppError';
+import axios from 'axios';
+import merge from 'lodash.merge';
 
 
 // VTFK komponenter
@@ -171,7 +171,6 @@ import DispatchEditor from '../components/DispatchEditor.vue';
     },
     data () {
       return {
-        isLoading: false,
         error: undefined,
         dispatches: [],
         search: '',
@@ -200,7 +199,6 @@ import DispatchEditor from '../components/DispatchEditor.vue';
           {text: 'Filnavn', value: 'polygon.filename'},
           {text: 'Handlinger', value: 'handlinger', sortable:false}
         ],
-        prosjekter: [],
         select: {status_valg: '', status_value: ''},
         items: [
           { status_valg: 'Godkjent', status_value: 'approved'},
@@ -251,30 +249,11 @@ import DispatchEditor from '../components/DispatchEditor.vue';
         else if (status == "not approved") return "Ikke Godkjent"
       },
       async loadDataBase() {
-          this.isLoading = true
-          const request = {
-          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/getdispatches?',
-          method: 'GET',
-        }
-
         try {
-          const response = await axios.request(request);
-
-          if(!response || !response.data) {
-            throw new AppError('Ingen respons mottatt', 'Utsendelses APIet rapporterte ingen data');
-          }
-
-          if(!Array.isArray(response.data) || response.data.length <= 0) {
-            throw new AppError('Manglende data', 'Utsendelses APIet svarte, men sendte ingen data');
-          }
-          this.dispatches = response.data
-          this.prosjekter = JSON.parse(JSON.stringify(this.dispatches))
-
-        } catch (err) {
-          
+          await this.$store.dispatch('getDispatches');
+        } catch(err) {
           this.error = err;
         }
-        this.isLoading = false
       },
       editItem1 (item) {
         this.$set(this, 'selectedDispatch', item)
@@ -285,13 +264,25 @@ import DispatchEditor from '../components/DispatchEditor.vue';
         this.$set(this, 'selectedDispatch', item)
         this.dialogMap = true
       },
-      openDoc(item){
-        this.dialogDoc = true
-        this.openDoc = item
+      previewPDF() {
+        if(!this.selectedTemplate && !this.selectedTemplate) {
+          alert('Forhåndsvisning kan ikke gjøres når mal ikke er valgt');
+          return;
+        }
+
+        let data = merge(this.dispatch.data, this.selectedTemplate.data);
+
+        let request = {
+          preview: true,
+          documentDefinitionId: this.selectedTemplate.documentDefinitionId,
+          template: this.selectedTemplate.template,
+          data: data
+        }
+
+        this.$store.dispatch('getPDFPreview', request)
       },
       async saveEdit() {
         this.dialogEdit = false
-        this.prosjekter = []
         // TODO må også ta med hvem den er endret av, må gjøre det når vi har fått på plass autentisering. 
         let id = this.selectedDispatch._id
         let status = this.selectedDispatch.status
