@@ -1,7 +1,7 @@
 <template>
   <div style="margin-top: 1rem;">
     <!-- Feilmelding -->
-    <Error v-if="error" :error="error" v-on:resetClicked="reset(true)" />
+    <ErrorField v-if="error" :error="error" v-on:resetClicked="reset(true)" />
     <!-- Loaders -->
     <Loading v-else-if="isLoadingTemplates" title="Laster inn maler" />
     <!-- Fil opplasting -->
@@ -106,8 +106,8 @@
   import proj4 from 'proj4';
   import { polygon as turfPolygon }  from '@turf/helpers';
   import turfArea from '@turf/area';
-  import axios from 'axios';
   import Sjablong from 'sjablong';
+  import merge from 'lodash.merge'
 
   // Custom error class
   import AppError from '../lib/vtfk-errors/AppError';
@@ -678,50 +678,37 @@
         console.log('Setting "' + key + '" to "' + value + '"');
         this.$set(this.project, key, value)
       },
-      loadTemplates() {
+      async loadTemplates() {
         this.isLoadingTemplates = true;
 
-        const request = {
-          url: 'http://templates.vtfk.no/api/v1/templates',
-          method: 'get'
+       try {
+          this.templates = await this.$store.dispatch('getTemplates');
+        } catch (err) {
+          this.error = new AppError('Kunne ikke hente hente inn maler', err);
+          return;
         }
 
-        // TODO: Endre url og håndter feil
-        axios.request(request)
-        .then((response) => {
-          this.templates = response.data;
-          if(this.templates) {
-            let sameTemplate = this.templates.find((t) => t._id === this.dispatch.template)
-            console.log('Same template');
-            console.log(sameTemplate);
-            if(sameTemplate) this.onTemplateChanged(sameTemplate);
-          }
-          this.isLoadingTemplates = false;
-        })
-        .catch(() => {
-          this.setError(new AppError('Kunne ikke laste maler'))
-          this.isLoadingTemplates = false;
-        })
+        let sameTemplate = this.$store.state.templates.find((t) => t._id === this.dispatch.template)
+        if(sameTemplate) this.onTemplateChanged(sameTemplate);
+
+        this.isLoadingTemplates = false;
       },
       previewPDF() {
         if(!this.selectedTemplate && !this.selectedTemplate) {
           alert('Forhåndsvisning kan ikke gjøres når mal ikke er valgt');
           return;
         }
-        axios.post('http://localhost:3001/api/v1/generatepdf', {
+
+        let data = merge(this.dispatch.data, this.selectedTemplate.data);
+
+        let request = {
           preview: true,
-          documentDefinitionId: 'brevmal',
-          'template': this.selectedTemplate.template,
-          data: this.dispatch.templateData
-        })
-        .then((response) => {
-          if(response.data && response.data.base64) {
-            this.pdfPreview = response.data.base64;
-          }
-        })
-        .catch((err) => {
-          this.$store.commit('setModalError', err);
-        })
+          documentDefinitionId: this.selectedTemplate.documentDefinitionId,
+          template: this.selectedTemplate.template,
+          data: data
+        }
+
+        this.$store.dispatch('getPDFPreview', request)
       }
     },
     created() {
