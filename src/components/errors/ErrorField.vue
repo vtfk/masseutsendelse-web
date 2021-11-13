@@ -40,7 +40,8 @@
     },
     props: {
       error: {
-        type: [ Object, AppError]
+        type: [ Object, Error, AppError],
+        reqruire: true
       },
       defaultTitle: {
         type: String,

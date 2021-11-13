@@ -10,6 +10,8 @@
         <router-view>
         </router-view>
       </main>
+      <!-- Error modal -->
+      <ErrorModal v-if="$store.state.modalError" :error="$store.state.modalError" @close="$store.commit('resetModalError')" />
     </v-app>
   </div>
 </template>
