@@ -81,7 +81,6 @@
     </div>
     <!-- Modals -->
     <VTFKPDFPreviewModal :open="pdfPreview !== undefined" :base64="pdfPreview" title='Lukk modal' :passedProps="{ onDismiss: () => { pdfPreview = undefined; }}"/>
-    <ErrorModal v-if="modalError" v-model="modalError" :error="modalError" />
   </div>
 </template>
 
@@ -719,6 +718,9 @@
           if(response.data && response.data.base64) {
             this.pdfPreview = response.data.base64;
           }
+        })
+        .catch((err) => {
+          this.$store.commit('setModalError', err);
         })
       }
     },
