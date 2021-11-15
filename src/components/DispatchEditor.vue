@@ -651,13 +651,12 @@
         return parsed;
       },
       async submitMassDispatch() {
-        console.log(this.title, this.body)
         let uuid = uuid4()
         let today = new Date()
         const dataObjc = {
           _id: uuid,
-          title: this.dispatch.title,
-          body: this.dispatch.body,
+          title: "Denne må defineres, hentes ikke i this.dispatch",
+          body: "Denne må defineres, hentes ikke i this.dispatch",
           nummer: "20",
           status: "inprogress",
           createdDate: today,
