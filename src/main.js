@@ -16,6 +16,10 @@ import '@toast-ui/editor/dist/toastui-editor.css';    // Used by the ToastUI mar
 /*
   Setup
 */
+// Register globally available components
+import ErrorField from './components/errors/ErrorField'; Vue.component('ErrorField', ErrorField);
+import ErrorModal from './components/errors/ErrorModal'; Vue.component('ErrorModal', ErrorModal);
+
 // Add global accessible object
 Vue.prototype.$config = Config;
 
@@ -32,8 +36,21 @@ Vue.config.productionTip = false
 // Setup the routes
 import router from './router'
 
+// Import the Vuex store
+import store from './store'
+
+// Global error handler, any uncaught errors will be sent here
+Vue.config.errorHandler = function(err, vm, info) {
+  // TODO: Implement Sentry
+  console.log('Uncaught error');
+  console.log(err);
+  console.log(vm);
+  console.log(info);
+}
+
 new Vue({
   vuetify,
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')
