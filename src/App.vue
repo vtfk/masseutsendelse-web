@@ -10,25 +10,17 @@
         <router-view>
         </router-view>
       </main>
-      <!-- Error modal -->
-      <ErrorModal v-if="$store.state.modalError" :error="$store.state.modalError" @close="$store.commit('resetModalError')" />
-      <VTFKPDFPreviewModal :open="$store.state.previewPDFBase64 !== undefined" :base64="$store.state.previewPDFBase64" title='Lukk modal' :passedProps="{ onDismiss: () => { $store.commit('setPreviewPDF', undefined) }}"/>
     </v-app>
   </div>
 </template>
 
 <script>
-// Project components
 import Header from './components/Header.vue'
-
-// VTFK Component
-import { PDFPreviewModal } from '@vtfk/components';
 
 export default {
   name: 'App',
   components: {
     Header,
-    'VTFKPDFPreviewModal': PDFPreviewModal
   }
 }
 
@@ -42,7 +34,7 @@ export default {
   #app {
     width: 100vw;
     height: 100vh;
-    /* text-align: center; */
+    text-align: center;
     background: rgba(190,218,202,.3);
     overflow: hidden;
     overflow-y: auto;
@@ -63,10 +55,6 @@ export default {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-  }
-
-  .text-center {
-    text-align: center;
   }
 
   .centered {

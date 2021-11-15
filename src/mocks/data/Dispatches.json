@@ -5,7 +5,7 @@
     "nummer": "1",
     "status": "completed",
     "body":"Dette er noe tekst",
-    "template":"fc6e2c34-5dce-4809-9569-bff9d3bd7ff4",
+    "template":"omregulering",
     "stats":{
        "affectedCount":11,
        "totalOwners":13,
@@ -6256,7 +6256,7 @@
    "nummer": 2,
    "status": "not approved",
    "body":"Dette er noe tekst",
-   "template":"fc6e2c34-5dce-4809-9569-bff9d3bd7ff4",
+   "template":"omregulering",
    "stats":{
       "affectedCount":11,
       "totalOwners":13,
@@ -12507,7 +12507,7 @@
    "nummer": 3,
    "status": "inprogress",
    "body":"Dette er noe tekst",
-   "template":"fc6e2c34-5dce-4809-9569-bff9d3bd7ff4",
+   "template":"omregulering",
    "stats":{
       "affectedCount":11,
       "totalOwners":13,

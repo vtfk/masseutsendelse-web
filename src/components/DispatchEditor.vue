@@ -665,13 +665,15 @@
           modifiedById: "00000000-0000-0000-0000-000000000000",
         }
 
-        var postObject = Object.assign(this.dispatch, dataObjc)
+        var test = Object.assign(this.dispatch, dataObjc)
 
         if(confirm('Er du helt sikker på at du vil sende inn?')) {
           console.log('Vil sendes inn');
           this.isLoading = true
+          console.log(this.dispatch)
+          console.log(test)
           try {
-            await axios.post('http://localhost:7071/api/postdispatches', postObject)
+            await axios.post('http://localhost:7071/api/postdispatches', test)
           } catch(err) {
             console.log(err)
           }

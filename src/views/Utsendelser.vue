@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <h2 class="typography heading-two" style="margin: 2rem;">Utsendelser</h2>
-    <ErrorField v-if="error" :error="error"/>
-    <Loading v-else-if="!$store.state.dispatches" title="Laster utsendelser" message="Dette kan ta noen sekunder" />
+    <Error v-if="error" :error="error"/>
+    <Loading v-else-if="dispatches.length === 0 || isLoading" title="Laster utsendelser" message="Dette kan ta noen sekunder" />
     <div v-else>
       <v-card style="padding-bottom:2rem;">
         <v-card-title class="typography heading-three">
@@ -19,13 +19,13 @@
         </v-card-title>
         <v-data-table
           :headers="headers"
-          :items="$store.state.dispatches"
+          :items="prosjekter"
           :items-per-page="5"
           fixed-header
           class="elevation-1"
           style="margin: 2rem;"
           :search="search"
-          :loading="!$store.state.dispatches"
+          :loading="isLoading"
           loading-text="Laster data fra databasen "
         >
           <template v-slot:[`item.status`]="{ item }">
@@ -46,7 +46,7 @@
             <v-icon
               medium
               style="padding-right:0.2rem;"
-              @click="previewPDF(item)"
+              @click="openDoc(item)"
             >
               mdi-note-search 
             </v-icon>
@@ -149,8 +149,8 @@
 
 <script>
 // Dependencies
-import axios from 'axios';
-import merge from 'lodash.merge';
+import axios from 'axios'
+import AppError from '../lib/AppError';
 
 
 // VTFK komponenter
@@ -158,20 +158,22 @@ import { Button } from '@vtfk/components'
 
 // Prosjekt komponenter
 import Loading from '../components/Loading.vue';
+import Error from '../components/Error.vue';
 import Map from '../components/Map.vue';
 import DispatchEditor from '../components/DispatchEditor.vue';
-import AppError from '../lib/vtfk-errors/AppError';
 
   export default {
     name: 'UtsendelserView',
     components: {
         'VTFKButton': Button,
         Loading,
+        Error,
         Map,
         DispatchEditor,
     },
     data () {
       return {
+        isLoading: false,
         error: undefined,
         dispatches: [],
         search: '',
@@ -183,6 +185,16 @@ import AppError from '../lib/vtfk-errors/AppError';
         alert_success: false,
         isTemplateSelectorOpen: true,
         selectedTemplate: undefined,
+        templateItems: [
+          {
+            label: 'Omregulering',
+            value: 'omregulering'
+          },
+          {
+            label: 'Bygge vei',
+            value: 'vei'
+          }
+        ],
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
         headers: [
@@ -200,6 +212,7 @@ import AppError from '../lib/vtfk-errors/AppError';
           {text: 'Filnavn', value: 'polygon.filename'},
           {text: 'Handlinger', value: 'handlinger', sortable:false}
         ],
+        prosjekter: [],
         select: {status_valg: '', status_value: ''},
         items: [
           { status_valg: 'Godkjent', status_value: 'approved'},
@@ -250,12 +263,30 @@ import AppError from '../lib/vtfk-errors/AppError';
         else if (status == "not approved") return "Ikke Godkjent"
       },
       async loadDataBase() {
+          this.isLoading = true
+          const request = {
+          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/getdispatches?',
+          method: 'GET',
+        }
+
         try {
-          await this.$store.dispatch('getTemplates');
-          await this.$store.dispatch('getDispatches');
-        } catch(err) {
+          const response = await axios.request(request);
+
+          if(!response || !response.data) {
+            throw new AppError('Ingen respons mottatt', 'Utsendelses APIet rapporterte ingen data');
+          }
+
+          if(!Array.isArray(response.data) || response.data.length <= 0) {
+            throw new AppError('Manglende data', 'Utsendelses APIet svarte, men sendte ingen data');
+          }
+          this.dispatches = response.data
+          this.prosjekter = JSON.parse(JSON.stringify(this.dispatches))
+
+        } catch (err) {
+          
           this.error = err;
         }
+        this.isLoading = false
       },
       editItem1 (item) {
         this.$set(this, 'selectedDispatch', item)
@@ -266,34 +297,13 @@ import AppError from '../lib/vtfk-errors/AppError';
         this.$set(this, 'selectedDispatch', item)
         this.dialogMap = true
       },
-      previewPDF(item) {
-        if(!item) {
-          alert('Forhåndsvisning kan ikke gjøres når mal ikke er valgt');
-          return;
-        }
-
-        // Get template
-        if(!this.$store.state.templates) { return; }
-        console.log('== Item ==')
-        console.log(item);
-        console.log('== Templates ==');
-        console.log(this.$store.state.templates);
-        let template = this.$store.state.templates.find((t) => t._id === item.template);
-        if(!template) this.error = new AppError('Maler er ikke lastet inn');
-
-        let data = merge(item.data, template.data);
-
-        let request = {
-          preview: true,
-          documentDefinitionId: template.documentDefinitionId,
-          template: template.template,
-          data: data
-        }
-
-        this.$store.dispatch('getPDFPreview', request)
+      openDoc(item){
+        this.dialogDoc = true
+        this.openDoc = item
       },
       async saveEdit() {
         this.dialogEdit = false
+        this.prosjekter = []
         // TODO må også ta med hvem den er endret av, må gjøre det når vi har fått på plass autentisering. 
         let id = this.selectedDispatch._id
         let status = this.selectedDispatch.status

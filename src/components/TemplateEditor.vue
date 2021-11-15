@@ -1,5 +1,5 @@
 <template>
-  <ErrorField v-if="error" :error="error" :showResetButton="false" />
+  <Error v-if="error" :error="error" :showResetButton="false" />
   <div v-else style="text-align: left; align-items: flex-start;">
     <h2>Generelt</h2>
     <p>Generell informasjon om malen</p>
@@ -18,7 +18,7 @@
     <h2 style="margin-top: 2rem;">Dokumentmal</h2>
     <p>Dette er dokumentmalen som omberammer denne innholdsmalen<p>
     <VSelect
-      v-model="activeTemplate.documentDefinitionId"
+      v-model="activeTemplate.documentTemplate.id"
       :items="documentTemplates"
       label="Hovedmal"
       hint="Dette er hovedmalen som omfavner innholdet i denne innholdsmalen"
@@ -31,7 +31,7 @@
     <div v-if="mainTemplateSchema">
       <h3>Felter i hovedmalen</h3>
       <p>Hovedmalen har noen dynamiske felter, hva som skal stå i disse kan du sette her</p>
-        <SchemaFields v-model="activeTemplate.data" :schema="mainTemplateSchema" @error="(e) => error = e" />
+        <SchemaFields v-model="activeTemplate.documentTemplate.data" :schema="mainTemplateSchema" @error="(e) => error = e" />
     </div>
     <h2 style="margin-top: 2rem;">Innholdsmal</h2>
     <p>Mal for innholdet i masseutsendelsene som skal sendes ut</p>
@@ -49,31 +49,27 @@
       <VTFKButton size="small" :passedProps="{ onClick: () => { onPreviewTemplate(); }}">Forhåndsvisning</VTFKButton>
       <VTFKButton v-if="$props.showCloseButton" size="small" type="secondary" :passedProps="{ onClick: () => { close() } }">Lukk</VTFKButton>
     </div>
-    <!-- Modals -->
-    <!-- <VTFKPDFPreviewModal :open="pdfPreview !== undefined" :base64="pdfPreview" title='Lukk modal' :passedProps="{ onDismiss: () => { pdfPreview = undefined; }}"/> -->
-    <VDialog v-if="isShowInsertPlaceholderModal" v-model="isShowInsertPlaceholderModal" width="40%" max-width="750px" height="1000px">
-      <insert-template-form v-model="isShowInsertPlaceholderModal" @insert="(e) => insertPlaceholder(e)"/>
-    </VDialog>
+    <VTFKPDFPreviewModal :open="pdfPreview !== undefined" :base64="pdfPreview" title='Lukk modal' :passedProps="{ onDismiss: () => { pdfPreview = undefined; }}"/>
   </div>
 </template>
 
 <script>
-// import axios from 'axios';
+import Error from './Error';
+import axios from 'axios';
 import { Editor } from '@toast-ui/vue-editor';
-import { Button, TextField } from '@vtfk/components';
+import { Button, TextField, PDFPreviewModal } from '@vtfk/components';
 import Sjablong from 'sjablong';
 import SchemaFields from './SchemaFields.vue';
-import InsertTemplateForm from './templating/InsertTemplateForm.vue';
 
 export default {
   name: 'TemplateEditor',
   components: {
+    Error,
     Editor,
     'VTFKButton': Button,
     'VTFKTextField': TextField,
-    // 'VTFKPDFPreviewModal': PDFPreviewModal,
-    SchemaFields,
-    InsertTemplateForm
+    'VTFKPDFPreviewModal': PDFPreviewModal,
+    SchemaFields
   },
   props: {
     template: {
@@ -86,7 +82,7 @@ export default {
           language: 'nb',
           data: undefined
         },
-        template: '',
+        markdown: '',
         schema: {}
       }}
     },
@@ -109,8 +105,6 @@ export default {
   data() {
     return {
       error: undefined,
-      modalError: undefined,
-      isShowInsertPlaceholderModal: false,
       pdfPreview: undefined,
       hasChanged: false,
       activeTemplate: {},
@@ -178,10 +172,10 @@ export default {
     getmainTemplateSchema() {
       // Input validation
       if(!this.documentTemplates) { return undefined; }
-      if(!this.activeTemplate.documentDefinitionId) { return undefined; }
+      if(!this.activeTemplate.documentTemplate.id) { return undefined; }
       
       // Get the schema
-      let template = this.documentTemplates.find((i) => i.value == this.activeTemplate.documentDefinitionId);
+      let template = this.documentTemplates.find((i) => i.value == this.activeTemplate.documentTemplate.id);
       if(!template || !template.schema) { return undefined }
 
       // Return the schema
@@ -194,48 +188,44 @@ export default {
 
       // Create a default data object
       let defaultData = Sjablong.createObjectFromSchema(schema);
-      if(defaultData) this.activeTemplate.data = defaultData;
+      if(defaultData) this.activeTemplate.documentTemplate.data = defaultData;
 
       // Register the change
       this.onChange();
     },
     onPreviewTemplate() {
       // Hent markdown
-      let template =  Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64');
-      // Const request
-      const request = {
-        documentDefinitionId: 'brevmal',
-        template: template,
+      let markdown =  Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64');
+      
+      axios.post('http://localhost:3001/api/v1/generatepdf', {
         preview: true,
+        'template_data': markdown,
         data: {
           title: 'Tittel test',
+          definition: 'brevmal',
           list: [
             'Item #1',
             'Item #2',
             'Item #3'
-          ],
-          sak: {
-            saksnavn: 'Møte om ett eller annet',
-            dato: '12.11.2021',
-            beskrivelse: "Dette er en beskrivelse av saken\nDen er over flere linjer\n3 faktisk",
-          }
+          ]
         }
-      }
-
-      this.$store.dispatch('getPDFPreview', request);
+      })
+      .then((response) => {
+        if(response.data && response.data.base64) {
+          this.pdfPreview = response.data.base64;
+        }
+        // TODO - Håndter feil
+      })
     },
     onSaveTemplate() {
       if(this.editedMarkdown == '' && !confirm('Malen er uten innhold, vil du fortsatt lagre?')) {
         return;
       }
-      
-      try {
-        Sjablong.validateTemplate(this.editedMarkdown);
-      } catch (err) {
-        this.$store.commit('setModalError', err);
-        return;
-      }
-      
+
+      let valid = Sjablong.validateTemplate(this.editedMarkdown);
+      console.log('Is template valid?');
+      console.log(valid);
+
       // Generate a schema
       const schema = Sjablong.generateSchema(this.editedMarkdown);
       if(schema) {
@@ -245,12 +235,8 @@ export default {
       // TODO: Skriv til databasen
 
     },
-    insertPlaceholder(placeholder) {
-      if(!placeholder) { return; }
-
-      let stringified = Sjablong.convertPlaceholderToString(placeholder);
-
-      this.$refs.editor.editor.insertText(stringified);
+    insertPlaceholder() {
+      console.log('Inserting placeholder');
     },
     close() {
       if(this.hasChanged) {
@@ -311,12 +297,15 @@ export default {
     }
     // Set other default values
     this.activeTemplate.schema = this.activeTemplate.schema || {};
-    this.activeTemplate.documentDefinitionId = this.activeTemplate.documentDefinitionId || 'brevmal';
+    this.activeTemplate.documentTemplate.id = this.activeTemplate.documentTemplate.id || 'brevmal';
+    this.activeTemplate.documentTemplate.language = this.activeTemplate.documentTemplate.language || 'nb';
+    this.activeTemplate.documentTemplate.data = this.activeTemplate.documentTemplate.data || {};
   },
   mounted() {
     this.$refs.editor.editor.addCommand('markdown', 'insertPlaceholder', () => {
-      this.isShowInsertPlaceholderModal = true;
-      // this.$refs.editor.editor.insertText('$$vtfk\nJadda');
+      console.log('Legger til!!');
+      this.$refs.editor.editor.insertText('$$vtfk\nJadda');
+      
     })
     this.$refs.editor.editor.addCommand('wysiwyg', 'insertPlaceholder', () => {
       console.log('Legger til!!');
@@ -366,5 +355,4 @@ export default {
     margin-right: 0.05rem;
     padding: 0.08rem 0.5rem;
   }
-
 </style>

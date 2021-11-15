@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <ErrorField v-if="error" :error="error" />
-    <Loading v-else-if="!this.$store.state.templates" title="Laster maler" />
+    <Error v-if="error" :error="error" />
+    <Loading v-else-if="isLoading" title="Laster maler" />
     <div v-else>
-      <VDataTable :items="this.$store.state.templates" :headers="tableHeaders">
+      <VDataTable :items="templates" :headers="tableHeaders">
         <template v-slot:top>
           <VToolbar flat>
             <v-toolbar-title>Maler</v-toolbar-title>
@@ -16,7 +16,7 @@
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-btn icon v-bind="attrs" v-on="on">
-                <v-icon medium @click="previewPDF(item)" >
+                <v-icon medium @click="openTemplate(item)" >
                   mdi-file-find
                 </v-icon>
               </v-btn>
@@ -62,18 +62,21 @@
 
 <script>
 // Importer dependencies
-import AppError from '../lib/vtfk-errors/AppError';
+import AppError from '../lib/AppError';
+import axios from 'axios';
 
 // Importer VTFK komponenter
 import { Button } from '@vtfk/components';
 
 // Importer prosjektkomponenter
+import Error from '../components/Error.vue';
 import Loading from '../components/Loading.vue';
 import TemplateEditor from '../components/TemplateEditor.vue';
 
 export default {
   name: 'TemplatesView',
   components: {
+    Error,
     Loading,
     TemplateEditor,
     'VTFKButton': Button
@@ -81,8 +84,8 @@ export default {
   data() {
     return {
       error: undefined,
-      isShowEditor: false,
-      isShowPreview: false,
+      templates: [],
+      unmodifiedTemplate: undefined,
       activeTemplate: undefined,
       tableHeaders: [
         {
@@ -98,36 +101,37 @@ export default {
           value: 'actions'
         }
       ],
+      isLoading: true,
+      isShowEditor: false,
+      isShowPreview: false
     }
   },
   methods: {
     reset() {
+      this.isLoading = false;
       this.isShowEditor = false;
       this.isShowPreview = false;
       this.activeTemplate = undefined;
     },
-    async loadTemplates() {
-      try {
-        await this.$store.dispatch('getTemplates');
-      } catch (err) {
-        this.error = new AppError('Kunne ikke hente hente inn maler', err);
+    loadTemplates() {
+      let request = {
+        url: 'https://NOE.no/api/v1/templates',
+        mode: 'get',
       }
+
+      this.isLoading = true;
+      axios.request(request)
+      .then((response) => {
+        this.templates = response.data;
+        this.isLoading = false;
+      }).catch((err) => {
+        this.error = new AppError('Kunne ikke hente hente inn maler', err);
+      })
     },
     openTemplate(template) {
+      this.unmodifiedTemplate = JSON.parse(JSON.stringify(template));
       this.activeTemplate = JSON.parse(JSON.stringify(template));
       this.isShowEditor = true;
-    },
-    previewPDF(template) {
-      if(!template) { return; }
-
-      let request = {
-        preview: true,
-        documentDefinitionId: template.documentDefinitionId,
-        template: template.template,
-        data: {...template.data }
-      }
-
-      this.$store.dispatch('getPDFPreview', request)
     }
   },
   created() {
