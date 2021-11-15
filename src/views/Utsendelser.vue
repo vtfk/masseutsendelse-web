@@ -290,7 +290,7 @@ import DispatchEditor from '../components/DispatchEditor.vue';
       },
       editItem1 (item) {
         this.$set(this, 'selectedDispatch', item)
-        this.editItem = item
+        this.editItem = JSON.parse(JSON.stringify(item)) //Åpner en kopi av det valgte objektet. Dette hindrer at endringer som blir gjort i edit modalen vises om man avbryter handlingen.
         this.dialogEdit = true
       },
       openMap(item){
@@ -321,10 +321,6 @@ import DispatchEditor from '../components/DispatchEditor.vue';
             body: `${body}`
           }
         });
-        console.log(this.url)
-        // console.log(status)
-        // console.log(id)
-        // console.log(this.url)
         await this.loadDataBase()
         this.alert_success = true
         this.hide_alert();

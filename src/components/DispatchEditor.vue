@@ -4,6 +4,7 @@
     <Error v-if="error" :error="error" v-on:resetClicked="reset(true)" />
     <!-- Loaders -->
     <Loading v-else-if="isLoadingTemplates" title="Laster inn maler" />
+    <Loading v-else-if="isLoading" title="Skjemaet blir sendt til behandling"/>
     <!-- Fil opplasting -->
     <div v-else-if="!dispatch || dispatch.geopolygon.vertices.length === 0">
       <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
@@ -131,6 +132,7 @@
     data() {
       return {
         error: undefined,
+        isLoading: false,
         dispatch: {
           title: '',
           body: '',
@@ -647,9 +649,35 @@
         })
         return parsed;
       },
-      submitMassDispatch() {
+      async submitMassDispatch() {
+        const dataObjc = {
+          _id: "0b8376f4-31bd-4a18-9971-37377b33c794",
+          title: "",
+          nummer: "20",
+          status: "inprogress",
+          body: "",
+          template: "",
+          createdDate: "2021-10-01T08:00:00.000Z",
+          createdBy: "Noen André",
+          createdById: "00000000-0000-0000-0000-000000000000",
+          modifiedDate: "2021-10-20T08:00:00.000Z",
+          modifiedBy: "André",
+          modifiedById: "00000000-0000-0000-0000-000000000000",
+        }
+
+        var test = Object.assign(this.dispatch, dataObjc)
+
         if(confirm('Er du helt sikker på at du vil sende inn?')) {
           console.log('Vil sendes inn');
+          this.isLoading = true
+          console.log(this.dispatch)
+          console.log(test)
+          try {
+            await axios.post('http://localhost:7071/api/postdispatches', test)
+          } catch(err) {
+            console.log(err)
+          }
+          this.isLoading = false
         }
       },
       onTemplateChanged(e) {
