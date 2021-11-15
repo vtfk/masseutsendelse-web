@@ -657,7 +657,7 @@
           _id: uuid,
           title: "Denne må defineres, hentes ikke i this.dispatch",
           body: "Denne må defineres, hentes ikke i this.dispatch",
-          nummer: "20",
+          nummer: "21",
           status: "inprogress",
           createdDate: today,
           createdBy: "Noen André",
@@ -673,7 +673,7 @@
           console.log('Vil sendes inn');
           this.isLoading = true
           try {
-            await axios.post('http://localhost:7071/api/postdispatches', postObject)
+            await axios.post('https://test-func-masseutsendelse.azurewebsites.net/api/postdispatches?code=zxjm63HhIg6ZqUOE8xdHN8NnJmYh9ocBeFMXVxeBjYVFHEjI9amBFw==', postObject)
           } catch(err) {
             console.log(err)
           }
