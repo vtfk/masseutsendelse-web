@@ -105,6 +105,7 @@
   import turfArea from '@turf/area';
   import axios from 'axios';
   import Sjablong from 'sjablong';
+  import { v4 as uuid4 } from 'uuid';
 
   // Custom error class
   import AppError from '../lib/AppError';
@@ -650,17 +651,19 @@
         return parsed;
       },
       async submitMassDispatch() {
+        console.log(this.title, this.body)
+        let uuid = uuid4()
+        let today = new Date()
         const dataObjc = {
-          _id: "0b8376f4-31bd-4a18-9971-37377b33c794",
-          title: "",
+          _id: uuid,
+          title: this.dispatch.title,
+          body: this.dispatch.body,
           nummer: "20",
           status: "inprogress",
-          body: "",
-          template: "",
-          createdDate: "2021-10-01T08:00:00.000Z",
+          createdDate: today,
           createdBy: "Noen André",
           createdById: "00000000-0000-0000-0000-000000000000",
-          modifiedDate: "2021-10-20T08:00:00.000Z",
+          modifiedDate: today,
           modifiedBy: "André",
           modifiedById: "00000000-0000-0000-0000-000000000000",
         }
@@ -676,6 +679,7 @@
             console.log(err)
           }
           this.isLoading = false
+          this.$router.push('Utsendelser') 
         }
       },
       onTemplateChanged(e) {
