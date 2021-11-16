@@ -294,6 +294,7 @@ import AppError from '../lib/vtfk-errors/AppError';
       },
       async saveEdit() {
         this.dialogEdit = false
+        this.prosjekter = []
         // TODO må også ta med hvem den er endret av, må gjøre det når vi har fått på plass autentisering. 
         let id = this.selectedDispatch._id
         let status = this.selectedDispatch.status
@@ -311,10 +312,6 @@ import AppError from '../lib/vtfk-errors/AppError';
             body: `${body}`
           }
         });
-        console.log(this.url)
-        // console.log(status)
-        // console.log(id)
-        // console.log(this.url)
         await this.loadDataBase()
         this.alert_success = true
         this.hide_alert();
