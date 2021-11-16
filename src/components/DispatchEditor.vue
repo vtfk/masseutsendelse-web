@@ -38,6 +38,7 @@
       <div v-if="isMatrikkelApproved || mode === 'edit'" class="card shadow centeredColumn" style="margin-top: 1rem;">
         <h1>Masseutsendelse</h1>
         <DispatchStatusSelect v-if="mode === 'edit'" v-model="dispatch.status"/>
+        <!-- En input for prosjekt navn, en for prosjekt nr -->
         <VSelect
           label="Velg mal"
           placeholder="Velg mal"
@@ -47,9 +48,10 @@
           item-value="_id"
           return-object
           :disabled="isReadOnly"
-          @change="(e) => onTemplateChanged(e)"
+          @change="(e) => onTemplateChanged(e)" 
           style="max-width: 750px; width: 100%;"
         />
+        <!-- Kode om @change til dispatch.templateID. Kode om mocken og koden -->
         <div v-if="selectedTemplateSchema" style="max-width: 750px; width: 100%;">
           <h2>Flettefelter</h2>
           <SchemaFields
