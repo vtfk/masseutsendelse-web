@@ -250,7 +250,23 @@ import AppError from '../lib/vtfk-errors/AppError';
         else if (status == "not approved") return "Ikke Godkjent"
       },
       async loadDataBase() {
+        const request = {
+          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/getdispatches?',
+          method: 'GET',
+        }
         try {
+          const response = await axios.request(request);
+
+          if(!response || !response.data) {
+            throw new AppError('Ingen respons mottatt', 'Utsendelses APIet rapporterte ingen data');
+          }
+
+          if(!Array.isArray(response.data) || response.data.length <= 0) {
+            throw new AppError('Manglende data', 'Utsendelses APIet svarte, men sendte ingen data');
+          }
+          this.dispatches = response.data
+          this.prosjekter = JSON.parse(JSON.stringify(this.dispatches))
+
           await this.$store.dispatch('getTemplates');
           await this.$store.dispatch('getDispatches');
         } catch(err) {
@@ -259,7 +275,7 @@ import AppError from '../lib/vtfk-errors/AppError';
       },
       editItem1 (item) {
         this.$set(this, 'selectedDispatch', item)
-        this.editItem = item
+        this.editItem = JSON.parse(JSON.stringify(item)) 
         this.dialogEdit = true
       },
       openMap(item){
