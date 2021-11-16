@@ -197,7 +197,6 @@ import AppError from '../lib/vtfk-errors/AppError';
           {text: 'Status', value: 'status'},
           {text: 'Oppretshaver', value: 'createdBy'},
           {text: 'Behandlet av', value: 'modifiedBy'},
-          {text: 'Filnavn', value: 'polygon.filename'},
           {text: 'Handlinger', value: 'handlinger', sortable:false}
         ],
         select: {status_valg: '', status_value: ''},
@@ -211,7 +210,7 @@ import AppError from '../lib/vtfk-errors/AppError';
       }
     },
     async mounted() {
-      // Hent alle dispatches fra mongoDB
+      // Get all dispatched from DB
       this.loadDataBase()
     },
     computed: {
@@ -315,20 +314,6 @@ import AppError from '../lib/vtfk-errors/AppError';
         await this.loadDataBase()
         this.alert_success = true
         this.hide_alert();
-      },
-      selectedItem() {
-        return this.editedItem.status
-      },
-      clear(){
-          this.select = this.clear
-      },
-      titleCase(str) {
-        // Setter alle forbokstaver til uppercase
-        var splitStr = str.toLowerCase().split(' ');
-        for (var i = 0; i < splitStr.length; i++) {
-            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
-        }
-        return splitStr.join(' '); 
       },
       hide_alert: function () {
         window.setInterval(() => {
