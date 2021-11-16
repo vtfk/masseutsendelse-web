@@ -209,7 +209,6 @@ import DispatchEditor from '../components/DispatchEditor.vue';
           {text: 'Status', value: 'status'},
           {text: 'Oppretshaver', value: 'createdBy'},
           {text: 'Behandlet av', value: 'modifiedBy'},
-          {text: 'Filnavn', value: 'polygon.filename'},
           {text: 'Handlinger', value: 'handlinger', sortable:false}
         ],
         prosjekter: [],
@@ -224,7 +223,6 @@ import DispatchEditor from '../components/DispatchEditor.vue';
       }
     },
     async mounted() {
-      // Hent alle dispatches fra mongoDB
       this.loadDataBase()
     },
     computed: {
@@ -290,7 +288,7 @@ import DispatchEditor from '../components/DispatchEditor.vue';
       },
       editItem1 (item) {
         this.$set(this, 'selectedDispatch', item)
-        this.editItem = JSON.parse(JSON.stringify(item)) //Åpner en kopi av det valgte objektet. Dette hindrer at endringer som blir gjort i edit modalen vises om man avbryter handlingen.
+        this.editItem = JSON.parse(JSON.stringify(item)) 
         this.dialogEdit = true
       },
       openMap(item){
