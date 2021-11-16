@@ -85,7 +85,7 @@ const store = new Vuex.Store({
       try {
         // Define the request
         const request = {
-          url: 'http://templates.vtfk.no/api/v1/templates',
+          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/gettemplates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
           method: 'get'
         }
         // Reset the data
