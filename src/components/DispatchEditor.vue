@@ -110,6 +110,8 @@
   import turfArea from '@turf/area';
   import Sjablong from 'sjablong';
   import merge from 'lodash.merge'
+  import axios from 'axios';
+  import { v4 as uuid4 } from 'uuid';
 
   // Custom error class
   import AppError from '../lib/vtfk-errors/AppError';
@@ -659,9 +661,35 @@
         })
         return parsed;
       },
-      submitMassDispatch() {
+      async submitMassDispatch() {
+        let uuid = uuid4()
+        let today = new Date()
+        const dataObjc = {
+          _id: uuid,
+          title: "Denne må defineres, hentes ikke i this.dispatch",
+          body: "Denne må defineres, hentes ikke i this.dispatch",
+          nummer: "20",
+          status: "inprogress",
+          createdDate: today,
+          createdBy: "Noen André",
+          createdById: "00000000-0000-0000-0000-000000000000",
+          modifiedDate: today,
+          modifiedBy: "André",
+          modifiedById: "00000000-0000-0000-0000-000000000000",
+        }
+
+        var postObject = Object.assign(this.dispatch, dataObjc)
+
         if(confirm('Er du helt sikker på at du vil sende inn?')) {
           console.log('Vil sendes inn');
+          this.isLoading = true
+          try {
+            await axios.post('https://test-func-masseutsendelse.azurewebsites.net/api/postdispatches?code=zxjm63HhIg6ZqUOE8xdHN8NnJmYh9ocBeFMXVxeBjYVFHEjI9amBFw==', postObject)
+          } catch(err) {
+            console.log(err)
+          }
+          this.isLoading = false
+          this.$router.push('Utsendelser') 
         }
       },
       onTemplateChanged(e) {
