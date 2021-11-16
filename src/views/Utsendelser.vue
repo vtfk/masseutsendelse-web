@@ -303,11 +303,11 @@ import DispatchEditor from '../components/DispatchEditor.vue';
         this.dialogEdit = false
         this.prosjekter = []
         // TODO må også ta med hvem den er endret av, må gjøre det når vi har fått på plass autentisering. 
-        let id = this.selectedDispatch._id
-        let status = this.selectedDispatch.status
-        let title = this.selectedDispatch.title
-        let body = this.selectedDispatch.body
-
+        let id = this.editItem._id
+        let status = this.editItem.status
+        let title = this.editItem.title
+        let body = this.editItem.body
+        
         console.log(id, status, title, body)
         this.isLoading = true
         await axios({

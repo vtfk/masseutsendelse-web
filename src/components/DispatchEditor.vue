@@ -39,6 +39,7 @@
       <div v-if="isMatrikkelApproved || mode === 'edit'" class="card shadow centeredColumn" style="margin-top: 1rem;">
         <h1>Masseutsendelse</h1>
         <DispatchStatusSelect v-if="mode === 'edit'" v-model="dispatch.status"/>
+        <!-- En input for prosjekt navn, en for prosjekt nr -->
         <VSelect
           label="Velg mal"
           placeholder="Velg mal"
@@ -46,9 +47,11 @@
           item-text="name"
           item-value="_id"
           return-object
-          @change="(e) => onTemplateChanged(e)"
+          :disabled="isReadOnly"
+          @change="(e) => onTemplateChanged(e)" 
           style="max-width: 750px; width: 100%;"
         />
+        <!-- Kode om @change til dispatch.templateID. Kode om mocken og koden -->
         <div v-if="selectedTemplateSchema" style="max-width: 750px; width: 100%;">
           <h2>Flettefelter</h2>
           <SchemaFields
@@ -105,6 +108,8 @@
   import turfArea from '@turf/area';
   import axios from 'axios';
   import Sjablong from 'sjablong';
+  //import merge from 'lodash.merge';
+  //import axios from 'axios';
   import { v4 as uuid4 } from 'uuid';
 
   // Custom error class
