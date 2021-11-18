@@ -39,6 +39,24 @@
         <h1>Masseutsendelse</h1>
         <DispatchStatusSelect v-if="mode === 'edit'" v-model="dispatch.status"/>
         <!-- En input for prosjekt navn, en for prosjekt nr -->
+        <VTextField 
+          :value="dispatch.title"
+          placeholder="Angi et prosjektnavn"
+          hint="Angi et prosjektnavn"
+          label="Prosjekt navn"
+          :required="true"
+          @change="(title) => onTitleChange(title)" 
+          style="max-width: 750px; width: 100%;"
+        />
+         <VTextField 
+          :value="dispatch.prosjektnr"
+          placeholder="Angi et nummer"
+          hint="Angi et nummer"
+          label="Prosjekt nummer"
+          :required="true"
+          @change="(prosjektnr) => onProsjektNrChange(prosjektnr)" 
+          style="max-width: 750px; width: 100%;"
+        />
         <VSelect
           label="Velg mal"
           placeholder="Velg mal"
@@ -141,6 +159,7 @@
         modalError: undefined,
         dispatch: {
           title: '',
+          prosjektnr: '', //Obs la til denne
           body: '',
           template: undefined,
           templateData: {},
@@ -663,9 +682,8 @@
       async submitMassDispatch() {
         let today = new Date()
         const dataObjc = {
-          title: "Denne må defineres, hentes ikke i this.dispatch",
           body: "Denne må defineres, hentes ikke i this.dispatch",
-          nummer: "4",
+          // nummer: "4",
           status: "inprogress",
           createdDate: today,
           createdBy: "Noen André",
@@ -700,6 +718,12 @@
       },
       onTextChange(e) {
         console.log(e);
+      },
+      onTitleChange(title) {
+        this.dispatch.title = title
+      },
+      onProsjektNrChange(prosjektnr) {
+        this.dispatch.prosjektnr = prosjektnr
       },
       updateProject(key, value) {
         console.log('Setting "' + key + '" to "' + value + '"');
