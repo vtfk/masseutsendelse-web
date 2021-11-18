@@ -192,7 +192,7 @@ import AppError from '../lib/vtfk-errors/AppError';
             sortable: true,
             value: 'title',
           },
-          {text: 'Prosjekt Nr', value: 'nummer'},
+          {text: 'Prosjekt Nr', value: 'prosjektnr'},
           {text: 'Dato', value: 'createdDate'},
           {text: 'Status', value: 'status'},
           {text: 'Oppretshaver', value: 'createdBy'},
@@ -299,8 +299,9 @@ import AppError from '../lib/vtfk-errors/AppError';
         let status = this.editItem.status
         let title = this.editItem.title
         let body = this.editItem.body
+        let prosjektnr = this.editItem.prosjektnr
         
-        console.log(id, status, title, body)
+        console.log(id, status, title, body, prosjektnr)
         this.isLoading = true
         await axios({
           method: 'put',
@@ -308,7 +309,8 @@ import AppError from '../lib/vtfk-errors/AppError';
           data: {
             status: `${status}`,
             title: `${title}`,
-            body: `${body}`
+            body: `${body}`,
+            prosjektnr: `${prosjektnr}`
           }
         });
         await this.loadDataBase()
