@@ -304,7 +304,7 @@ import AppError from '../lib/vtfk-errors/AppError';
         this.isLoading = true
         await axios({
           method: 'put',
-          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/editdispatches/'+ id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
+          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/put/'+ id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
           data: {
             status: `${status}`,
             title: `${title}`,
