@@ -64,7 +64,7 @@ const store = new Vuex.Store({
       try {
         // Define the request
         const request = {
-          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/getdispatches',
+          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/get?',
           method: 'GET',
         }
         // Reset the data
@@ -85,7 +85,7 @@ const store = new Vuex.Store({
       try {
         // Define the request
         const request = {
-          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/gettemplates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
+          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/templates/get?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
           method: 'get'
         }
         // Reset the data
@@ -99,8 +99,26 @@ const store = new Vuex.Store({
       } catch (err) {
         return Promise.reject(err);
       }
-      
-    }
+    },
+    // async putDispatches(context) {
+    //   try {
+    //     //Define the request 
+    //     const request = {
+    //       method: 'put',
+    //       url: 'https://test-func-masseutsendelse.azurewebsites.net/api/editdispatches/'+ id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA=='
+    //   }
+    //   //Reset the data
+    //   context.commit('setDispatches', undefined)
+    //   //Make the request
+    //   const response = await axios.request(request)
+    //   if(!response || !response.data) throw new AppError('Kunne ikke redigere prosjektet', 'Serveren svarte, men finner ingen prosjekter som kan redigeres.')
+    //   //Comit adn return the data
+    //   context.commit('setDispatches', response.data)
+    //   return response.data
+    // } catch (err) {
+    //     return Promise.reject(err)
+    //   }
+    // }
   }
 })
 
