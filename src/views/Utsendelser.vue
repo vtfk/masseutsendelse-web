@@ -149,7 +149,7 @@
 
 <script>
 // Dependencies
-import axios from 'axios';
+// import axios from 'axios';
 import merge from 'lodash.merge';
 
 
@@ -302,17 +302,23 @@ import AppError from '../lib/vtfk-errors/AppError';
         let prosjektnr = this.editItem.prosjektnr
         
         console.log(id, status, title, body, prosjektnr)
-        this.isLoading = true
-        await axios({
-          method: 'put',
-          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/put/'+ id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
-          data: {
-            status: `${status}`,
-            title: `${title}`,
-            body: `${body}`,
-            prosjektnr: `${prosjektnr}`
+        let editObject = {
+          status: `${status}`,
+          title: `${title}`,
+          body: `${body}`,
+          prosjektnr: `${prosjektnr}`
           }
-        });
+        this.isLoading = true
+        // await axios({
+        //   method: 'put',
+        //   url: 'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/put/'+ id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
+        //   data: editObject
+        // });
+        try {
+            await this.$store.dispatch('editDispatches', editObject, id)
+        } catch(err) {
+          this.error = err;
+        }
         await this.loadDataBase()
         this.alert_success = true
         this.hide_alert();

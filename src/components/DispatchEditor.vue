@@ -128,7 +128,7 @@
   import turfArea from '@turf/area';
   import Sjablong from 'sjablong';
   import merge from 'lodash.merge'
-  import axios from 'axios';
+  // import axios from 'axios';
 
   // Custom error class
   import AppError from '../lib/vtfk-errors/AppError';
@@ -682,8 +682,8 @@
       async submitMassDispatch() {
         let today = new Date()
         const dataObjc = {
+          
           body: "Denne må defineres, hentes ikke i this.dispatch",
-          // nummer: "4",
           status: "inprogress",
           createdDate: today,
           createdBy: "Noen André",
@@ -696,12 +696,16 @@
         var postObject = Object.assign(this.dispatch, dataObjc)
 
         if(confirm('Er du helt sikker på at du vil sende inn?')) {
-          console.log('Vil sendes inn');
           this.isLoading = true
           try {
-            await axios.post('https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/post?code=zxjm63HhIg6ZqUOE8xdHN8NnJmYh9ocBeFMXVxeBjYVFHEjI9amBFw==', postObject)
+            await this.$store.dispatch('postDispatches', postObject)
           } catch(err) {
-            console.log(err)
+          this.error = err;
+          }
+          try {
+            await this.$store.dispatch('postDispatches', postObject)
+          } catch(err) {
+          this.error = err;
           }
           this.isLoading = false
           this.$router.push('Utsendelser') 
