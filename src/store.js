@@ -39,6 +39,13 @@ const store = new Vuex.Store({
     setDispatches (state, dispatches) {
       state.dispatches = dispatches;
     },
+    newDispatches (state, dispatches){
+      state.dispatches = dispatches
+    },
+    editDispatches (state, dispatches, id) {
+      state.dispatches = dispatches
+      state.id = id
+    },
     setTemplates (state, templates) {
       state.templates = templates;
     }
@@ -100,25 +107,38 @@ const store = new Vuex.Store({
         return Promise.reject(err);
       }
     },
-    // async putDispatches(context) {
-    //   try {
-    //     //Define the request 
-    //     const request = {
-    //       method: 'put',
-    //       url: 'https://test-func-masseutsendelse.azurewebsites.net/api/editdispatches/'+ id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA=='
-    //   }
-    //   //Reset the data
-    //   context.commit('setDispatches', undefined)
-    //   //Make the request
-    //   const response = await axios.request(request)
-    //   if(!response || !response.data) throw new AppError('Kunne ikke redigere prosjektet', 'Serveren svarte, men finner ingen prosjekter som kan redigeres.')
-    //   //Comit adn return the data
-    //   context.commit('setDispatches', response.data)
-    //   return response.data
-    // } catch (err) {
-    //     return Promise.reject(err)
-    //   }
-    // }
+    async postDispatches(context, data) {
+      // Define the request
+      const request = {
+        url: 'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/post?code=zxjm63HhIg6ZqUOE8xdHN8NnJmYh9ocBeFMXVxeBjYVFHEjI9amBFw==',
+        method: 'post',
+        data: data
+      }
+      // Make the request
+    await axios.request(request)
+    .then((response) => {
+      context.commit('newDispatches', response.data.postObject)
+      })
+    .catch((err) => {
+      context.commit('setModalError', err)
+      })
+    },
+
+    async editDispatches(context, data) {
+      //Define the request 
+      const request = {
+        url:'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/put/'+ data.id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
+        method: 'put',
+        data: data
+      }
+      await axios.request(request)
+      .then((response) => {
+        context.commit('editDispatches', response.data.editObject)
+      })
+      .catch((err) => {
+        context.commit('setModalError', err)
+      })
+    }
   }
 })
 
