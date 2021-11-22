@@ -71,7 +71,7 @@ const store = new Vuex.Store({
       try {
         // Define the request
         const request = {
-          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/get?',
+          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches?',
           method: 'GET',
         }
         // Reset the data
@@ -92,7 +92,7 @@ const store = new Vuex.Store({
       try {
         // Define the request
         const request = {
-          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/templates/get?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
+          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
           method: 'get'
         }
         // Reset the data
@@ -110,7 +110,7 @@ const store = new Vuex.Store({
     async postDispatches(context, data) {
       // Define the request
       const request = {
-        url: 'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/post?code=zxjm63HhIg6ZqUOE8xdHN8NnJmYh9ocBeFMXVxeBjYVFHEjI9amBFw==',
+        url: 'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches?code=zxjm63HhIg6ZqUOE8xdHN8NnJmYh9ocBeFMXVxeBjYVFHEjI9amBFw==',
         method: 'post',
         data: data
       }
@@ -127,7 +127,7 @@ const store = new Vuex.Store({
     async editDispatches(context, data) {
       //Define the request 
       const request = {
-        url:'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/put/'+ data.id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
+        url:'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/'+ data.id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
         method: 'put',
         data: data
       }
