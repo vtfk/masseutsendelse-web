@@ -40,21 +40,19 @@
         <DispatchStatusSelect v-if="mode === 'edit'" v-model="dispatch.status"/>
         <!-- En input for prosjekt navn, en for prosjekt nr -->
         <VTextField 
-          :value="dispatch.title"
+          v-model="dispatch.title"
           placeholder="Angi et prosjektnavn"
           hint="Angi et prosjektnavn"
           label="Prosjekt navn"
           :required="true"
-          @change="(title) => onTitleChange(title)" 
           style="max-width: 750px; width: 100%;"
         />
          <VTextField 
-          :value="dispatch.prosjektnr"
+          v-model="dispatch.projectnumber"
           placeholder="Angi et nummer"
           hint="Angi et nummer"
           label="Prosjekt nummer"
           :required="true"
-          @change="(prosjektnr) => onProsjektNrChange(prosjektnr)" 
           style="max-width: 750px; width: 100%;"
         />
         <VSelect
@@ -77,12 +75,12 @@
             v-model="dispatch.templateData"
             :schema="selectedTemplateSchema"
             :disabled="isReadOnly"
-            @changed="$forceUpdate()"
+            @changed="(data) => onTemplateDataChanged(data)"
           />
         </div>
         <VTFKButton
           class="mt-1"
-          :disabled="!isDispatchFilledInn"
+          :disabled="!isRequiredTemplateDataFilledIn"
           :passedProps="{onClick: () => { previewPDF() }}">Se forhåndsvisning
         </VTFKButton>
         <div v-if="mode === 'new'" class="centeredColumn">
@@ -94,8 +92,29 @@
             :label="'Følgende informasjon skal sendes ut til ' + dispatch.stats.totalOwners + ' mottakere'"
             :passedProps="{ onChange: () => { isFirstLevelDispatchApproved = !isFirstLevelDispatchApproved; }}"
           />
-          <VTFKButton style="margin-top: 1rem;" :disabled="!isFirstLevelDispatchApproved || !isRequiredTemplateDataFilledIn" :passedProps="{onClick: () => { submitMassDispatch(); }}">Send til godkjenning</VTFKButton>
-          <VTFKButton style="margin-top: 1rem;" :passedProps="{onClick: () => {reset()}}">Start på nytt</VTFKButton>
+        </div>
+        <div style="display: flex; justify-content: center; gap: 0.5rem; width: 100%;">
+          <VTFKButton
+            style="margin-top: 1rem;"
+            :disabled="isReadOnly || !isFirstLevelDispatchApproved && !isRequiredTemplateDataFilledIn"
+            type='secondary' size='small'
+            :passedProps="{onClick: () => { saveOrEditDispatch(); }}"
+          >
+            <span v-if="mode == 'new'">Send til godkjenning</span>
+            <span v-else>Lagre</span>
+          </VTFKButton>
+          <VTFKButton v-if="mode === 'new'"
+            style="margin-top: 1rem;"
+            type='secondary' size='small'
+            :passedProps="{onClick: () => {reset()}}"
+          >Start på nytt
+          </VTFKButton>
+          <VTFKButton v-else
+            style="margin-top: 1rem;"
+            type='secondary' size='small'
+            :passedProps="{onClick: () => {reset()}}"
+          >Lukk
+          </VTFKButton>
         </div>
       </div>
     </div>
@@ -201,6 +220,7 @@
         isParsingFile: false,
         isMatrikkelApproved: false,
         isFirstLevelDispatchApproved: false,
+        isRequiredTemplateDataFilledIn: false,
         hasLoadedFile: false,
         isContactingMatrikkel: false,
         statItems: [],
@@ -250,20 +270,6 @@
       availableTemplates() {
         return this.templates;
       },
-      isRequiredTemplateDataFilledIn() {
-        if(!this.selectedTemplateSchema) { return false }
-        const isValid = Sjablong.validateData(this.selectedTemplateSchema, this.dispatch.templateData);
-        console.log('Is valid?');
-        console.log(isValid);
-        // try {
-          
-        // } catch(err) {
-        //   console.log(err);
-        //   return false;
-        // }
-        
-        return true;
-      }
     },
     methods: {
       setError(error) {
@@ -679,7 +685,9 @@
         })
         return parsed;
       },
-      async submitMassDispatch() {
+      async saveOrEditDispatch() {
+        if(!confirm('Er du helt sikker på at du vil sende inn?')) return;
+
         let today = new Date()
         const dataObjc = {
           
@@ -694,17 +702,21 @@
         }
 
         var postObject = Object.assign(this.dispatch, dataObjc)
-
-        if(confirm('Er du helt sikker på at du vil sende inn?')) {
-          this.isLoading = true
-          try {
+        
+        this.isLoading = true
+        try {
+          if(this.mode === 'new') {
             await this.$store.dispatch('postDispatches', postObject)
-          } catch(err) {
-          this.error = err;
+          } else if (this.mode === 'edit') {
+            await this.$store.dispatch('editDispatches', postObject);
+          } else {
+            throw new AppError('Kunne ikke lagre', 'Klarte ikke å avgjøre hvordan utsendelsen skulle lagres');
           }
-          this.isLoading = false
-          this.$router.push('Utsendelser') 
+        } catch(err) {
+          this.error = err;
         }
+        this.isLoading = false
+        this.$router.push('Utsendelser') 
       },
       onTemplateChanged(e) {
         this.dispatch.template = e._id;
@@ -712,26 +724,26 @@
 
         if(e.template) {
           const tmp = Buffer.from(e.template, 'base64').toString('utf8');
-          this.selectedTemplateSchema = Sjablong.generateSchema(tmp);
+          this.selectedTemplateSchema = Sjablong.generateSchema(tmp, { requireAll: true })
+          console.log('== Selected schema ==');
+          console.log(this.selectedTemplateSchema);
         }
       },
-      onTextChange(e) {
-        console.log(e);
-      },
-      onTitleChange(title) {
-        this.dispatch.title = title
-      },
-      onProsjektNrChange(prosjektnr) {
-        this.dispatch.prosjektnr = prosjektnr
-      },
-      updateProject(key, value) {
-        console.log('Setting "' + key + '" to "' + value + '"');
-        this.$set(this.project, key, value)
+      onTemplateDataChanged(data) {
+        if(!this.selectedTemplateSchema) return false;
+
+        try {
+          Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true });
+          this.isRequiredTemplateDataFilledIn = true;
+        }
+        catch (err) {
+          this.isRequiredTemplateDataFilledIn = false;
+        }
       },
       async loadTemplates() {
         this.isLoadingTemplates = true;
 
-       try {
+        try {
           this.templates = await this.$store.dispatch('getTemplates');
         } catch (err) {
           this.error = new AppError('Kunne ikke hente hente inn maler', err);
@@ -749,7 +761,14 @@
           return;
         }
 
-        let data = merge(this.dispatch.data, this.selectedTemplate.data);
+        let data = merge(this.dispatch.templateData, this.selectedTemplate.data);
+        console.log('= Schema =');
+        console.log(this.selectedTemplateSchema);
+        console.log('= DATA =');
+        console.log(data);
+        // Validate that all required data is present
+        try { Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true })}
+        catch (err) { console.log(err); return; }
 
         let request = {
           preview: true,
