@@ -10,9 +10,13 @@
         :hint="property.description || undefined"
         :label="determinePropertyLabel(property)"
         @input="(e) => updateData(property.path, e)"
-        :required="true"
+        :required="property.required"
         :disabled="$props.disabled || property.disabled"
-      />
+      >
+        <template #label>
+          <span v-if="property.required" class="required"><strong>* </strong></span>{{property.label}}
+        </template>
+      </VTextField>
       <VTextarea
         v-if="property.type === 'string' && property.lines"
         :value="getInitialData(property.path)"
@@ -20,8 +24,13 @@
         :label="determinePropertyLabel(property)"
         :rows="property.lines"
         @input="(e) => updateData(property.path, e)"
+        :required="property.required"
         :disabled="$props.disabled || property.disabled"
-      />
+      >
+        <template #label>
+            <span v-if="property.required" class="required"><strong>* </strong></span>{{property.label}}
+          </template>
+      </VTextarea>
     </div>
   </div>
 </template>
@@ -33,6 +42,7 @@ import Sjablong from 'sjablong';
 import get from 'lodash.get';
 import set from 'lodash.set';
 import merge from 'lodash.merge';
+import unset from 'lodash.unset';
 
 // Import components;
 
@@ -104,9 +114,14 @@ export default {
     },
     updateData(path, value) {
       // Input validation
-      if(!path || !value) return;
-      // Set the value to the data object
-      set(this.data, path, value);
+      if(!path) return;
+      // If the value is empty
+      if(value == '') {
+        unset(this.data, path, value)
+      } else {
+        // Set the value to the data object
+        set(this.data, path, value);
+      }
       // Vue reactivity hack for objects
       this.$set(this, 'data', this.data);
       this.onUpdate();
@@ -135,5 +150,7 @@ export default {
 </script>
 
 <style scope>
-
+  .required {
+    color: red;
+  }
 </style>
