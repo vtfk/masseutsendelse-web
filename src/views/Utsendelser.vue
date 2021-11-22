@@ -73,7 +73,7 @@
           <v-card-text>
             <DispatchEditor :dispatchObject="editItem"/>
           </v-card-text>
-          <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
+          <!-- <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
             <VTFKButton 
               type='secondary' size='small' style="padding-bottom: 1rem;"
               :passedProps="{ onClick: () => [saveEdit()] }"
@@ -84,7 +84,7 @@
               :passedProps="{ onClick: () => [dialogEdit = false] }"
               >Avbryt
             </VTFKButton>
-          </v-card-actions>
+          </v-card-actions> -->
       </v-card>
       </v-dialog>
       <!-- Map dialog -->
@@ -181,10 +181,6 @@ import AppError from '../lib/vtfk-errors/AppError';
         loading:false,
         selectedDispatch: undefined,
         alert_success: false,
-        isTemplateSelectorOpen: true,
-        selectedTemplate: undefined,
-        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
         headers: [
           {
             text: 'Prosjekt',
