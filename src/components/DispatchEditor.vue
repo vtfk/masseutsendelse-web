@@ -252,7 +252,7 @@
       },
       isRequiredTemplateDataFilledIn() {
         if(!this.selectedTemplateSchema) { return false }
-        const isValid = Sjablong.validateData(this.selectedTemplateSchema, this.dispatch.templateData);
+        const isValid = Sjablong.validateData(this.selectedTemplateSchema, this.dispatch.templateData, { requireAll: true });
         console.log('Is valid?');
         console.log(isValid);
         // try {
@@ -717,7 +717,9 @@
 
         if(e.template) {
           const tmp = Buffer.from(e.template, 'base64').toString('utf8');
-          this.selectedTemplateSchema = Sjablong.generateSchema(tmp);
+          this.selectedTemplateSchema = Sjablong.generateSchema(tmp, { requireAll: true })
+          console.log('== Selected schema ==');
+          console.log(this.selectedTemplateSchema);
         }
       },
       onTextChange(e) {

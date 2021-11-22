@@ -10,9 +10,13 @@
         :hint="property.description || undefined"
         :label="determinePropertyLabel(property)"
         @input="(e) => updateData(property.path, e)"
-        :required="true"
+        :required="property.required"
         :disabled="$props.disabled || property.disabled"
-      />
+      >
+          <template #label>
+            <span v-if="property.required" class="required"><strong>* </strong></span>{{property.label}}
+          </template>
+      </VTextField>
       <VTextarea
         v-if="property.type === 'string' && property.lines"
         :value="getInitialData(property.path)"
@@ -20,8 +24,13 @@
         :label="determinePropertyLabel(property)"
         :rows="property.lines"
         @input="(e) => updateData(property.path, e)"
+        :required="property.required"
         :disabled="$props.disabled || property.disabled"
-      />
+      >
+        <template #label>
+            <span v-if="property.required" class="required"><strong>* </strong></span>{{property.label}}
+          </template>
+      </VTextarea>
     </div>
   </div>
 </template>
@@ -135,5 +144,7 @@ export default {
 </script>
 
 <style scope>
-
+  .required {
+    color: red;
+  }
 </style>
