@@ -200,29 +200,37 @@ export default {
       this.onChange();
     },
     onPreviewTemplate() {
-      // Hent markdown
-      let template =  Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64');
-      // Const request
-      const request = {
-        documentDefinitionId: 'brevmal',
-        template: template,
-        preview: true,
-        data: {
-          title: 'Tittel test',
-          list: [
-            'Item #1',
-            'Item #2',
-            'Item #3'
-          ],
-          sak: {
-            saksnavn: 'Møte om ett eller annet',
-            dato: '12.11.2021',
-            beskrivelse: "Dette er en beskrivelse av saken\nDen er over flere linjer\n3 faktisk",
+      try {
+        // Get markdown from the editor
+        const markdown = this.$refs.editor.editor.getMarkdown();
+        // Validate the markdown
+        Sjablong.validateTemplate(markdown);
+        // Convert it to Base64
+        let template =  Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64');
+        // Prepare the request
+        const request = {
+          documentDefinitionId: 'brevmal',
+          template: template,
+          preview: true,
+          data: {
+            title: 'Tittel test',
+            list: [
+              'Item #1',
+              'Item #2',
+              'Item #3'
+            ],
+            sak: {
+              saksnavn: 'Møte om ett eller annet',
+              dato: '12.11.2021',
+              beskrivelse: "Dette er en beskrivelse av saken\nDen er over flere linjer\n3 faktisk",
+            }
           }
         }
+        // Make the request
+        this.$store.dispatch('getPDFPreview', request);
+      } catch (err) {
+        this.$store.commit('setModalError', err);
       }
-
-      this.$store.dispatch('getPDFPreview', request);
     },
     onSaveTemplate() {
       if(this.editedMarkdown == '' && !confirm('Malen er uten innhold, vil du fortsatt lagre?')) {
