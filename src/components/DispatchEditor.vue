@@ -59,7 +59,7 @@
           label="Velg mal"
           placeholder="Velg mal"
           :value="dispatch.template"
-          :items="availableTemplates"
+          :items="this.templates"
           item-text="name"
           item-value="_id"
           return-object
@@ -118,8 +118,6 @@
         </div>
       </div>
     </div>
-    <!-- Modals -->
-    <VTFKPDFPreviewModal :open="pdfPreview !== undefined" :base64="pdfPreview" title='Lukk modal' :passedProps="{ onDismiss: () => { pdfPreview = undefined; }}"/>
   </div>
 </template>
 
@@ -128,7 +126,7 @@
     Import dependencies
   */
   // VTFK komponenter
-  import { Button, Spinner, Checkbox, PDFPreviewModal } from '@vtfk/components'
+  import { Button, Spinner, Checkbox } from '@vtfk/components'
 
   // Prosjektkomponenter
   import UploadField from '../components/UploadField.vue'
@@ -147,7 +145,6 @@
   import turfArea from '@turf/area';
   import Sjablong from 'sjablong';
   import merge from 'lodash.merge'
-  // import axios from 'axios';
 
   // Custom error class
   import AppError from '../lib/vtfk-errors/AppError';
@@ -158,7 +155,6 @@
       'VTFKButton': Button,
       'VTFKSpinner': Spinner,
       'VTFKCheckbox': Checkbox,
-      'VTFKPDFPreviewModal': PDFPreviewModal,
       UploadField,
       Map,
       StatCards,
@@ -174,11 +170,15 @@
     },
     data() {
       return {
+        /*
+          State
+        */
+        // Error object - This has draw precidence over everthing else in this component
         error: undefined,
-        modalError: undefined,
+        // The new or edited dispatch object
         dispatch: {
           title: '',
-          prosjektnr: '', //Obs la til denne
+          projectnumber: '', //Obs la til denne
           body: '',
           template: undefined,
           templateData: {},
@@ -215,36 +215,33 @@
             }
           }
         },
+        // The file provided by the fileuploader
         uploadedFile: undefined,
-        isLoadingTemplates: true,
-        isParsingFile: false,
-        isMatrikkelApproved: false,
-        isFirstLevelDispatchApproved: false,
-        isRequiredTemplateDataFilledIn: false,
-        hasLoadedFile: false,
-        isContactingMatrikkel: false,
+        // The genereated statistics from the MatrikkelAPI
         statItems: [],
-        eierforhold: [],
-        eiere: [],
-        pdfPreview: undefined,
-        isTemplateSelectorOpen: true,
-        templateItems: [
-          {
-            label: 'Omregulering',
-            value: 'omregulering'
-          },
-          {
-            label: 'Bygge vei',
-            value: 'vei'
-          }
-        ],
+        // The templates received from the API
         templates: [],
+        // The selected template in the template picker
         selectedTemplate: undefined,
+        // The generated schema after picking a template
         selectedTemplateSchema: undefined,
-        selectedTmpl: {
-          template: undefined,
-          schema: undefined
-        }
+        /*
+          Boolean state
+        */
+        // Are templates currently being loaded?
+        isLoadingTemplates: true,
+        // Is the file currently being parsed?
+        isParsingFile: false,
+        // Is the matrikkel information approved?
+        isMatrikkelApproved: false,
+        // TODO: check if this is the same as above
+        isFirstLevelDispatchApproved: false,
+        // Has all required template-data been filled in?
+        isRequiredTemplateDataFilledIn: false,
+        // Is the matrikkel API currently beeing contacted?
+        isContactingMatrikkel: false,
+        // Has the file been loaded?
+        hasLoadedFile: false,
       }
     },
     computed: {
@@ -255,10 +252,6 @@
         }
         return false;
       },
-      isDispatchFilledInn() {
-        if(this.dispatch.title && this.dispatch.body && this.dispatch.template) { return true; }
-        return false;
-      },
       mode() {
         if(!this.dispatch || this.dispatch._id === undefined) { return 'new'; }
         return 'edit';
@@ -267,14 +260,8 @@
         if(this.dispatch && (this.dispatch.status === 'inprogress' || this.dispatch.status === 'completed')) { return true; }
         return false;
       },
-      availableTemplates() {
-        return this.templates;
-      },
     },
     methods: {
-      setError(error) {
-        this.error = error;
-      },
       reset(force = false) {
         if(force === false) {
           if(!confirm('Er du helt sikker på at du vil starte på nytt?')) {
@@ -386,7 +373,6 @@
               matrikkelEierforhold.push(eierforhold)
             })
           })
-          this.eierforhold = matrikkelEierforhold;
 
           /*
             Hent ut alle eier-informasjon for hver av eierforholdene
@@ -411,7 +397,6 @@
 
           // Hent ut alle eiere fra Matrikkel API
           let matrikkelEiere = await matrikkelClient.getStoreItems(matrikkelEierRequestItems);
-          this.eiere = matrikkelEiere;
 
           if(!matrikkelEiere || matrikkelEiere.length === 0) {
             throw new AppError('Ingen eiere er funnet', 'Vi spurte matrikkelen om ' + matrikkelEierRequestItems.length + ' eiere, men fikk ingen tilbake');
@@ -476,7 +461,7 @@
 
           this.isContactingMatrikkel = false;
         } catch(err) {
-          this.setError(err);
+          this.error = err;
         }
       },
       async readFile(file) {
@@ -627,8 +612,7 @@
           // Set that the file has been parsed
           this.isParsingFile = false;
         } catch (err) {
-          this.setError(err);
-          console.error(err);
+          this.error = err;
         }
       },
       parseMatrikkelEnheter(Enheter) {
@@ -756,20 +740,19 @@
         this.isLoadingTemplates = false;
       },
       previewPDF() {
+        // Input validation
         if(!this.selectedTemplate && !this.selectedTemplate) {
           alert('Forhåndsvisning kan ikke gjøres når mal ikke er valgt');
           return;
         }
-
+        // Merge template data with selected template data
         let data = merge(this.dispatch.templateData, this.selectedTemplate.data);
-        console.log('= Schema =');
-        console.log(this.selectedTemplateSchema);
-        console.log('= DATA =');
-        console.log(data);
+
         // Validate that all required data is present
         try { Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true })}
         catch (err) { console.log(err); return; }
 
+        // Specify the request for the API
         let request = {
           preview: true,
           documentDefinitionId: this.selectedTemplate.documentDefinitionId,
@@ -777,6 +760,7 @@
           data: data
         }
 
+        // Request the PDF
         this.$store.dispatch('getPDFPreview', request)
       }
     },
