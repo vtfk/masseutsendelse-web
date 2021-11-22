@@ -702,11 +702,6 @@
           } catch(err) {
           this.error = err;
           }
-          try {
-            await this.$store.dispatch('postDispatches', postObject)
-          } catch(err) {
-          this.error = err;
-          }
           this.isLoading = false
           this.$router.push('Utsendelser') 
         }

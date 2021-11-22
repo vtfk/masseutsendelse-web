@@ -149,8 +149,8 @@
 
 <script>
 // Dependencies
-// import axios from 'axios';
 import merge from 'lodash.merge';
+// import axios from 'axios'
 
 
 // VTFK komponenter
@@ -306,16 +306,12 @@ import AppError from '../lib/vtfk-errors/AppError';
           status: `${status}`,
           title: `${title}`,
           body: `${body}`,
-          prosjektnr: `${prosjektnr}`
+          prosjektnr: `${prosjektnr}`,
+          id: `${id}`
           }
         this.isLoading = true
-        // await axios({
-        //   method: 'put',
-        //   url: 'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/put/'+ id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
-        //   data: editObject
-        // });
         try {
-            await this.$store.dispatch('editDispatches', editObject, id)
+            await this.$store.dispatch('editDispatches', editObject)
         } catch(err) {
           this.error = err;
         }
