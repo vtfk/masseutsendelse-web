@@ -96,7 +96,7 @@
         <div style="display: flex; justify-content: center; gap: 0.5rem; width: 100%;">
           <VTFKButton
             style="margin-top: 1rem;"
-            :disabled="isReadOnly || !isFirstLevelDispatchApproved && !isRequiredTemplateDataFilledIn"
+            :disabled="!isReadyToSave"
             type='secondary' size='small'
             :passedProps="{onClick: () => { saveOrEditDispatch(); }}"
           >
@@ -260,6 +260,11 @@
         if(this.dispatch && (this.dispatch.status === 'inprogress' || this.dispatch.status === 'completed')) { return true; }
         return false;
       },
+      isReadyToSave() {
+        if(this.isReadOnly) return false;
+        if(!this.isFirstLevelDispatchApproved || !this.isRequiredTemplateDataFilledIn || !this.isMatrikkelApproved || !this.dispatch.projectnumber || !this.dispatch.title) return false;
+        return true;
+      }
     },
     methods: {
       reset(force = false) {
@@ -670,11 +675,18 @@
         return parsed;
       },
       async saveOrEditDispatch() {
+        // Input validation
+        if(!this.isReadyToSave) {
+          this.$store.commit('setModalError', new AppError('Kan ikke lagre', 'Det mangler en eller flere felter før du kan lagre'));
+          return;
+        }
+
+        // Confirm action
         if(!confirm('Er du helt sikker på at du vil sende inn?')) return;
 
+        // TODO: Dette burde ikke trenges
         let today = new Date()
         const dataObjc = {
-          
           body: "Denne må defineres, hentes ikke i this.dispatch",
           status: "inprogress",
           createdDate: today,
