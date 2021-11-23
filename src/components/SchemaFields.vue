@@ -128,15 +128,15 @@ export default {
     },
     onUpdate() {
       // Emit the updated data
-      // this.$emit('input', this.data);   // For v-model binding
-      // this.$emit('changed', this.data); // For other listening
+      this.$emit('input', this.data);   // For v-model binding
+      this.$emit('changed', this.data); // For other listening
     },
     getInitialData(path) {
       return get(this.data, path) || '';
     },
     determinePropertyLabel(property) {
       if(property.label) return property.label;
-      if(property.path) return property.path; // TODO: Gjør om
+      if(property.path) return property.path;
 
       return 'Ukjent...'
     }
