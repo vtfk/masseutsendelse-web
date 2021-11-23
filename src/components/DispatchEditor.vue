@@ -747,16 +747,13 @@
       },
       previewPDF() {
         // Input validation
-        if(!this.selectedTemplate && !this.selectedTemplate) {
+        if(!this.selectedTemplate) {
           alert('Forhåndsvisning kan ikke gjøres når mal ikke er valgt');
           return;
         }
 
-        let data = merge(this.dispatch.template.data, this.selectedTemplate.data);
-        console.log('= Schema =');
-        console.log(this.selectedTemplateSchema);
-        console.log('= DATA =');
-        console.log(data);
+        // Combine data from both the template and the documentTemplate
+        let data = merge(this.dispatch.template.data, this.dispatch.template.documentData);
 
         // Validate that all required data is present
         try { Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true })}
@@ -770,7 +767,7 @@
           data: data
         }
 
-        // Request the PDF
+        // Request the PDF preview
         this.$store.dispatch('getPDFPreview', request)
       }
     },
