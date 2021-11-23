@@ -166,6 +166,10 @@ export default {
     mainTemplateSchema() {
       return this.getmainTemplateSchema() || undefined;
     },
+    mode() {
+      if(this.activeTemplate && this.activeTemplate._id) return 'edit';
+      return 'new';
+    }
   },
   methods: {
     onChange() {
@@ -233,10 +237,11 @@ export default {
       }
     },
     onSaveTemplate() {
-      if(this.editedMarkdown == '' && !confirm('Malen er uten innhold, vil du fortsatt lagre?')) {
-        return;
-      }
+      // Validation
+      if(!confirm('Er du helt sikker på at du vil lagre malen?')) return;
+      if(this.editedMarkdown == '' && !confirm('Malen er uten innhold, vil du fortsatt lagre?')) return;
       
+      // Validate that the template is valid
       try {
         Sjablong.validateTemplate(this.editedMarkdown);
       } catch (err) {
@@ -250,8 +255,16 @@ export default {
         this.activeTemplate.schema = schema;
         this.$set(this.activeTemplate, 'schema', schema);
       }
-      // TODO: Skriv til databasen
 
+      try {
+        if(this.mode === 'new') {
+          this.$store.dispatch('postTemplate', this.activeTemplate);
+        } else {
+          this.$store.dispatch('putTemplate', this.activeTemplate);
+        }
+      } catch (err) {
+        this.$store.commit('setModalError', err);
+      }
     },
     insertPlaceholder(placeholder) {
       if(!placeholder) { return; }

@@ -73,18 +73,6 @@
           <v-card-text>
             <DispatchEditor :dispatchObject="editItem"/>
           </v-card-text>
-          <!-- <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
-            <VTFKButton 
-              type='secondary' size='small' style="padding-bottom: 1rem;"
-              :passedProps="{ onClick: () => [saveEdit()] }"
-              >Lagre
-            </VTFKButton>
-            <VTFKButton 
-              type='secondary' size='small' style="padding-bottom: 1rem;"
-              :passedProps="{ onClick: () => [dialogEdit = false] }"
-              >Avbryt
-            </VTFKButton>
-          </v-card-actions> -->
       </v-card>
       </v-dialog>
       <!-- Map dialog -->
@@ -286,35 +274,6 @@ import AppError from '../lib/vtfk-errors/AppError';
         }
 
         this.$store.dispatch('getPDFPreview', request)
-      },
-      async saveEdit() {
-        this.dialogEdit = false
-        this.prosjekter = []
-        // TODO må også ta med hvem den er endret av, må gjøre det når vi har fått på plass autentisering. 
-        let id = this.editItem._id
-        let status = this.editItem.status
-        let title = this.editItem.title
-        let body = this.editItem.body
-        let projectnumber = this.editItem.projectnumber
-        
-        console.log(id, status, title, body, projectnumber)
-        let editObject = {
-          status: `${status}`,
-          title: `${title}`,
-          body: `${body}`,
-          projectnumber: `${projectnumber}`,
-          id: `${id}`
-          }
-        console.log(editObject)
-        this.isLoading = true
-        try {
-            await this.$store.dispatch('editDispatches', editObject)
-        } catch(err) {
-          this.error = err;
-        }
-        await this.loadDataBase()
-        this.alert_success = true
-        this.hide_alert();
       },
       hide_alert: function () {
         window.setInterval(() => {

@@ -136,7 +136,7 @@ export default {
     },
     determinePropertyLabel(property) {
       if(property.label) return property.label;
-      if(property.path) return property.path; // TODO: Gjør om
+      if(property.path) return property.path;
 
       return 'Ukjent...'
     }

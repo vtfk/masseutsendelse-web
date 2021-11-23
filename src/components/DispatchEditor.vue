@@ -90,7 +90,7 @@
             class="mt-1"
             name="dispatchApproved"
             :label="'Følgende informasjon skal sendes ut til ' + dispatch.stats.totalOwners + ' mottakere'"
-            :passedProps="{ onChange: () => { isFirstLevelDispatchApproved = !isFirstLevelDispatchApproved; }}"
+            :passedProps="{ onChange: () => { isDispatchApproved = !isDispatchApproved; }}"
           />
         </div>
         <div style="display: flex; justify-content: center; gap: 0.5rem; width: 100%;">
@@ -241,12 +241,12 @@
         isParsingFile: false,
         // Is the matrikkel information approved?
         isMatrikkelApproved: false,
-        // TODO: check if this is the same as above
-        isFirstLevelDispatchApproved: false,
         // Has all required template-data been filled in?
         isRequiredTemplateDataFilledIn: false,
         // Is the matrikkel API currently beeing contacted?
         isContactingMatrikkel: false,
+        // Is the dispatch approved to be sent inn?
+        isDispatchApproved: false,
         // Has the file been loaded?
         hasLoadedFile: false,
       }
@@ -269,7 +269,7 @@
       },
       isReadyToSave() {
         if(this.isReadOnly) return false;
-        if(!this.isFirstLevelDispatchApproved || !this.isRequiredTemplateDataFilledIn || !this.isMatrikkelApproved || !this.dispatch.projectnumber || !this.dispatch.title) return false;
+        if(!this.isDispatchApproved || !this.isRequiredTemplateDataFilledIn || !this.isMatrikkelApproved || !this.dispatch.projectnumber || !this.dispatch.title) return false;
         return true;
       }
     },
