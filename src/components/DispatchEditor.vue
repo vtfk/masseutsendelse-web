@@ -72,7 +72,7 @@
           <h2>Flettefelter</h2>
           <SchemaFields
             v-if="selectedTemplateSchema"
-            v-model="dispatch.templateData"
+            v-model="dispatch.templated.data"
             :schema="selectedTemplateSchema"
             :disabled="isReadOnly"
             @changed="(data) => onTemplateDataChanged(data)"
@@ -178,9 +178,17 @@
         // The new or edited dispatch object
         dispatch: {
           title: '',
-          projectnumber: '', //Obs la til denne
+          projectnumber: '',
           body: '',
-          template: undefined,
+          template: {
+            _id:'',
+            version:'5',
+            name: '',
+            description:'',
+            documentData: {},
+            data: undefined,
+            template:''
+          },
           templateData: {},
           matrikkelEnheter: undefined,
           stats: {
@@ -683,22 +691,8 @@
 
         // Confirm action
         if(!confirm('Er du helt sikker på at du vil sende inn?')) return;
-
-        // TODO: Dette burde ikke trenges
-        let today = new Date()
-        const dataObjc = {
-          body: "Denne må defineres, hentes ikke i this.dispatch",
-          status: "inprogress",
-          createdDate: today,
-          createdBy: "Noen André",
-          createdById: "00000000-0000-0000-0000-000000000000",
-          modifiedDate: today,
-          modifiedBy: "André",
-          modifiedById: "00000000-0000-0000-0000-000000000000",
-        }
-
-        var postObject = Object.assign(this.dispatch, dataObjc)
-        
+        var postObject = Object.assign(this.dispatch)
+        console.log(this.dispatch.template.data)
         this.isLoading = true
         try {
           if(this.mode === 'new') {
@@ -757,8 +751,12 @@
           alert('Forhåndsvisning kan ikke gjøres når mal ikke er valgt');
           return;
         }
-        // Merge template data with selected template data
-        let data = merge(this.dispatch.templateData, this.selectedTemplate.data);
+
+        let data = merge(this.dispatch.template.data, this.selectedTemplate.data);
+        console.log('= Schema =');
+        console.log(this.selectedTemplateSchema);
+        console.log('= DATA =');
+        console.log(data);
 
         // Validate that all required data is present
         try { Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true })}

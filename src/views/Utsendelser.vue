@@ -188,7 +188,7 @@ import AppError from '../lib/vtfk-errors/AppError';
             sortable: true,
             value: 'title',
           },
-          {text: 'Prosjekt Nr', value: 'prosjektnr'},
+          {text: 'Prosjekt Nr', value: 'projectnumber'},
           {text: 'Dato', value: 'createdDate'},
           {text: 'Status', value: 'status'},
           {text: 'Oppretshaver', value: 'createdBy'},
@@ -295,16 +295,17 @@ import AppError from '../lib/vtfk-errors/AppError';
         let status = this.editItem.status
         let title = this.editItem.title
         let body = this.editItem.body
-        let prosjektnr = this.editItem.prosjektnr
+        let projectnumber = this.editItem.projectnumber
         
-        console.log(id, status, title, body, prosjektnr)
+        console.log(id, status, title, body, projectnumber)
         let editObject = {
           status: `${status}`,
           title: `${title}`,
           body: `${body}`,
-          prosjektnr: `${prosjektnr}`,
+          projectnumber: `${projectnumber}`,
           id: `${id}`
           }
+        console.log(editObject)
         this.isLoading = true
         try {
             await this.$store.dispatch('editDispatches', editObject)
