@@ -72,7 +72,7 @@
           <h2>Flettefelter</h2>
           <SchemaFields
             v-if="selectedTemplateSchema"
-            v-model="dispatch.templated.data"
+            v-model="dispatch.template.data"
             :schema="selectedTemplateSchema"
             :disabled="isReadOnly"
             @changed="(data) => onTemplateDataChanged(data)"
@@ -182,14 +182,13 @@
           body: '',
           template: {
             _id:'',
-            version:'5',
+            version:null,
             name: '',
             description:'',
             documentData: {},
             data: undefined,
             template:''
           },
-          templateData: {},
           matrikkelEnheter: undefined,
           stats: {
             affectedCount: null,
@@ -709,7 +708,8 @@
         this.$router.push('Utsendelser') 
       },
       onTemplateChanged(e) {
-        this.dispatch.template = e._id;
+        console.log(e)
+        this.dispatch.template._id = e._id;
         this.selectedTemplate = e;
 
         if(e.template) {
