@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
 export default [
-    rest.post('*/api/v1/matrikkelenheter', (req, res, ctx) => {
+    rest.post('*/api/v1/matrikkelenheter*', (req, res, ctx) => {
         return res(ctx.json(require('./data/MatrikkelEnhetIDs.json')));
     }),
     rest.post('*/api/v1/store', (req, res, ctx) => {
