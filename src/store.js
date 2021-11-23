@@ -115,15 +115,14 @@ const store = new Vuex.Store({
         data: data
       }
       // Make the request
-    await axios.request(request)
-    .then((response) => {
-      context.commit('newDispatches', response.data.postObject)
-      })
-    .catch((err) => {
-      context.commit('setModalError', err)
-      })
+      try {
+        const response = await axios.request(request);
+        context.commit('newDispatches', response.data.postObject);
+      } catch (err) {
+        context.commit('setModalError', err);
+        return Promise.reject(err);
+      }
     },
-
     async editDispatches(context, data) {
       //Define the request 
       const request = {
@@ -131,13 +130,14 @@ const store = new Vuex.Store({
         method: 'put',
         data: data
       }
-      await axios.request(request)
-      .then((response) => {
-        context.commit('editDispatches', response.data.editObject)
-      })
-      .catch((err) => {
-        context.commit('setModalError', err)
-      })
+      // Make the request
+      try {
+        const response = await axios.request(request);
+        context.commit('editDispatches', response.data.editObject);
+      } catch (err) {
+        context.commit('setModalError', err);
+        return Promise.reject(err);
+      }
     }
   }
 })
