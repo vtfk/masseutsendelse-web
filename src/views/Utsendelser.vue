@@ -198,8 +198,8 @@ import AppError from '../lib/vtfk-errors/AppError';
         select: {status_valg: '', status_value: ''},
         items: [
           { status_valg: 'Godkjent', status_value: 'approved'},
-          { status_valg: 'Ikke Godkjent', status_value: 'not approved'},
-          { status_valg: 'Til Behandling', status_value: 'inprogress'},
+          { status_valg: 'Under behandling', status_value: 'notapproved'},
+          { status_valg: 'Utsendelse Pågår', status_value: 'inprogress'},
           { status_valg: 'Fullført', status_value: 'completed'},
         ],
         fetchStatus: '',
@@ -233,16 +233,16 @@ import AppError from '../lib/vtfk-errors/AppError';
     methods: {
       getColor (status) {
         if (status == "approved") return '#D0C788'
-        else if (status == "not approved") return '#E7827E'
+        else if (status == "notapproved") return '#E7827E'
         else if (status == "completed") return '#91B99F'
         else if (status == "inprogress") return '#E0C38B'
         else return '#FFFFF'
       },
       translateStatus (status) {
         if (status == "completed") return "Fullført"
-        else if (status == "inprogress") return "Til Behandling"
+        else if (status == "inprogress") return "Utsendelse Pågår"
         else if (status == "approved") return "Godkjent"
-        else if (status == "not approved") return "Ikke Godkjent"
+        else if (status == "notapproved") return "Under Behandling"
       },
       async loadDataBase() {
         try {
