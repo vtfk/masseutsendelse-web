@@ -72,7 +72,7 @@
           <h2>Flettefelter</h2>
           <SchemaFields
             v-if="selectedTemplateSchema"
-            v-model="dispatch.templateData"
+            v-model="dispatch.templated.data"
             :schema="selectedTemplateSchema"
             :disabled="isReadOnly"
             @changed="(data) => onTemplateDataChanged(data)"
@@ -178,9 +178,17 @@
         modalError: undefined,
         dispatch: {
           title: '',
-          prosjektnr: '', //Obs la til denne
+          projectnumber: '',
           body: '',
-          template: undefined,
+          template: {
+            _id:'',
+            version:'5',
+            name: '',
+            description:'',
+            documentData: {},
+            data: undefined,
+            template:''
+          },
           templateData: {},
           matrikkelEnheter: undefined,
           stats: {
@@ -687,22 +695,8 @@
       },
       async saveOrEditDispatch() {
         if(!confirm('Er du helt sikker på at du vil sende inn?')) return;
-
-        let today = new Date()
-        const dataObjc = {
-          
-          body: "Denne må defineres, hentes ikke i this.dispatch",
-          status: "inprogress",
-          createdDate: today,
-          createdBy: "Noen André",
-          createdById: "00000000-0000-0000-0000-000000000000",
-          modifiedDate: today,
-          modifiedBy: "André",
-          modifiedById: "00000000-0000-0000-0000-000000000000",
-        }
-
-        var postObject = Object.assign(this.dispatch, dataObjc)
-        
+        var postObject = Object.assign(this.dispatch)
+        console.log(this.dispatch.template.data)
         this.isLoading = true
         try {
           if(this.mode === 'new') {
@@ -761,7 +755,7 @@
           return;
         }
 
-        let data = merge(this.dispatch.templateData, this.selectedTemplate.data);
+        let data = merge(this.dispatch.template.data, this.selectedTemplate.data);
         console.log('= Schema =');
         console.log(this.selectedTemplateSchema);
         console.log('= DATA =');
