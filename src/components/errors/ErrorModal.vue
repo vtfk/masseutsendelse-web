@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-dialog v-if="$props.error" :value="true" width="40%">
+    <v-dialog v-if="$props.error" :value="true" width="40%" @click:outside="close()">
       <v-card>
         <v-card-title></v-card-title>
         <v-card-text>
@@ -8,7 +8,7 @@
             :error="$props.error"
             :showResetButton="$props.showResetButton" 
             :showOkButton="$props.showOkButton"
-            @ok="close"
+            @ok="close()"
           />
         </v-card-text>
       </v-card>
