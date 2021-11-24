@@ -177,7 +177,7 @@ import AppError from '../lib/vtfk-errors/AppError';
             value: 'title',
           },
           {text: 'Prosjekt Nr', value: 'projectnumber'},
-          {text: 'Dato', value: 'createdDate'},
+          {text: 'Dato', value: 'createdTimestamp'},
           {text: 'Status', value: 'status'},
           {text: 'Oppretshaver', value: 'createdBy'},
           {text: 'Behandlet av', value: 'modifiedBy'},
@@ -240,10 +240,22 @@ import AppError from '../lib/vtfk-errors/AppError';
           this.error = err;
         }
       },
-      editItem1 (item) {
+      async editItem1 (item) {
+        // this.$set(this, 'selectedDispatch', item)
+        // this.editItem = JSON.parse(JSON.stringify(item)) 
+        // this.dialogEdit = true
         this.$set(this, 'selectedDispatch', item)
-        this.editItem = JSON.parse(JSON.stringify(item)) 
-        this.dialogEdit = true
+        var id = item._id
+        try {
+          let dispatchEdit = await this.$store.dispatch('getDispatchesById', id)
+          if (item._id === dispatchEdit._id) {
+            this.editItem = dispatchEdit, 
+            console.log(item.template.template)
+            this.dialogEdit = true
+          }
+        }catch {
+          new AppError('Kunne ikke åpne utsendelsen', 'Klarte ikke å avgjøre hvordan utsendelsen skulle åpnes')
+        }
       },
       openMap(item){
         this.$set(this, 'selectedDispatch', item)

@@ -88,6 +88,23 @@ const store = new Vuex.Store({
         return Promise.reject(err)
       }
     },
+    async getDispatchesById(context, id) {
+      try {
+        //Define the request
+        const request= {
+          url: 'http://localhost:7071/api/dispatches/' + id,
+          method: 'GET',
+          data: id,
+        }
+        //Make the request
+        const response = await axios.request(request)
+        if (!response || !response.data) throw new AppError ('Kunne ikke laste utsendelse', 'Serveren svarte med finner ikke utsendelsen i svaret')
+        //Return the data
+        return response.data
+      } catch(err) {
+        return Promise.reject(err)
+      }
+    },
     async getTemplates(context) {
       try {
         // Define the request
@@ -156,10 +173,12 @@ const store = new Vuex.Store({
     async editDispatches(context, data) {
       //Define the request 
       const request = {
-        url:'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/'+ data.id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
+        // url:'http://localhost:7071/api/dispatches/' + data._id, 
+        url:'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/'+ data._id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
         method: 'put',
         data: data
       }
+      console.log(data._id)
       // Make the request
       try {
         const response = await axios.request(request);
