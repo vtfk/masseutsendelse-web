@@ -31,7 +31,7 @@
     <div v-if="mainTemplateSchema">
       <h3>Felter i hovedmalen</h3>
       <p>Hovedmalen har noen dynamiske felter, hva som skal stå i disse kan du sette her</p>
-        <SchemaFields v-model="activeTemplate.data" :schema="mainTemplateSchema" @error="(e) => error = e" />
+        <SchemaFields v-model="activeTemplate.documentData" :schema="mainTemplateSchema" @error="(e) => error = e" />
     </div>
     <h2 style="margin-top: 2rem;">Innholdsmal</h2>
     <p>Mal for innholdet i masseutsendelsene som skal sendes ut</p>

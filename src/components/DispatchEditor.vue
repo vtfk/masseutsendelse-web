@@ -67,6 +67,7 @@
           @change="(e) => onTemplateChanged(e)" 
           style="max-width: 750px; width: 100%;"
         />
+        <!-- TODO -->
         <!-- Kode om @change til dispatch.templateID. Kode om mocken og koden -->
         <div v-if="selectedTemplateSchema" style="max-width: 750px; width: 100%;">
           <h2>Flettefelter</h2>
@@ -182,12 +183,12 @@
           body: '',
           template: {
             _id:'',
-            version:null,
+            version: null, //Endre til Null
             name: '',
             description:'',
             documentData: {},
             data: undefined,
-            template:''
+            template: ''
           },
           matrikkelEnheter: undefined,
           stats: {
@@ -200,6 +201,7 @@
           },
           polygon: {
             coordinatesystem: 'EUREF89 UTM Sone 32',
+            filename: 'Et filnavn',
             areal: null,
             vertices: [],
             extremes: {
@@ -689,9 +691,12 @@
         }
 
         // Confirm action
+        
+        console.log(this.selectedTemplate.template)
         if(!confirm('Er du helt sikker på at du vil sende inn?')) return;
         var postObject = Object.assign(this.dispatch)
         console.log(this.dispatch.template.data)
+        console.log(this.dispatch)
         this.isLoading = true
         try {
           if(this.mode === 'new') {
@@ -709,11 +714,22 @@
       },
       onTemplateChanged(e) {
         console.log(e)
-        this.dispatch.template._id = e._id;
+        const latestVersion = e.versions.find((v) => v.version === e.version)
+        //TODO 
+        this.dispatch.template = {
+          _id: e._id,
+          version: e.version,
+          name: e.name,
+          description: e.description,
+          language: latestVersion.language,
+          documentDefinitionId: latestVersion.documentDefinitionId,
+          documentData: latestVersion.documentData,
+          template: latestVersion.template
+        };
         this.selectedTemplate = e;
 
-        if(e.template) {
-          const tmp = Buffer.from(e.template, 'base64').toString('utf8');
+        if(latestVersion.template) {
+          const tmp = Buffer.from(latestVersion.template, 'base64').toString('utf8');
           this.selectedTemplateSchema = Sjablong.generateSchema(tmp, { requireAll: true })
           console.log('== Selected schema ==');
           console.log(this.selectedTemplateSchema);
