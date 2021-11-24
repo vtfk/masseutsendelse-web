@@ -72,7 +72,7 @@
           <h2>Flettefelter</h2>
           <SchemaFields
             v-if="selectedTemplateSchema"
-            v-model="dispatch.templated.data"
+            v-model="dispatch.template.data"
             :schema="selectedTemplateSchema"
             :disabled="isReadOnly"
             @changed="(data) => onTemplateDataChanged(data)"
@@ -90,7 +90,7 @@
             class="mt-1"
             name="dispatchApproved"
             :label="'Følgende informasjon skal sendes ut til ' + dispatch.stats.totalOwners + ' mottakere'"
-            :passedProps="{ onChange: () => { isFirstLevelDispatchApproved = !isFirstLevelDispatchApproved; }}"
+            :passedProps="{ onChange: () => { isDispatchApproved = !isDispatchApproved; }}"
           />
         </div>
         <div style="display: flex; justify-content: center; gap: 0.5rem; width: 100%;">
@@ -182,14 +182,13 @@
           body: '',
           template: {
             _id:'',
-            version:'5',
+            version:null,
             name: '',
             description:'',
             documentData: {},
             data: undefined,
             template:''
           },
-          templateData: {},
           matrikkelEnheter: undefined,
           stats: {
             affectedCount: null,
@@ -242,12 +241,12 @@
         isParsingFile: false,
         // Is the matrikkel information approved?
         isMatrikkelApproved: false,
-        // TODO: check if this is the same as above
-        isFirstLevelDispatchApproved: false,
         // Has all required template-data been filled in?
         isRequiredTemplateDataFilledIn: false,
         // Is the matrikkel API currently beeing contacted?
         isContactingMatrikkel: false,
+        // Is the dispatch approved to be sent inn?
+        isDispatchApproved: false,
         // Has the file been loaded?
         hasLoadedFile: false,
       }
@@ -270,7 +269,7 @@
       },
       isReadyToSave() {
         if(this.isReadOnly) return false;
-        if(!this.isFirstLevelDispatchApproved || !this.isRequiredTemplateDataFilledIn || !this.isMatrikkelApproved || !this.dispatch.projectnumber || !this.dispatch.title) return false;
+        if(!this.isDispatchApproved || !this.isRequiredTemplateDataFilledIn || !this.isMatrikkelApproved || !this.dispatch.projectnumber || !this.dispatch.title) return false;
         return true;
       }
     },
@@ -709,7 +708,8 @@
         this.$router.push('Utsendelser') 
       },
       onTemplateChanged(e) {
-        this.dispatch.template = e._id;
+        console.log(e)
+        this.dispatch.template._id = e._id;
         this.selectedTemplate = e;
 
         if(e.template) {
@@ -747,16 +747,13 @@
       },
       previewPDF() {
         // Input validation
-        if(!this.selectedTemplate && !this.selectedTemplate) {
+        if(!this.selectedTemplate) {
           alert('Forhåndsvisning kan ikke gjøres når mal ikke er valgt');
           return;
         }
 
-        let data = merge(this.dispatch.template.data, this.selectedTemplate.data);
-        console.log('= Schema =');
-        console.log(this.selectedTemplateSchema);
-        console.log('= DATA =');
-        console.log(data);
+        // Combine data from both the template and the documentTemplate
+        let data = merge(this.dispatch.template.data, this.dispatch.template.documentData);
 
         // Validate that all required data is present
         try { Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true })}
@@ -770,7 +767,7 @@
           data: data
         }
 
-        // Request the PDF
+        // Request the PDF preview
         this.$store.dispatch('getPDFPreview', request)
       }
     },

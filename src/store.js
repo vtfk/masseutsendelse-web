@@ -107,6 +107,36 @@ const store = new Vuex.Store({
         return Promise.reject(err);
       }
     },
+    async postTemplate(context) {
+      try {
+        // Define the request
+        const request = {
+          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
+          method: 'post'
+        }
+        // Make the request
+        await axios.request(request);
+        // Get the updated templates
+        await context.dispatch('getTemplates');
+      } catch (err) {
+        return Promise.reject(err);
+      }
+    },
+    async putTemplate(context) {
+      try {
+        // Define the request
+        const request = {
+          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
+          method: 'put'
+        }
+        // Make the request
+        await axios.request(request);
+        // Get the updated templates
+        await context.dispatch('getTemplates');
+      } catch (err) {
+        return Promise.reject(err);
+      }
+    },
     async postDispatches(context, data) {
       // Define the request
       const request = {
