@@ -183,7 +183,7 @@
           body: '',
           template: {
             _id:'',
-            version: null, //Endre til Null
+            version: null,
             name: '',
             description:'',
             documentData: {},
@@ -691,8 +691,6 @@
         }
 
         // Confirm action
-        
-        console.log(this.selectedTemplate.template)
         if(!confirm('Er du helt sikker på at du vil sende inn?')) return;
         var postObject = Object.assign(this.dispatch)
         console.log(this.dispatch.template.data)
