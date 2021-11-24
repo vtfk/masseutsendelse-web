@@ -52,7 +52,7 @@
             Endre mal
           </VCardTitle>
           <VCardText>
-            <TemplateEditor :template="activeTemplate" @close="reset()" />
+            <TemplateEditor :template="activeTemplate" @close="reset()" @saved="reset()" />
           </VCardText>
         </VCard>
       </VDialog>
@@ -124,9 +124,7 @@ export default {
 
       let request = {
         preview: true,
-        documentDefinitionId: template.documentDefinitionId,
-        template: template.template,
-        data: {...template.data }
+        template: template
       }
 
       this.$store.dispatch('getPDFPreview', request)

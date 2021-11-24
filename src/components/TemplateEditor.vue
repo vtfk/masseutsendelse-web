@@ -18,7 +18,7 @@
     <h2 style="margin-top: 2rem;">Dokumentmal</h2>
     <p>Dette er dokumentmalen som omberammer denne innholdsmalen<p>
     <VSelect
-      v-model="activeTemplateVersion.documentDefinitionId"
+      v-model="activeTemplate.documentDefinitionId"
       :items="documentTemplates"
       label="Hovedmal"
       hint="Dette er hovedmalen som omfavner innholdet i denne innholdsmalen"
@@ -31,7 +31,7 @@
     <div v-if="mainTemplateSchema">
       <h3>Felter i hovedmalen</h3>
       <p>Hovedmalen har noen dynamiske felter, hva som skal stå i disse kan du sette her</p>
-        <SchemaFields v-model="activeTemplateVersion.documentData" :schema="mainTemplateSchema" @error="(e) => error = e" />
+        <SchemaFields v-model="activeTemplate.documentData" :schema="mainTemplateSchema" @error="(e) => error = e" />
     </div>
     <h2 style="margin-top: 2rem;">Innholdsmal</h2>
     <p>Mal for innholdet i masseutsendelsene som skal sendes ut</p>
@@ -64,7 +64,6 @@ import { Button, TextField } from '@vtfk/components';
 import Sjablong from 'sjablong';
 import SchemaFields from './SchemaFields.vue';
 import InsertTemplateForm from './templating/InsertTemplateForm.vue';
-import AppError from '../lib/vtfk-errors/AppError';
 
 export default {
   name: 'TemplateEditor',
@@ -106,9 +105,7 @@ export default {
       hasChanged: false,
       activeTemplate: {
         name: undefined,
-        description: undefined
-      },
-      activeTemplateVersion: {
+        description: undefined,
         version: null,
         language: undefined,
         documentDefinitionId: undefined,
@@ -177,17 +174,17 @@ export default {
       console.log('Something has changed');
       this.hasChanged = true;
       this.editedMarkdown = this.$refs.editor.editor.getMarkdown();
-      this.$set(this.activeTemplateVersion, 'template', Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64'));
+      this.$set(this.activeTemplate, 'template', Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64'));
       this.$emit('input', this.activeTemplate);
       this.$emit('onMarkdownChanged', this.activeTemplate);
     },
     getDocumentTemplateSchema() {
       // Input validation
       if(!this.documentTemplates) { return undefined; }
-      if(!this.activeTemplateVersion.documentDefinitionId) { return undefined; }
+      if(!this.activeTemplate.documentDefinitionId) { return undefined; }
       
       // Get the schema
-      let template = this.documentTemplates.find((i) => i.value == this.activeTemplateVersion.documentDefinitionId);
+      let template = this.documentTemplates.find((i) => i.value == this.activeTemplate.documentDefinitionId);
       if(!template || !template.schema) { return undefined }
 
       // Return the schema
@@ -209,36 +206,15 @@ export default {
       try {
         // Get markdown from the editor
         const markdown = this.$refs.editor.editor.getMarkdown();
-        // Validate the markdown
+        // Validate the template markdown
         Sjablong.validateTemplate(markdown);
-        // Convert it to Base64
-        let template =  Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64');
-        // Prepare the request
-        const request = {
-          documentDefinitionId: 'brevmal',
-          template: template,
-          preview: true,
-          data: {
-            title: 'Tittel test',
-            list: [
-              'Item #1',
-              'Item #2',
-              'Item #3'
-            ],
-            sak: {
-              saksnavn: 'Møte om ett eller annet',
-              dato: '12.11.2021',
-              beskrivelse: "Dette er en beskrivelse av saken\nDen er over flere linjer\n3 faktisk",
-            }
-          }
-        }
         // Make the request
-        this.$store.dispatch('getPDFPreview', request);
+        this.$store.dispatch('getPDFPreview', { template: this.activeTemplate, preview: true });
       } catch (err) {
         this.$store.commit('setModalError', err);
       }
     },
-    onSaveTemplate() {
+    async onSaveTemplate() {
       // Validation
       if(!confirm('Er du helt sikker på at du vil lagre malen?')) return;
       if(this.editedMarkdown == '' && !confirm('Malen er uten innhold, vil du fortsatt lagre?')) return;
@@ -257,16 +233,21 @@ export default {
         this.activeTemplate.schema = schema;
         this.$set(this.activeTemplate, 'schema', schema);
       }
+      console.log('== Activetemplate');
+      console.log(this.activeTemplate);
+
 
       try {
         if(this.mode === 'new') {
-          this.$store.dispatch('postTemplate', this.activeTemplate);
+          await this.$store.dispatch('postTemplate', this.activeTemplate);
         } else {
-          this.$store.dispatch('putTemplate', this.activeTemplate);
+          await this.$store.dispatch('putTemplate', this.activeTemplate);
         }
       } catch (err) {
         this.$store.commit('setModalError', err);
       }
+
+      this.$emit('saved');
     },
     insertPlaceholder(placeholder) {
       if(!placeholder) { return; }
@@ -332,20 +313,14 @@ export default {
         // Get the active template
         this.activeTemplate = JSON.parse(JSON.stringify(this.$props.template));
 
-        // Get the latest version of the template
-        let tmpActiveVersion = this.activeTemplate.versions.find((v) => v.version === this.activeTemplate.version);
-        if(!tmpActiveVersion) tmpActiveVersion = this.activeTemplate.versions[this.activeTemplate.version.length - 1];
-        if(!tmpActiveVersion) this.error = new AppError('Problemer med å laste mal', 'Kan ikke finne siste versjon av malen');
-        this.activeTemplateVersion = tmpActiveVersion;
-
         // Decode the base64 markdown to utf8
-        if(this.activeTemplateVersion.template && typeof this.activeTemplateVersion.template === 'string') {
-          this.editedMarkdown = Buffer.from(this.activeTemplateVersion.template, 'base64').toString('utf8');
+        if(this.activeTemplate.template && typeof this.activeTemplate.template === 'string') {
+          this.editedMarkdown = Buffer.from(this.activeTemplate.template, 'base64').toString('utf8');
         }
       }
 
       // Set other default values
-      this.activeTemplateVersion.documentDefinitionId = this.activeTemplateVersion.documentDefinitionId || 'brevmal';
+      this.activeTemplate.documentDefinitionId = this.activeTemplate.documentDefinitionId || 'brevmal';
     } catch (err) {
       this.error = err;
     }
