@@ -778,8 +778,8 @@
         // Specify the request for the API
         let request = {
           preview: true,
-          documentDefinitionId: this.selectedTemplate.documentDefinitionId,
-          template: this.selectedTemplate.template,
+          documentDefinitionId: this.dispatch.template.documentDefinitionId,
+          template: this.dispatch.template.template,
           data: data
         }
 

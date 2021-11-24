@@ -41,7 +41,7 @@
       :height="$props.height"
       initialEditType="markdown"
       :options="activeOptions"
-      @change="(e) => { onChange(e) }"
+      @change="(e) => { onMarkdownChanged(e) }"
       style="margin-top: 1rem;"
     />
     <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
@@ -79,17 +79,7 @@ export default {
   props: {
     template: {
       type: Object,
-      default: () => {return {
-        id: undefined,
-        name: {},
-        mainTemplate: {
-          id: undefined,
-          language: 'nb',
-          data: undefined
-        },
-        template: '',
-        schema: {}
-      }}
+      default: () => { return {} }
     },
     options: {
       type: Object
@@ -114,8 +104,17 @@ export default {
       isShowInsertPlaceholderModal: false,
       pdfPreview: undefined,
       hasChanged: false,
-      activeTemplate: {},
-      activeTemplateVersion: {},
+      activeTemplate: {
+        name: undefined,
+        description: undefined
+      },
+      activeTemplateVersion: {
+        version: null,
+        language: undefined,
+        documentDefinitionId: undefined,
+        documentData: undefined,
+        template: undefined
+      },
       activeOptions: undefined,
       defaultOptions: {
         hideModeSwitch: this.$props.hideModeSwitch,
@@ -174,12 +173,13 @@ export default {
     }
   },
   methods: {
-    onChange() {
+    onMarkdownChanged() {
+      console.log('Something has changed');
       this.hasChanged = true;
       this.editedMarkdown = this.$refs.editor.editor.getMarkdown();
-      this.$set(this.activeTemplate, 'markdown', Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64'));
+      this.$set(this.activeTemplateVersion, 'template', Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64'));
       this.$emit('input', this.activeTemplate);
-      this.$emit('onChange', this.activeTemplate);
+      this.$emit('onMarkdownChanged', this.activeTemplate);
     },
     getDocumentTemplateSchema() {
       // Input validation
@@ -203,7 +203,7 @@ export default {
       if(defaultData) this.activeTemplate.data = defaultData;
 
       // Register the change
-      this.onChange();
+      this.onMarkdownChanged();
     },
     onPreviewTemplate() {
       try {
@@ -328,18 +328,20 @@ export default {
           return tags
         }
       }
-      // Get the active template
-      this.activeTemplate = JSON.parse(JSON.stringify(this.$props.template));
+      if(this.$props.template && typeof this.$props.template === 'object' && Object.keys(this.$props.template).length > 0) {
+        // Get the active template
+        this.activeTemplate = JSON.parse(JSON.stringify(this.$props.template));
 
-      // Get the latest version of the template
-      let tmpActiveVersion = this.activeTemplate.versions.find((v) => v.version === this.activeTemplate.version);
-      if(!tmpActiveVersion) tmpActiveVersion = this.activeTemplate.versions[this.activeTemplate.version.length - 1];
-      if(!tmpActiveVersion) this.error = new AppError('Problemer med å laste mal', 'Kan ikke finne siste versjon av malen');
-      this.activeTemplateVersion = tmpActiveVersion;
+        // Get the latest version of the template
+        let tmpActiveVersion = this.activeTemplate.versions.find((v) => v.version === this.activeTemplate.version);
+        if(!tmpActiveVersion) tmpActiveVersion = this.activeTemplate.versions[this.activeTemplate.version.length - 1];
+        if(!tmpActiveVersion) this.error = new AppError('Problemer med å laste mal', 'Kan ikke finne siste versjon av malen');
+        this.activeTemplateVersion = tmpActiveVersion;
 
-      // Decode the base64 markdown to utf8
-      if(this.activeTemplateVersion.template && typeof this.activeTemplateVersion.template === 'string') {
-        this.editedMarkdown = Buffer.from(this.activeTemplateVersion.template, 'base64').toString('utf8');
+        // Decode the base64 markdown to utf8
+        if(this.activeTemplateVersion.template && typeof this.activeTemplateVersion.template === 'string') {
+          this.editedMarkdown = Buffer.from(this.activeTemplateVersion.template, 'base64').toString('utf8');
+        }
       }
 
       // Set other default values

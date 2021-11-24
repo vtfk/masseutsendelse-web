@@ -9,7 +9,7 @@
             <v-toolbar-title>Maler</v-toolbar-title>
             <v-divider class="mx-4" inset vertical />
             <v-spacer />
-            <VTFKButton>Ny mal</VTFKButton>
+            <VTFKButton :passedProps="{ onClick: () => openTemplateEditor()}">Ny mal</VTFKButton>
           </VToolbar>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
@@ -26,7 +26,7 @@
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-btn icon v-bind="attrs" v-on="on">
-                <v-icon medium @click="openTemplate(item)" >
+                <v-icon medium @click="openTemplateEditor(item)" >
                    mdi-pencil
                 </v-icon>
               </v-btn>
@@ -36,7 +36,7 @@
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-btn icon v-bind="attrs" v-on="on">
-                <v-icon medium @click="openTemplate(item)" >
+                <v-icon medium @click="openTemplateEditor(item)" >
                    mdi-delete
                 </v-icon>
               </v-btn>
@@ -113,8 +113,10 @@ export default {
         this.error = new AppError('Kunne ikke hente hente inn maler', err);
       }
     },
-    openTemplate(template) {
-      this.activeTemplate = JSON.parse(JSON.stringify(template));
+    openTemplateEditor(template) {
+      if(template) this.activeTemplate = JSON.parse(JSON.stringify(template));
+      else this.activeTemplate = {};
+      
       this.isShowEditor = true;
     },
     previewPDF(template) {

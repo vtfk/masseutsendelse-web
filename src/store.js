@@ -54,7 +54,7 @@ const store = new Vuex.Store({
     async getPDFPreview(context, data) {
       // Define the requiest
       const request = {
-        url: 'http://localhost:3001/api/v1/generatepdf',
+        url: 'https://api.vtfk.dev/pdf/v1/generatev2',
         method: 'post',
         data: data
       }
