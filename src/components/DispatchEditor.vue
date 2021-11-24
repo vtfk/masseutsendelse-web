@@ -708,7 +708,9 @@
           this.error = err;
         }
         this.isLoading = false
-        this.$router.push('Utsendelser') 
+        if(!this.error) {
+          this.$router.push('Utsendelser')
+        } 
       },
       onTemplateChanged(e) {
         console.log(e)
