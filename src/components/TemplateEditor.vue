@@ -18,20 +18,20 @@
     <h2 style="margin-top: 2rem;">Dokumentmal</h2>
     <p>Dette er dokumentmalen som omberammer denne innholdsmalen<p>
     <VSelect
-      v-model="activeTemplate.documentDefinitionId"
+      v-model="activeTemplateVersion.documentDefinitionId"
       :items="documentTemplates"
       label="Hovedmal"
       hint="Dette er hovedmalen som omfavner innholdet i denne innholdsmalen"
       persistent-hint
       item-text="label"
-      @change="onMainTemplateChanged()"
+      @change="onDocumentTemplateChanged()"
       style="justify-content: flex-start!important;"
     />
     <!-- Dyanamic template -->
     <div v-if="mainTemplateSchema">
       <h3>Felter i hovedmalen</h3>
       <p>Hovedmalen har noen dynamiske felter, hva som skal stå i disse kan du sette her</p>
-        <SchemaFields v-model="activeTemplate.documentData" :schema="mainTemplateSchema" @error="(e) => error = e" />
+        <SchemaFields v-model="activeTemplateVersion.documentData" :schema="mainTemplateSchema" @error="(e) => error = e" />
     </div>
     <h2 style="margin-top: 2rem;">Innholdsmal</h2>
     <p>Mal for innholdet i masseutsendelsene som skal sendes ut</p>
@@ -64,6 +64,7 @@ import { Button, TextField } from '@vtfk/components';
 import Sjablong from 'sjablong';
 import SchemaFields from './SchemaFields.vue';
 import InsertTemplateForm from './templating/InsertTemplateForm.vue';
+import AppError from '../lib/vtfk-errors/AppError';
 
 export default {
   name: 'TemplateEditor',
@@ -114,6 +115,7 @@ export default {
       pdfPreview: undefined,
       hasChanged: false,
       activeTemplate: {},
+      activeTemplateVersion: {},
       activeOptions: undefined,
       defaultOptions: {
         hideModeSwitch: this.$props.hideModeSwitch,
@@ -164,7 +166,7 @@ export default {
   },
   computed: {
     mainTemplateSchema() {
-      return this.getmainTemplateSchema() || undefined;
+      return this.getDocumentTemplateSchema() || undefined;
     },
     mode() {
       if(this.activeTemplate && this.activeTemplate._id) return 'edit';
@@ -179,21 +181,21 @@ export default {
       this.$emit('input', this.activeTemplate);
       this.$emit('onChange', this.activeTemplate);
     },
-    getmainTemplateSchema() {
+    getDocumentTemplateSchema() {
       // Input validation
       if(!this.documentTemplates) { return undefined; }
-      if(!this.activeTemplate.documentDefinitionId) { return undefined; }
+      if(!this.activeTemplateVersion.documentDefinitionId) { return undefined; }
       
       // Get the schema
-      let template = this.documentTemplates.find((i) => i.value == this.activeTemplate.documentDefinitionId);
+      let template = this.documentTemplates.find((i) => i.value == this.activeTemplateVersion.documentDefinitionId);
       if(!template || !template.schema) { return undefined }
 
       // Return the schema
       return template.schema;
     },
-    onMainTemplateChanged() {
+    onDocumentTemplateChanged() {
       // Get the main template schema
-      const schema = this.getmainTemplateSchema();
+      const schema = this.getDocumentTemplateSchema();
       if(!schema) { return; }
 
       // Create a default data object
@@ -283,56 +285,68 @@ export default {
     },
   },
   created() {
-    this.activeOptions = this.$props.options || this.defaultOptions;
-    this.activeOptions.customHTMLRenderer = {
-      text(node) {
-        if(!node.literal) return [{ type: 'text', content: '' }]
-        let markdown = node.literal;
+    try {
+      this.activeOptions = this.$props.options || this.defaultOptions;
+      this.activeOptions.customHTMLRenderer = {
+        text(node) {
+          if(!node.literal) return [{ type: 'text', content: '' }]
+          let markdown = node.literal;
 
-        // Split markdown on Sjablong entries
-        let splitted = markdown.split(Sjablong.regexPatterns.sjablong.brackets);
+          // Split markdown on Sjablong entries
+          let splitted = markdown.split(Sjablong.regexPatterns.sjablong.brackets);
 
-        let tags = [];
-        splitted.forEach((part) => {
-          // Check if the part matches the regex
-          let match = part.match(Sjablong.regexPatterns.sjablong.brackets);
+          let tags = [];
+          splitted.forEach((part) => {
+            // Check if the part matches the regex
+            let match = part.match(Sjablong.regexPatterns.sjablong.brackets);
 
-          if(match) {
-            try {
-              let parsedPlaceholder = Sjablong.parsePlaceholder(part);
-              tags.push(...[
-                { type: 'openTag', tagName: 'span', classNames: ['placeholderChip']},
-                { type: 'text', content: '[' + parsedPlaceholder.label + ']' },
+            if(match) {
+              try {
+                let parsedPlaceholder = Sjablong.parsePlaceholder(part);
+                tags.push(...[
+                  { type: 'openTag', tagName: 'span', classNames: ['placeholderChip']},
+                  { type: 'text', content: '[' + parsedPlaceholder.label + ']' },
+                  { type: 'closeTag', tagName: 'span' },
+                ])
+                return;
+              } catch {
+                tags.push(...[
+                { type: 'openTag', tagName: 'span', classNames: ['incompletePlaceholderChip']},
+                { type: 'text', content: '[Uferdig]' },
                 { type: 'closeTag', tagName: 'span' },
               ])
               return;
-            } catch {
-              tags.push(...[
-              { type: 'openTag', tagName: 'span', classNames: ['incompletePlaceholderChip']},
-              { type: 'text', content: '[Uferdig]' },
+              }
+            }
+
+            tags.push(...[
+              { type: 'openTag', tagName: 'span'},
+              { type: 'text', content: part },
               { type: 'closeTag', tagName: 'span' },
             ])
-            return;
-            }
-          }
-
-          tags.push(...[
-            { type: 'openTag', tagName: 'span'},
-            { type: 'text', content: part },
-            { type: 'closeTag', tagName: 'span' },
-          ])
-        })
-        return tags
+          })
+          return tags
+        }
       }
+      // Get the active template
+      this.activeTemplate = JSON.parse(JSON.stringify(this.$props.template));
+
+      // Get the latest version of the template
+      let tmpActiveVersion = this.activeTemplate.versions.find((v) => v.version === this.activeTemplate.version);
+      if(!tmpActiveVersion) tmpActiveVersion = this.activeTemplate.versions[this.activeTemplate.version.length - 1];
+      if(!tmpActiveVersion) this.error = new AppError('Problemer med å laste mal', 'Kan ikke finne siste versjon av malen');
+      this.activeTemplateVersion = tmpActiveVersion;
+
+      // Decode the base64 markdown to utf8
+      if(this.activeTemplateVersion.template && typeof this.activeTemplateVersion.template === 'string') {
+        this.editedMarkdown = Buffer.from(this.activeTemplateVersion.template, 'base64').toString('utf8');
+      }
+
+      // Set other default values
+      this.activeTemplateVersion.documentDefinitionId = this.activeTemplateVersion.documentDefinitionId || 'brevmal';
+    } catch (err) {
+      this.error = err;
     }
-    this.activeTemplate = JSON.parse(JSON.stringify(this.$props.template));
-    // Decode the base64 markdown to utf8
-    if(this.activeTemplate.template && typeof this.activeTemplate.template === 'string') {
-      this.editedMarkdown = Buffer.from(this.activeTemplate.template, 'base64').toString('utf8');
-    }
-    // Set other default values
-    this.activeTemplate.schema = this.activeTemplate.schema || {};
-    this.activeTemplate.documentDefinitionId = this.activeTemplate.documentDefinitionId || 'brevmal';
   },
   mounted() {
     this.$refs.editor.editor.addCommand('markdown', 'insertPlaceholder', () => {
