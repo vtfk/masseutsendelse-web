@@ -201,7 +201,7 @@
           },
           polygon: {
             coordinatesystem: 'EUREF89 UTM Sone 32',
-            filename: 'Et filnavn',
+            filename: '',
             areal: null,
             vertices: [],
             extremes: {
@@ -508,9 +508,10 @@
           
           this.hasLoadedFile = true;
           this.isParsingFile = true;
-
           let file = dxf_files[0];
           this.uploadedFile = file;
+          console.log(file)
+          this.dispatch.polygon.filename = file.name
           let fileData = await this.readFile(file.data);
 
           if(!fileData || fileData.length === 0) { throw new AppError('Filen er tom', 'Den opplastede .dxf-filen inneholder ingen data') }
@@ -708,7 +709,9 @@
           this.error = err;
         }
         this.isLoading = false
-        this.$router.push('Utsendelser') 
+        if(!this.error) {
+          this.$router.push('Utsendelser')
+        } 
       },
       onTemplateChanged(e) {
         console.log(e)
