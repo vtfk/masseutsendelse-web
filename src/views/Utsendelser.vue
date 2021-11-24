@@ -28,6 +28,9 @@
           :loading="!$store.state.dispatches"
           loading-text="Laster data fra databasen "
         >
+          <template v-slot:[`item.createdTimestamp`]="{ item }">
+            {{formatDateString(item.createdTimestamp)}}
+          </template>
           <template v-slot:[`item.status`]="{ item }">
             <v-chip
               :color="getColor(item.status)"
@@ -59,35 +62,37 @@
         </template>
         </v-data-table>
       </v-card>
-      <!-- MODALER/DIALOGER -->
+    </div>
+    <!-- MODALER/DIALOGER -->
       <!-- Edit dialog -->
       <v-dialog
-        v-if="dialogEdit"
-        v-model="dialogEdit"
+        v-if="editedItem"
+        :value="true"
         width="80%"
+        @click:outside="editedItem = undefined"
       >
-      <v-card>
-        <v-card-title>
-         Rediger 
-        </v-card-title>
+        <v-card>
+          <v-card-title>
+          Rediger 
+          </v-card-title>
           <v-card-text>
-            <DispatchEditor :dispatchObject="editItem" @saved="dialogEdit = false" @close="dialogEdit = false"/>
+            <DispatchEditor :dispatchObject="editedItem" @saved="editedItem = undefined" @close="editedItem = undefined"/>
           </v-card-text>
-      </v-card>
+        </v-card>
       </v-dialog>
       <!-- Map dialog -->
       <v-dialog
-      v-if="dialogMap"
-      v-model="dialogMap"
-      width="80%"
+        v-if="dialogMap"
+        v-model="dialogMap"
+        width="80%"
       >
-      <v-card>
-        <v-card-title>
-          Kart
-        </v-card-title>
-        <v-card-text>
-          <Map :coordinates="selectedDispatch.geopolygon.vertices" :center="selectedDispatch.geopolygon.extremes.center" :markers="[selectedDispatch.geopolygon.extremes.center]"/>
-        </v-card-text>
+        <v-card>
+          <v-card-title>
+            Kart
+          </v-card-title>
+          <v-card-text>
+            <Map :coordinates="selectedDispatch.geopolygon.vertices" :center="selectedDispatch.geopolygon.extremes.center" :markers="[selectedDispatch.geopolygon.extremes.center]"/>
+          </v-card-text>
           <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
             <VTFKButton 
               type='secondary' size='small' style="padding-bottom: 1rem;"
@@ -95,9 +100,8 @@
               >Lukk
             </VTFKButton>
           </v-card-actions>
-      </v-card>
+        </v-card>
       </v-dialog>
-    </div>
     <!-- Alerts -->
     <v-alert 
       :value="alert_success" 
@@ -134,6 +138,7 @@ import AppError from '../lib/vtfk-errors/AppError';
       return {
         error: undefined,
         dispatches: [],
+        editedItem: undefined,
         search: '',
         dialogEdit: false,
         dialogMap:false,
@@ -181,9 +186,20 @@ import AppError from '../lib/vtfk-errors/AppError';
         else if (status == "approved") return "Godkjent"
         else if (status == "notapproved") return "Under Behandling"
       },
+      formatDateString(dateString) {
+        try {
+          const date = new Date(dateString);
+          const day = date.getDate().toString().padStart(2, '0');
+          const month = date.getMonth().toString().padStart(2, '0');
+          const hour = date.getHours().toString().padStart(2, '0');
+          const minutes = date.getMinutes().toString().padStart(2, '0')
+          return day + '.' + month + '.' + date.getFullYear() + ' - ' + hour + ':' + minutes;
+        } catch {
+          return dateString;
+        }
+      },
       async loadDataBase() {
         try {
-          await this.$store.dispatch('getTemplates');
           await this.$store.dispatch('getDispatches');
         } catch(err) {
           this.error = err;
@@ -194,6 +210,7 @@ import AppError from '../lib/vtfk-errors/AppError';
         try {
           let dispatchEdit = await this.$store.dispatch('getDispatchesById', item._id)
           this.editItem = dispatchEdit;
+          this.editedItem = dispatchEdit;
           this.dialogEdit = true
         }catch {
           new AppError('Kunne ikke åpne utsendelsen', 'Klarte ikke å avgjøre hvordan utsendelsen skulle åpnes')

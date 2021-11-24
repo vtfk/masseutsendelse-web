@@ -49,10 +49,13 @@ const store = new Vuex.Store({
     async getPDFPreview(context, req) {
       // Define the data to send
       let requestData = {
-        preview: req.preview || false,
+        preview: true,
         template: req.template.template,
         documentDefinitionId: req.template.documentDefinitionId,
-        data: merge(req.template.data, req.template.documentData)
+        data: {
+          test: 'test',
+          ...merge(req.template.data, req.template.documentData),
+        }
       }
 
       console.log('== Requesting PDF ==');
@@ -131,11 +134,13 @@ const store = new Vuex.Store({
     },
     async postTemplate(context, template) {
       try {
+        console.log('== Posting template ==');
+        console.log(template);
         // Define the request
         const request = {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
           method: 'post',
-          body: template
+          data: template
         }
         // Make the request
         await axios.request(request);
@@ -189,7 +194,7 @@ const store = new Vuex.Store({
       // Make the request
       try {
         await axios.request(request);
-        context.dispatch('getDispatches');
+        await context.dispatch('getDispatches');
       } catch (err) {
         context.commit('setModalError', err);
         return Promise.reject(err);

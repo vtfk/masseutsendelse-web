@@ -2,7 +2,7 @@
   <div>
     <v-select
       :value="$props.value"
-      @input="(e) => { $emit('input', e.value ); onInput(); }"
+      @input="(e) => { $emit('input', e.value ); }"
       :items="items"
       label="Sett status for prosjektet"
       :menu-props="{ bottom: true, offsetY: true }"

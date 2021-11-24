@@ -37,40 +37,53 @@
       <!-- Prosjekt informasjon -->
       <div v-if="isMatrikkelApproved || mode === 'edit'" class="card shadow centeredColumn" style="margin-top: 1rem;">
         <h1>Masseutsendelse</h1>
-        <DispatchStatusSelect v-if="mode === 'edit'" v-model="dispatch.status"/>
+        <DispatchStatusSelect v-if="mode === 'edit'" v-model="dispatch.status" :disabled="isLocked"/>
         <!-- En input for prosjekt navn, en for prosjekt nr -->
         <VTextField 
           v-model="dispatch.title"
+          :disabled="isReadOnly"
           placeholder="Angi et prosjektnavn"
           hint="Angi et prosjektnavn"
           label="Prosjekt navn"
           :required="true"
           style="max-width: 750px; width: 100%;"
-        />
-         <VTextField 
+        >
+          <template #label>
+            <span class="required"><strong>* </strong></span>Prosjektnavn
+          </template>
+        </VTextField>
+        <VTextField 
           v-model="dispatch.projectnumber"
+          :disabled="isReadOnly"
           placeholder="Angi et nummer"
           hint="Angi et nummer"
           label="Prosjekt nummer"
           :required="true"
           style="max-width: 750px; width: 100%;"
-        />
+        >
+          <template #label>
+            <span class="required"><strong>* </strong></span>Prosjektnummer
+          </template>
+        </VTextField>
         <VSelect
           label="Velg mal"
           placeholder="Velg mal"
+          :disabled="isReadOnly"
           :value="dispatch.template"
           :items="this.templates"
           item-text="name"
           item-value="_id"
           return-object
-          :disabled="isReadOnly"
           @change="(e) => onTemplateChanged(e)" 
           style="max-width: 750px; width: 100%;"
-        />
-        <div v-if="selectedTemplateSchema" style="max-width: 750px; width: 100%;">
+        >
+          <template #label>
+            <span class="required"><strong>* </strong></span>Mal
+          </template>
+        </VSelect>
+        <div v-if="selectedTemplateSchema && selectedTemplateSchema.properties && Object.keys(selectedTemplateSchema.properties).length > 0" style="max-width: 750px; width: 100%;">
           <h2>Flettefelter</h2>
           <SchemaFields
-            v-if="selectedTemplateSchema"
             v-model="dispatch.template.data"
             :schema="selectedTemplateSchema"
             :disabled="isReadOnly"
@@ -263,14 +276,19 @@
         if(!this.dispatch || this.dispatch._id === undefined) { return 'new'; }
         return 'edit';
       },
+      isLocked() {
+        if(this.dispatch && this.dispatch.status === 'inprogress' || this.dispatch.status === 'completed') return true;
+        return false;
+      },
       isReadOnly() {
-        if(this.dispatch && (this.dispatch.status === 'inprogress' || this.dispatch.status === 'completed')) { return true; }
+        if(this.isLocked) return true;
+        if(this.dispatch && (this.dispatch.status === 'approved')) { return true; }
         return false;
       },
       isReadyToSave() {
         if(this.isReadOnly) return false;
-        if(this.mode === 'edit' && (!this.dispatch.projectnumber || !this.dispatch.title || !this.dispatch.template.data)) return false;
-        if(this.mode === 'new' && (!this.isDispatchApproved || !this.isRequiredTemplateDataFilledIn || !this.isMatrikkelApproved || !this.dispatch.projectnumber || !this.dispatch.title)) return false;
+        if(!this.isRequiredTemplateDataFilledIn || !this.dispatch.projectnumber || !this.dispatch.title) return false;
+        if(this.mode === 'new' && (!this.isDispatchApproved || !this.isMatrikkelApproved)) return false;
         return true;
       }
     },
@@ -692,6 +710,7 @@
         // Confirm action
         if(!confirm('Er du helt sikker på at du vil sende inn?')) return;
         var postObject = Object.assign(this.dispatch)
+        this.$emit('beforeSave');
         this.isLoading = true
         try {
           if(this.mode === 'new') {
@@ -715,19 +734,30 @@
           this.dispatch.template = e;
         }
         this.selectedTemplate = e;
+        
+        // Generate schema for the selectedTemplate
         const tmp = Buffer.from(e.template, 'base64').toString('utf8');
         this.selectedTemplateSchema = Sjablong.generateSchema(tmp, { requireAll: true })
+        this.onTemplateDataChanged();
       },
       onTemplateDataChanged(data) {
-        if(!this.selectedTemplateSchema) return false;
-
-        try {
-          Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true });
+        if(!this.selectedTemplateSchema) return;
+        console.log('== Selected schema ==')
+        console.log(this.selectedTemplateSchema);
+        // Check if all template data is filled in
+        if(this.selectedTemplateSchema && this.selectedTemplateSchema.properties && Object.keys(this.selectedTemplateSchema.properties).length === 0) {
           this.isRequiredTemplateDataFilledIn = true;
+        } else {
+          try {
+            Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true });
+            this.isRequiredTemplateDataFilledIn = true;
+          }
+          catch (err) {
+            this.isRequiredTemplateDataFilledIn = false;
+          }
         }
-        catch (err) {
-          this.isRequiredTemplateDataFilledIn = false;
-        }
+
+        
       },
       async loadTemplates() {
         this.isLoadingTemplates = true;
@@ -754,8 +784,10 @@
         let data = merge(this.dispatch.template.data, this.dispatch.template.documentData);
 
         // Validate that all required data is present
-        try { Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true })}
-        catch (err) { console.log(err); return; }
+        if(data && Object.keys(data).length > 0) {
+          try { Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true })}
+          catch (err) { console.log(err); return; }
+        }
 
         // Request the PDF preview
         this.$store.dispatch('getPDFPreview', { template: this.dispatch.template, preview: true })
@@ -765,6 +797,7 @@
       if(this.$props.dispatchObject) {
         this.$set(this, 'dispatch', this.$props.dispatchObject)
       }
+      this.onTemplateDataChanged();
 
       this.loadTemplates();
     }

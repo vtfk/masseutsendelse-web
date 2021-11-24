@@ -45,18 +45,18 @@
           </v-tooltip>
         </template>
       </VDataTable>
-      <!-- Modals -->
-      <VDialog v-if="isShowEditor" v-model="isShowEditor" width="60%" style="text-align: left;">
-        <VCard>
-          <VCardTitle>
-            Endre mal
-          </VCardTitle>
-          <VCardText>
-            <TemplateEditor :template="activeTemplate" @close="reset()" @saved="reset()" />
-          </VCardText>
-        </VCard>
-      </VDialog>
     </div>
+    <!-- Modals -->
+    <VDialog v-if="isShowEditor" v-model="isShowEditor" width="60%" style="text-align: left;">
+      <VCard>
+        <VCardTitle>
+          Endre mal
+        </VCardTitle>
+        <VCardText>
+          <TemplateEditor :template="activeTemplate" @close="reset()" @saved="reset()" />
+        </VCardText>
+      </VCard>
+    </VDialog>
   </div>
 </template>
 
