@@ -39,26 +39,47 @@
             </v-chip>
           </template>
           <template v-slot:[`item.handlinger`]="{ item }">
-            <v-icon
-              medium
-              style="padding-right:0.2rem;"
-              @click="editItem1(item)"
-            >
-              mdi-pencil
-            </v-icon>
-            <v-icon
-              medium
-              style="padding-right:0.2rem;"
-              @click="previewPDF(item)"
-            >
-              mdi-note-search 
-            </v-icon>
-            <v-icon
-              medium
-              @click="openMap(item)"
-            >
-              mdi-map-search 
-            </v-icon>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon
+                    medium
+                    style="padding-right:0.2rem;"
+                    @click="editItem1(item)"
+                  >
+                    mdi-pencil
+                  </v-icon>
+                </v-btn>
+              </template>
+              Rediger
+            </v-tooltip>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon
+                    medium
+                    style="padding-right:0.2rem;"
+                    @click="previewPDF(item)"
+                  >
+                    mdi-note-search 
+                  </v-icon>
+                </v-btn>
+              </template>
+              Forhåndsvisning
+            </v-tooltip>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon
+                    medium
+                    @click="openMap(item)"
+                  >
+                    mdi-map-search 
+                  </v-icon>
+                </v-btn>
+              </template>
+              Se Kart
+            </v-tooltip>
         </template>
         </v-data-table>
       </v-card>
