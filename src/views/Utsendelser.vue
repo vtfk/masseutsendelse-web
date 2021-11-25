@@ -28,6 +28,9 @@
           :loading="!$store.state.dispatches"
           loading-text="Laster data fra databasen "
         >
+          <template v-slot:[`item.createdTimestamp`]="{ item }">
+            {{formatDateString(item.createdTimestamp)}}
+          </template>
           <template v-slot:[`item.status`]="{ item }">
             <v-chip
               :color="getColor(item.status)"
@@ -59,35 +62,37 @@
         </template>
         </v-data-table>
       </v-card>
-      <!-- MODALER/DIALOGER -->
+    </div>
+    <!-- MODALER/DIALOGER -->
       <!-- Edit dialog -->
       <v-dialog
-      v-if="dialogEdit"
-      v-model="dialogEdit"
-      width="80%"
+        v-if="editedItem"
+        :value="true"
+        width="80%"
+        @click:outside="editedItem = undefined"
       >
-      <v-card>
-        <v-card-title>
-         Rediger 
-        </v-card-title>
+        <v-card>
+          <v-card-title>
+          Rediger 
+          </v-card-title>
           <v-card-text>
-            <DispatchEditor :dispatchObject="editItem"/>
+            <DispatchEditor :dispatchObject="editedItem" @saved="editedItem = undefined" @close="editedItem = undefined"/>
           </v-card-text>
-      </v-card>
+        </v-card>
       </v-dialog>
       <!-- Map dialog -->
       <v-dialog
-      v-if="dialogMap"
-      v-model="dialogMap"
-      width="80%"
+        v-if="dialogMap"
+        v-model="dialogMap"
+        width="80%"
       >
-      <v-card>
-        <v-card-title>
-          Kart
-        </v-card-title>
-        <v-card-text>
-          <Map :coordinates="selectedDispatch.geopolygon.vertices" :center="selectedDispatch.geopolygon.extremes.center" :markers="[selectedDispatch.geopolygon.extremes.center]"/>
-        </v-card-text>
+        <v-card>
+          <v-card-title>
+            Kart
+          </v-card-title>
+          <v-card-text>
+            <Map :coordinates="selectedDispatch.geopolygon.vertices" :center="selectedDispatch.geopolygon.extremes.center" :markers="[selectedDispatch.geopolygon.extremes.center]"/>
+          </v-card-text>
           <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
             <VTFKButton 
               type='secondary' size='small' style="padding-bottom: 1rem;"
@@ -95,40 +100,16 @@
               >Lukk
             </VTFKButton>
           </v-card-actions>
-      </v-card>
+        </v-card>
       </v-dialog>
-      <!-- Doc dialog -->
-      <v-dialog
-      v-if="dialogDoc"
-      v-model="dialogDoc"
-      width="80%"
-      >
-      <v-card>
-        <v-card-title>
-          Dokumenter
-        </v-card-title>
-           <dispatch-editor
-          :dispatchObject="openDoc"
-          >
-          </dispatch-editor>
-          <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
-            <VTFKButton 
-              type='secondary' size='small' style="padding-bottom: 1rem;"
-              :passedProps="{ onClick: () => [dialogDoc = false] }"
-              >Lukk
-            </VTFKButton>
-          </v-card-actions>
-      </v-card>
-      </v-dialog>
-    </div>
     <!-- Alerts -->
     <v-alert 
-    :value="alert_success" 
-    type="success"
-    color="#91B99F"
-    width="50%"
-    rounded="xl"
-    transition="slide-y-transition"
+      :value="alert_success" 
+      type="success"
+      color="#91B99F"
+      width="50%"
+      rounded="xl"
+      transition="slide-y-transition"
     >
       Statusen er lagret.
     </v-alert>
@@ -136,11 +117,6 @@
 </template>
 
 <script>
-// Dependencies
-import merge from 'lodash.merge';
-// import axios from 'axios'
-
-
 // VTFK komponenter
 import { Button } from '@vtfk/components'
 
@@ -162,8 +138,8 @@ import AppError from '../lib/vtfk-errors/AppError';
       return {
         error: undefined,
         dispatches: [],
+        editedItem: undefined,
         search: '',
-        dialogDoc: false,
         dialogEdit: false,
         dialogMap:false,
         loading:false,
@@ -190,33 +166,11 @@ import AppError from '../lib/vtfk-errors/AppError';
           { status_valg: 'Utsendelse Pågår', status_value: 'inprogress'},
           { status_valg: 'Fullført', status_value: 'completed'},
         ],
-        fetchStatus: '',
       }
     },
     async mounted() {
       // Get all dispatched from DB
       this.loadDataBase()
-    },
-    computed: {
-      isAllRequiredMatrikkelInfoRetreived() {
-        const m = this.selectedDispatch.stats;
-        if(m.affectedCount !== null && m.area !== null && m.totalOwners !== null) {
-          return true;
-        }
-        return false;
-      },
-      isDispatchFilledInn() {
-        if(this.selectedDispatch.title && this.selectedDispatch.body && this.selectedDispatch.template) { return true; }
-        return false;
-      },
-      mode() {
-        if(!this.selectedDispatch || this.selectedDispatch._id === undefined) { return 'new'; }
-        return 'edit';
-      },
-      isReadOnly() {
-        if(this.selectedDispatch && (this.selectedDispatch.status === 'inprogress' || this.selectedDispatch.status === 'completed')) { return true; }
-        return false;
-      }
     },
     methods: {
       getColor (status) {
@@ -232,27 +186,32 @@ import AppError from '../lib/vtfk-errors/AppError';
         else if (status == "approved") return "Godkjent"
         else if (status == "notapproved") return "Under Behandling"
       },
+      formatDateString(dateString) {
+        try {
+          const date = new Date(dateString);
+          const day = date.getDate().toString().padStart(2, '0');
+          const month = date.getMonth().toString().padStart(2, '0');
+          const hour = date.getHours().toString().padStart(2, '0');
+          const minutes = date.getMinutes().toString().padStart(2, '0')
+          return day + '.' + month + '.' + date.getFullYear() + ' - ' + hour + ':' + minutes;
+        } catch {
+          return dateString;
+        }
+      },
       async loadDataBase() {
         try {
-          await this.$store.dispatch('getTemplates');
           await this.$store.dispatch('getDispatches');
         } catch(err) {
           this.error = err;
         }
       },
       async editItem1 (item) {
-        // this.$set(this, 'selectedDispatch', item)
-        // this.editItem = JSON.parse(JSON.stringify(item)) 
-        // this.dialogEdit = true
         this.$set(this, 'selectedDispatch', item)
-        var id = item._id
         try {
-          let dispatchEdit = await this.$store.dispatch('getDispatchesById', id)
-          if (item._id === dispatchEdit._id) {
-            this.editItem = dispatchEdit, 
-            console.log(item.template.template)
-            this.dialogEdit = true
-          }
+          let dispatchEdit = await this.$store.dispatch('getDispatchesById', item._id)
+          this.editItem = dispatchEdit;
+          this.editedItem = dispatchEdit;
+          this.dialogEdit = true
         }catch {
           new AppError('Kunne ikke åpne utsendelsen', 'Klarte ikke å avgjøre hvordan utsendelsen skulle åpnes')
         }
@@ -261,31 +220,14 @@ import AppError from '../lib/vtfk-errors/AppError';
         this.$set(this, 'selectedDispatch', item)
         this.dialogMap = true
       },
-      previewPDF(item) {
+      async previewPDF(item) {
+        // Input validation
         if(!item) {
-          alert('Forhåndsvisning kan ikke gjøres når mal ikke er valgt');
+          alert('Forhåndsvisning kan ikke gjøres når utsendelse ikke er valgt');
           return;
         }
 
-        // Get template
-        if(!this.$store.state.templates) { return; }
-        console.log('== Item ==')
-        console.log(item);
-        console.log('== Templates ==');
-        console.log(this.$store.state.templates);
-        let template = this.$store.state.templates.find((t) => t._id === item.template);
-        if(!template) this.error = new AppError('Maler er ikke lastet inn');
-
-        let data = merge(item.data, template.data);
-
-        let request = {
-          preview: true,
-          documentDefinitionId: template.documentDefinitionId,
-          template: template.template,
-          data: data
-        }
-
-        this.$store.dispatch('getPDFPreview', request)
+        this.$store.dispatch('getPDFPreview', { template: item.template, preview: true })
       },
       hide_alert: function () {
         window.setInterval(() => {

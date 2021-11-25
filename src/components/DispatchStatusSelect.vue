@@ -1,31 +1,36 @@
 <template>
-  <v-select
-    :value="$props.value"
-    @input="(e) => { $emit('input', e.value ) }"
-    :items="items"
-    label="Sett status for prosjektet"
-    :menu-props="{ bottom: true, offsetY: true }"
-    :disabled="$props.disabled || $props.value === 'completed' || $props.value === 'inprogress'"
-    :hint="selectedItem.hint"
-    persistent-hint
-    hide-selected
-    outlined
-    rounded
-    return-object
-    single-line
-    style="width: 350px; z-index: 1000;"
-  > 
-    <template item>
-      <v-chip :color="selectedItem.color" style="width: 100%;">
-        {{ selectedItem.text }}
-      </v-chip>
-    </template>
-    <template #selection>
-      <v-chip :color="selectedItem.color" style="width: 100%;">
-        {{ selectedItem.text }}
-      </v-chip>
-    </template>
-  </v-select>
+  <div>
+    <v-select
+      :value="$props.value"
+      @input="(e) => { $emit('input', e.value ); }"
+      :items="items"
+      label="Sett status for prosjektet"
+      :menu-props="{ bottom: true, offsetY: true }"
+      :disabled="$props.disabled || $props.value === 'completed' || $props.value === 'inprogress'"
+      :hint="selectedItem.hint"
+      persistent-hint
+      hide-selected
+      outlined
+      rounded
+      return-object
+      single-line
+      style="width: 350px; z-index: 1000;"
+    > 
+      <template item>
+        <v-chip :color="selectedItem.color" style="width: 100%;">
+          {{ selectedItem.text }}
+        </v-chip>
+      </template>
+      <template #selection>
+        <v-chip :color="selectedItem.color" style="width: 100%;">
+          {{ selectedItem.text }}
+        </v-chip>
+      </template>
+    </v-select>
+    <div v-if="selectedItem.value === 'approved'">
+      Det er ~<strong>X</strong> minutter til utsendelsen vil kjøres.
+    </div>
+  </div>
 </template>
 
 <script>

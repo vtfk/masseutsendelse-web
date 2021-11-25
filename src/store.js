@@ -5,6 +5,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 import AppError from './lib/vtfk-errors/AppError';
+import config from '../config';
+import merge from 'lodash.merge';
 
 // Configure vue to use Vuex
 Vue.use(Vuex)
@@ -39,24 +41,30 @@ const store = new Vuex.Store({
     setDispatches (state, dispatches) {
       state.dispatches = dispatches;
     },
-    newDispatches (state, dispatches){
-      state.dispatches = dispatches
-    },
-    editDispatches (state, dispatches, id) {
-      state.dispatches = dispatches
-      state.id = id
-    },
     setTemplates (state, templates) {
       state.templates = templates;
     }
   },
   actions: {
-    async getPDFPreview(context, data) {
+    async getPDFPreview(context, req) {
+      // Define the data to send
+      let requestData = {
+        preview: true,
+        template: req.template.template,
+        documentDefinitionId: req.template.documentDefinitionId,
+        data: {
+          test: 'test',
+          ...merge(req.template.data, req.template.documentData),
+        }
+      }
+
+      console.log('== Requesting PDF ==');
+      console.log(requestData)
       // Define the requiest
       const request = {
-        url: 'http://localhost:3001/api/v1/generatepdf',
+        url: 'https://api.vtfk.dev/pdf/v1/generatev2',
         method: 'post',
-        data: data
+        data: requestData
       }
       // Make the request
       axios.request(request)
@@ -71,7 +79,7 @@ const store = new Vuex.Store({
       try {
         // Define the request
         const request = {
-          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches?',
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/dispatches/',
           method: 'GET',
         }
         // Reset the data
@@ -92,7 +100,7 @@ const store = new Vuex.Store({
       try {
         //Define the request
         const request= {
-          url: 'http://localhost:7071/api/dispatches/' + id,
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/dispatches/' + id + '?code=1pcYSPPawrq0FGkzGTwsaLkgmmy3fvRej9ujdDfwXZ17/9bDvFZspQ==',
           method: 'GET',
           data: id,
         }
@@ -109,7 +117,7 @@ const store = new Vuex.Store({
       try {
         // Define the request
         const request = {
-          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
           method: 'get'
         }
         // Reset the data
@@ -124,12 +132,15 @@ const store = new Vuex.Store({
         return Promise.reject(err);
       }
     },
-    async postTemplate(context) {
+    async postTemplate(context, template) {
       try {
+        console.log('== Posting template ==');
+        console.log(template);
         // Define the request
         const request = {
-          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
-          method: 'post'
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
+          method: 'post',
+          data: template
         }
         // Make the request
         await axios.request(request);
@@ -139,12 +150,13 @@ const store = new Vuex.Store({
         return Promise.reject(err);
       }
     },
-    async putTemplate(context) {
+    async putTemplate(context, template) {
       try {
         // Define the request
         const request = {
-          url: 'https://test-func-masseutsendelse.azurewebsites.net/api/templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
-          method: 'put'
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/templates/' + template._id + '?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
+          method: 'put',
+          data: template
         }
         // Make the request
         await axios.request(request);
@@ -157,14 +169,14 @@ const store = new Vuex.Store({
     async postDispatches(context, data) {
       // Define the request
       const request = {
-        url: 'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches?code=zxjm63HhIg6ZqUOE8xdHN8NnJmYh9ocBeFMXVxeBjYVFHEjI9amBFw==',
+        url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/dispatches?code=zxjm63HhIg6ZqUOE8xdHN8NnJmYh9ocBeFMXVxeBjYVFHEjI9amBFw==',
         method: 'post',
         data: data
       }
       // Make the request
       try {
-        const response = await axios.request(request);
-        context.commit('newDispatches', response.data.postObject);
+        await axios.request(request);
+        context.dispatch('getDispatches');
       } catch (err) {
         context.commit('setModalError', err);
         return Promise.reject(err);
@@ -174,15 +186,15 @@ const store = new Vuex.Store({
       //Define the request 
       const request = {
         // url:'http://localhost:7071/api/dispatches/' + data._id, 
-        url:'https://test-func-masseutsendelse.azurewebsites.net/api/dispatches/'+ data._id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
+        url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/dispatches/'+ data._id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
         method: 'put',
         data: data
       }
       console.log(data._id)
       // Make the request
       try {
-        const response = await axios.request(request);
-        context.commit('editDispatches', response.data.editObject);
+        await axios.request(request);
+        await context.dispatch('getDispatches');
       } catch (err) {
         context.commit('setModalError', err);
         return Promise.reject(err);

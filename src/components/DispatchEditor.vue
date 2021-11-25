@@ -37,42 +37,53 @@
       <!-- Prosjekt informasjon -->
       <div v-if="isMatrikkelApproved || mode === 'edit'" class="card shadow centeredColumn" style="margin-top: 1rem;">
         <h1>Masseutsendelse</h1>
-        <DispatchStatusSelect v-if="mode === 'edit'" v-model="dispatch.status"/>
+        <DispatchStatusSelect v-if="mode === 'edit'" v-model="dispatch.status" :disabled="isLocked"/>
         <!-- En input for prosjekt navn, en for prosjekt nr -->
         <VTextField 
           v-model="dispatch.title"
+          :disabled="isReadOnly"
           placeholder="Angi et prosjektnavn"
           hint="Angi et prosjektnavn"
           label="Prosjekt navn"
           :required="true"
           style="max-width: 750px; width: 100%;"
-        />
-         <VTextField 
+        >
+          <template #label>
+            <span class="required"><strong>* </strong></span>Prosjektnavn
+          </template>
+        </VTextField>
+        <VTextField 
           v-model="dispatch.projectnumber"
+          :disabled="isReadOnly"
           placeholder="Angi et nummer"
           hint="Angi et nummer"
           label="Prosjekt nummer"
           :required="true"
           style="max-width: 750px; width: 100%;"
-        />
+        >
+          <template #label>
+            <span class="required"><strong>* </strong></span>Prosjektnummer
+          </template>
+        </VTextField>
         <VSelect
           label="Velg mal"
           placeholder="Velg mal"
+          :disabled="isReadOnly"
           :value="dispatch.template"
           :items="this.templates"
           item-text="name"
           item-value="_id"
           return-object
-          :disabled="isReadOnly"
           @change="(e) => onTemplateChanged(e)" 
           style="max-width: 750px; width: 100%;"
-        />
-        <!-- TODO -->
-        <!-- Kode om @change til dispatch.templateID. Kode om mocken og koden -->
-        <div v-if="selectedTemplateSchema" style="max-width: 750px; width: 100%;">
+        >
+          <template #label>
+            <span class="required"><strong>* </strong></span>Mal
+          </template>
+        </VSelect>
+        <div v-if="selectedTemplateSchema && selectedTemplateSchema.properties && Object.keys(selectedTemplateSchema.properties).length > 0" style="max-width: 750px; width: 100%;">
           <h2>Flettefelter</h2>
           <SchemaFields
-            v-if="selectedTemplateSchema"
             v-model="dispatch.template.data"
             :schema="selectedTemplateSchema"
             :disabled="isReadOnly"
@@ -113,7 +124,7 @@
           <VTFKButton v-else
             style="margin-top: 1rem;"
             type='secondary' size='small'
-            :passedProps="{onClick: () => {reset()}}"
+            :passedProps="{onClick: () => {$emit('close')}}"
           >Lukk
           </VTFKButton>
         </div>
@@ -182,13 +193,13 @@
           projectnumber: '',
           body: '',
           template: {
-            _id:'',
+            _id: undefined,
             version: null,
-            name: '',
-            description:'',
+            name: undefined,
+            description:undefined,
             documentData: {},
             data: undefined,
-            template: ''
+            template: undefined
           },
           matrikkelEnheter: undefined,
           stats: {
@@ -265,13 +276,19 @@
         if(!this.dispatch || this.dispatch._id === undefined) { return 'new'; }
         return 'edit';
       },
+      isLocked() {
+        if(this.dispatch && this.dispatch.status === 'inprogress' || this.dispatch.status === 'completed') return true;
+        return false;
+      },
       isReadOnly() {
-        if(this.dispatch && (this.dispatch.status === 'inprogress' || this.dispatch.status === 'completed')) { return true; }
+        if(this.isLocked) return true;
+        if(this.dispatch && (this.dispatch.status === 'approved')) { return true; }
         return false;
       },
       isReadyToSave() {
         if(this.isReadOnly) return false;
-        if(!this.isDispatchApproved || !this.isRequiredTemplateDataFilledIn || !this.isMatrikkelApproved || !this.dispatch.projectnumber || !this.dispatch.title) return false;
+        if(!this.isRequiredTemplateDataFilledIn || !this.dispatch.projectnumber || !this.dispatch.title) return false;
+        if(this.mode === 'new' && (!this.isDispatchApproved || !this.isMatrikkelApproved)) return false;
         return true;
       }
     },
@@ -694,8 +711,7 @@
         // Confirm action
         if(!confirm('Er du helt sikker på at du vil sende inn?')) return;
         var postObject = Object.assign(this.dispatch)
-        console.log(this.dispatch.template.data)
-        console.log(this.dispatch)
+        this.$emit('beforeSave');
         this.isLoading = true
         try {
           if(this.mode === 'new') {
@@ -709,43 +725,40 @@
           this.error = err;
         }
         this.isLoading = false
-        if(!this.error) {
-          this.$router.push('Utsendelser')
-        } 
+        if(this.$route.path && this.$route.path.toLowerCase() !== '/utsendelser') this.$router.push('Utsendelser');
+        this.$emit('saved');
       },
       onTemplateChanged(e) {
-        console.log(e)
-        const latestVersion = e.versions.find((v) => v.version === e.version)
-        //TODO 
-        this.dispatch.template = {
-          _id: e._id,
-          version: e.version,
-          name: e.name,
-          description: e.description,
-          language: latestVersion.language,
-          documentDefinitionId: latestVersion.documentDefinitionId,
-          documentData: latestVersion.documentData,
-          template: latestVersion.template
-        };
-        this.selectedTemplate = e;
-
-        if(latestVersion.template) {
-          const tmp = Buffer.from(latestVersion.template, 'base64').toString('utf8');
-          this.selectedTemplateSchema = Sjablong.generateSchema(tmp, { requireAll: true })
-          console.log('== Selected schema ==');
-          console.log(this.selectedTemplateSchema);
+        // TODO - Make sure that data is not overwritten on load
+        // Also make sure that any matching fields in data are carried over if they exist in a new template
+        if(!this.dispatch.template || !this.dispatch.template._id) {
+          this.dispatch.template = e;
         }
+        this.selectedTemplate = e;
+        
+        // Generate schema for the selectedTemplate
+        const tmp = Buffer.from(e.template, 'base64').toString('utf8');
+        this.selectedTemplateSchema = Sjablong.generateSchema(tmp, { requireAll: true })
+        this.onTemplateDataChanged();
       },
       onTemplateDataChanged(data) {
-        if(!this.selectedTemplateSchema) return false;
-
-        try {
-          Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true });
+        if(!this.selectedTemplateSchema) return;
+        console.log('== Selected schema ==')
+        console.log(this.selectedTemplateSchema);
+        // Check if all template data is filled in
+        if(this.selectedTemplateSchema && this.selectedTemplateSchema.properties && Object.keys(this.selectedTemplateSchema.properties).length === 0) {
           this.isRequiredTemplateDataFilledIn = true;
+        } else {
+          try {
+            Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true });
+            this.isRequiredTemplateDataFilledIn = true;
+          }
+          catch (err) {
+            this.isRequiredTemplateDataFilledIn = false;
+          }
         }
-        catch (err) {
-          this.isRequiredTemplateDataFilledIn = false;
-        }
+
+        
       },
       async loadTemplates() {
         this.isLoadingTemplates = true;
@@ -756,8 +769,7 @@
           this.error = new AppError('Kunne ikke hente hente inn maler', err);
           return;
         }
-
-        let sameTemplate = this.$store.state.templates.find((t) => t._id === this.dispatch.template)
+        let sameTemplate = this.$store.state.templates.find((t) => t._id === this.dispatch.template._id)
         if(sameTemplate) this.onTemplateChanged(sameTemplate);
 
         this.isLoadingTemplates = false;
@@ -773,25 +785,20 @@
         let data = merge(this.dispatch.template.data, this.dispatch.template.documentData);
 
         // Validate that all required data is present
-        try { Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true })}
-        catch (err) { console.log(err); return; }
-
-        // Specify the request for the API
-        let request = {
-          preview: true,
-          documentDefinitionId: this.selectedTemplate.documentDefinitionId,
-          template: this.selectedTemplate.template,
-          data: data
+        if(data && Object.keys(data).length > 0) {
+          try { Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true })}
+          catch (err) { console.log(err); return; }
         }
 
         // Request the PDF preview
-        this.$store.dispatch('getPDFPreview', request)
+        this.$store.dispatch('getPDFPreview', { template: this.dispatch.template, preview: true })
       }
     },
     created() {
       if(this.$props.dispatchObject) {
         this.$set(this, 'dispatch', this.$props.dispatchObject)
       }
+      this.onTemplateDataChanged();
 
       this.loadTemplates();
     }

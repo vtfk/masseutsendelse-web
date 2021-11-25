@@ -15,33 +15,35 @@
       :value="activeTemplate.description"
       style="margin-bottom: 0.5rem;"
     />
-    <h2 style="margin-top: 2rem;">Dokumentmal</h2>
-    <p>Dette er dokumentmalen som omberammer denne innholdsmalen<p>
-    <VSelect
-      v-model="activeTemplate.documentDefinitionId"
-      :items="documentTemplates"
-      label="Hovedmal"
-      hint="Dette er hovedmalen som omfavner innholdet i denne innholdsmalen"
-      persistent-hint
-      item-text="label"
-      @change="onMainTemplateChanged()"
-      style="justify-content: flex-start!important;"
-    />
-    <!-- Dyanamic template -->
-    <div v-if="mainTemplateSchema">
-      <h3>Felter i hovedmalen</h3>
-      <p>Hovedmalen har noen dynamiske felter, hva som skal stå i disse kan du sette her</p>
+    <div v-if="$props.showDocumentTemplateSelect">
+      <h2 style="margin-top: 2rem;">Dokumentmal</h2>
+      <p>Dette er dokumentmalen som omberammer denne innholdsmalen<p>
+      <p>Her kan du definere verdiene i flettefeltene til hovedmalen</p>
+      <VSelect
+        v-if="$props.showDocumentTemplateSelect"
+        v-model="activeTemplate.documentDefinitionId"
+        :items="documentTemplates"
+        label="Hovedmal"
+        hint="Dette er hovedmalen som omfavner innholdet i denne innholdsmalen"
+        persistent-hint
+        item-text="label"
+        @change="onDocumentTemplateChanged()"
+        style="justify-content: flex-start!important;"
+      />
+      <!-- Dyanamic template -->
+      <div v-if="mainTemplateSchema">
         <SchemaFields v-model="activeTemplate.documentData" :schema="mainTemplateSchema" @error="(e) => error = e" />
+      </div>
     </div>
     <h2 style="margin-top: 2rem;">Innholdsmal</h2>
     <p>Mal for innholdet i masseutsendelsene som skal sendes ut</p>
     <Editor
-      :initialValue="editedMarkdown"
+      :initialValue="activeTemplate.template"
       ref="editor"
       :height="$props.height"
       initialEditType="markdown"
       :options="activeOptions"
-      @change="(e) => { onChange(e) }"
+      @change="(e) => { onMarkdownChanged(e) }"
       style="margin-top: 1rem;"
     />
     <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
@@ -50,7 +52,6 @@
       <VTFKButton v-if="$props.showCloseButton" size="small" type="secondary" :passedProps="{ onClick: () => { close() } }">Lukk</VTFKButton>
     </div>
     <!-- Modals -->
-    <!-- <VTFKPDFPreviewModal :open="pdfPreview !== undefined" :base64="pdfPreview" title='Lukk modal' :passedProps="{ onDismiss: () => { pdfPreview = undefined; }}"/> -->
     <VDialog v-if="isShowInsertPlaceholderModal" v-model="isShowInsertPlaceholderModal" width="40%" max-width="750px" height="1000px">
       <insert-template-form v-model="isShowInsertPlaceholderModal" @insert="(e) => insertPlaceholder(e)"/>
     </VDialog>
@@ -71,24 +72,13 @@ export default {
     Editor,
     'VTFKButton': Button,
     'VTFKTextField': TextField,
-    // 'VTFKPDFPreviewModal': PDFPreviewModal,
     SchemaFields,
     InsertTemplateForm
   },
   props: {
     template: {
       type: Object,
-      default: () => {return {
-        id: undefined,
-        name: {},
-        mainTemplate: {
-          id: undefined,
-          language: 'nb',
-          data: undefined
-        },
-        template: '',
-        schema: {}
-      }}
+      default: () => { return {} }
     },
     options: {
       type: Object
@@ -104,6 +94,10 @@ export default {
     height: {
       type: String,
       default: '500px'
+    },
+    showDocumentTemplateSelect: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -113,7 +107,15 @@ export default {
       isShowInsertPlaceholderModal: false,
       pdfPreview: undefined,
       hasChanged: false,
-      activeTemplate: {},
+      activeTemplate: {
+        name: undefined,
+        description: undefined,
+        version: null,
+        language: undefined,
+        documentDefinitionId: undefined,
+        documentData: undefined,
+        template: undefined
+      },
       activeOptions: undefined,
       defaultOptions: {
         hideModeSwitch: this.$props.hideModeSwitch,
@@ -136,35 +138,30 @@ export default {
               info: {
                 type: 'object',
                 properties: {
-                  'our-date': {
-                    label: 'Vår dato',
-                    type: 'string'
-                  },
                   'our-reference': {
                     label: 'Vår referanse',
+                    type: 'string'
+                  },
+                  'your-reference': {
+                    label: 'Deres refereanse',
                     type: 'string'
                   },
                   paragraph: {
                     label: 'Paragraf',
                     type: 'string',
-                    default: 'Offl. § 13 jf. fvl. §13 (1)',
-                    required: true
+                    //default: 'Offl. § 13 jf. fvl. §13 (1)',
                   }
                 }
               }
             } 
           }
-        },
-        {
-          label: 'Notatmal',
-          value: 'notatmal'
         }
       ]
     }
   },
   computed: {
     mainTemplateSchema() {
-      return this.getmainTemplateSchema() || undefined;
+      return this.getDocumentTemplateSchema() || undefined;
     },
     mode() {
       if(this.activeTemplate && this.activeTemplate._id) return 'edit';
@@ -172,14 +169,15 @@ export default {
     }
   },
   methods: {
-    onChange() {
+    onMarkdownChanged() {
+      console.log('Something has changed');
       this.hasChanged = true;
-      this.editedMarkdown = this.$refs.editor.editor.getMarkdown();
-      this.$set(this.activeTemplate, 'markdown', Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64'));
+      this.activeTemplate.template = this.$refs.editor.editor.getMarkdown();
+      this.$set(this.activeTemplate, 'template', Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64'));
       this.$emit('input', this.activeTemplate);
-      this.$emit('onChange', this.activeTemplate);
+      this.$emit('onMarkdownChanged', this.activeTemplate);
     },
-    getmainTemplateSchema() {
+    getDocumentTemplateSchema() {
       // Input validation
       if(!this.documentTemplates) { return undefined; }
       if(!this.activeTemplate.documentDefinitionId) { return undefined; }
@@ -191,9 +189,9 @@ export default {
       // Return the schema
       return template.schema;
     },
-    onMainTemplateChanged() {
+    onDocumentTemplateChanged() {
       // Get the main template schema
-      const schema = this.getmainTemplateSchema();
+      const schema = this.getDocumentTemplateSchema();
       if(!schema) { return; }
 
       // Create a default data object
@@ -201,70 +199,63 @@ export default {
       if(defaultData) this.activeTemplate.data = defaultData;
 
       // Register the change
-      this.onChange();
+      this.onMarkdownChanged();
     },
     onPreviewTemplate() {
       try {
         // Get markdown from the editor
         const markdown = this.$refs.editor.editor.getMarkdown();
-        // Validate the markdown
+        // Validate the template markdown
         Sjablong.validateTemplate(markdown);
-        // Convert it to Base64
-        let template =  Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64');
-        // Prepare the request
-        const request = {
-          documentDefinitionId: 'brevmal',
-          template: template,
-          preview: true,
-          data: {
-            title: 'Tittel test',
-            list: [
-              'Item #1',
-              'Item #2',
-              'Item #3'
-            ],
-            sak: {
-              saksnavn: 'Møte om ett eller annet',
-              dato: '12.11.2021',
-              beskrivelse: "Dette er en beskrivelse av saken\nDen er over flere linjer\n3 faktisk",
-            }
-          }
-        }
+        // 
+        let templateRequest = {
+        ...this.activeTemplate,
+        template: Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64')
+      }
+        
         // Make the request
-        this.$store.dispatch('getPDFPreview', request);
+        this.$store.dispatch('getPDFPreview', { template: templateRequest, preview: true });
       } catch (err) {
         this.$store.commit('setModalError', err);
       }
     },
-    onSaveTemplate() {
+    async onSaveTemplate() {
       // Validation
       if(!confirm('Er du helt sikker på at du vil lagre malen?')) return;
-      if(this.editedMarkdown == '' && !confirm('Malen er uten innhold, vil du fortsatt lagre?')) return;
+      if(this.activeTemplate.template == '' && !confirm('Malen er uten innhold, vil du fortsatt lagre?')) return;
       
       // Validate that the template is valid
       try {
-        Sjablong.validateTemplate(this.editedMarkdown);
+        Sjablong.validateTemplate(this.activeTemplate.template);
       } catch (err) {
         this.$store.commit('setModalError', err);
         return;
       }
       
       // Generate a schema
-      const schema = Sjablong.generateSchema(this.editedMarkdown);
+      const schema = Sjablong.generateSchema(this.activeTemplate.template);
       if(schema) {
         this.activeTemplate.schema = schema;
         this.$set(this.activeTemplate, 'schema', schema);
       }
 
+      // Create a new object from the active template and base64 encode the template-markdown
+      let templateRequest = {
+        ...this.activeTemplate,
+        template: Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64')
+      }
+
       try {
         if(this.mode === 'new') {
-          this.$store.dispatch('postTemplate', this.activeTemplate);
+          await this.$store.dispatch('postTemplate', templateRequest);
         } else {
-          this.$store.dispatch('putTemplate', this.activeTemplate);
+          await this.$store.dispatch('putTemplate', templateRequest);
         }
       } catch (err) {
         this.$store.commit('setModalError', err);
       }
+
+      this.$emit('saved');
     },
     insertPlaceholder(placeholder) {
       if(!placeholder) { return; }
@@ -283,56 +274,68 @@ export default {
     },
   },
   created() {
-    this.activeOptions = this.$props.options || this.defaultOptions;
-    this.activeOptions.customHTMLRenderer = {
-      text(node) {
-        if(!node.literal) return [{ type: 'text', content: '' }]
-        let markdown = node.literal;
+    try {
+      if(!this.$props.showDocumentTemplateSelect) {
+        this.activeTemplate.documentDefinitionId = this.documentTemplates[0].value;
+      }
 
-        // Split markdown on Sjablong entries
-        let splitted = markdown.split(Sjablong.regexPatterns.sjablong.brackets);
+      this.activeOptions = this.$props.options || this.defaultOptions;
+      this.activeOptions.customHTMLRenderer = {
+        text(node) {
+          if(!node.literal) return [{ type: 'text', content: '' }]
+          let markdown = node.literal;
 
-        let tags = [];
-        splitted.forEach((part) => {
-          // Check if the part matches the regex
-          let match = part.match(Sjablong.regexPatterns.sjablong.brackets);
+          // Split markdown on Sjablong entries
+          let splitted = markdown.split(Sjablong.regexPatterns.sjablong.brackets);
 
-          if(match) {
-            try {
-              let parsedPlaceholder = Sjablong.parsePlaceholder(part);
-              tags.push(...[
-                { type: 'openTag', tagName: 'span', classNames: ['placeholderChip']},
-                { type: 'text', content: '[' + parsedPlaceholder.label + ']' },
+          let tags = [];
+          splitted.forEach((part) => {
+            // Check if the part matches the regex
+            let match = part.match(Sjablong.regexPatterns.sjablong.brackets);
+
+            if(match) {
+              try {
+                let parsedPlaceholder = Sjablong.parsePlaceholder(part);
+                tags.push(...[
+                  { type: 'openTag', tagName: 'span', classNames: ['placeholderChip']},
+                  { type: 'text', content: '[' + parsedPlaceholder.label + ']' },
+                  { type: 'closeTag', tagName: 'span' },
+                ])
+                return;
+              } catch {
+                tags.push(...[
+                { type: 'openTag', tagName: 'span', classNames: ['incompletePlaceholderChip']},
+                { type: 'text', content: '[Uferdig]' },
                 { type: 'closeTag', tagName: 'span' },
               ])
               return;
-            } catch {
-              tags.push(...[
-              { type: 'openTag', tagName: 'span', classNames: ['incompletePlaceholderChip']},
-              { type: 'text', content: '[Uferdig]' },
+              }
+            }
+
+            tags.push(...[
+              { type: 'openTag', tagName: 'span'},
+              { type: 'text', content: part },
               { type: 'closeTag', tagName: 'span' },
             ])
-            return;
-            }
-          }
-
-          tags.push(...[
-            { type: 'openTag', tagName: 'span'},
-            { type: 'text', content: part },
-            { type: 'closeTag', tagName: 'span' },
-          ])
-        })
-        return tags
+          })
+          return tags
+        }
       }
+      if(this.$props.template && typeof this.$props.template === 'object' && Object.keys(this.$props.template).length > 0) {
+        // Get the active template
+        this.activeTemplate = JSON.parse(JSON.stringify(this.$props.template));
+
+        // Decode the base64 markdown to utf8
+        if(this.activeTemplate.template && typeof this.activeTemplate.template === 'string') {
+          this.activeTemplate.template = Buffer.from(this.activeTemplate.template, 'base64').toString('utf8');
+        }
+      }
+
+      // Set other default values
+      this.activeTemplate.documentDefinitionId = this.activeTemplate.documentDefinitionId || 'brevmal';
+    } catch (err) {
+      this.error = err;
     }
-    this.activeTemplate = JSON.parse(JSON.stringify(this.$props.template));
-    // Decode the base64 markdown to utf8
-    if(this.activeTemplate.template && typeof this.activeTemplate.template === 'string') {
-      this.editedMarkdown = Buffer.from(this.activeTemplate.template, 'base64').toString('utf8');
-    }
-    // Set other default values
-    this.activeTemplate.schema = this.activeTemplate.schema || {};
-    this.activeTemplate.documentDefinitionId = this.activeTemplate.documentDefinitionId || 'brevmal';
   },
   mounted() {
     this.$refs.editor.editor.addCommand('markdown', 'insertPlaceholder', () => {
