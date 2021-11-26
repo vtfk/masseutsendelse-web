@@ -1,3 +1,4 @@
 {
-  "extends": ["@vtfk"]
+  "extends": ["@vtfk"],
+  "ignoreDeps": ["sass", "sass-loader"]
 }
