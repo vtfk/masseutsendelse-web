@@ -93,9 +93,6 @@ export default {
         // Get the default data from the schema
         let defaultData = Sjablong.createObjectFromSchema(this.$props.schema);
 
-        console.log('== Schema ==');
-        console.log(this.$props.schema);
-
         // Merge the provided data with the default data
         this.data = merge(this.$props.value, defaultData) || {}
 

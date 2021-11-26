@@ -216,6 +216,7 @@ const store = new Vuex.Store({
         // Clear the loading modal
         context.commit('resetLoadingModal');
         context.dispatch('getDispatches');
+        return Promise.resolve();
       } catch (err) {
         context.commit('resetLoadingModal');
         context.commit('setModalError', err);
