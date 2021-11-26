@@ -19,7 +19,8 @@ const store = new Vuex.Store({
     modalError: undefined,
     previewPDFBase64: undefined,
     dispatches: undefined,
-    templates: undefined
+    templates: undefined,
+    loading: undefined,
   },
   mutations: {
     setModalError (state, error) {
@@ -31,6 +32,16 @@ const store = new Vuex.Store({
 
       if(error.response && error.response.data) err = err.response.data;
       state.modalError = err;
+    },
+    setLoadingModal (state, loading) {
+      if(!loading) return;
+      if(!loading.title) loading.title = 'Laster';
+      if(!loading.message) loading.message = 'Dette kan ta noen sekunder'
+      
+      Vue.set(state, 'loading', loading);
+    },
+    resetLoadingModal (state) {
+      state.loading = false;
     },
     setPreviewPDF(state, pdfBase64) {
       state.previewPDFBase64 = pdfBase64
@@ -47,33 +58,37 @@ const store = new Vuex.Store({
   },
   actions: {
     async getPDFPreview(context, req) {
-      // Define the data to send
-      let requestData = {
-        preview: true,
-        template: req.template.template,
-        documentDefinitionId: req.template.documentDefinitionId,
-        data: {
-          test: 'test',
-          ...merge(req.template.data, req.template.documentData),
+      try {
+        // Define the data to send
+        let requestData = {
+          preview: true,
+          template: req.template.template,
+          documentDefinitionId: req.template.documentDefinitionId,
+          data: {
+            test: 'test',
+            ...merge(req.template.data, req.template.documentData),
+          }
         }
-      }
 
-      console.log('== Requesting PDF ==');
-      console.log(requestData)
-      // Define the requiest
-      const request = {
-        url: 'https://api.vtfk.dev/pdf/v1/generatev2',
-        method: 'post',
-        data: requestData
+        context.commit('setLoadingModal', {
+          title: 'Laster PDF forhåndsvisning',
+          message: 'Dette kan ta noen sekunder'
+        })
+
+        // Define the requiest
+        const request = {
+          url: 'https://api.vtfk.dev/pdf/v1/generatev2',
+          method: 'post',
+          data: requestData
+        }
+        // Make the request
+        const response = await axios.request(request);
+        context.commit('setPreviewPDF', response.data.base64);
+        context.commit('resetLoadingModal');
+      } catch (err) {
+        context.commit('resetLoadingModal');
+        context.commit('setModalError', err);
       }
-      // Make the request
-      axios.request(request)
-      .then((response) => {
-        context.commit('setPreviewPDF', response.data.base64)
-      })
-      .catch((err) => {
-        context.commit('setModalError', err)
-      })
     },
     async getDispatches(context) {
       try {
@@ -142,11 +157,19 @@ const store = new Vuex.Store({
           method: 'post',
           data: template
         }
+        // Set the loading modal
+        context.commit('setLoadingModal', {
+          title: 'Lagrer',
+          message: 'Dette kan ta noen sekunder'
+        })
         // Make the request
         await axios.request(request);
         // Get the updated templates
         await context.dispatch('getTemplates');
+        // Clear the loading modal
+        context.commit('resetLoadingModal');
       } catch (err) {
+        context.commit('resetLoadingModal');
         return Promise.reject(err);
       }
     },
@@ -158,43 +181,65 @@ const store = new Vuex.Store({
           method: 'put',
           data: template
         }
+        // Set the loading modal
+        context.commit('setLoadingModal', {
+          title: 'Lagrer',
+          message: 'Dette kan ta noen sekunder'
+        })
         // Make the request
         await axios.request(request);
         // Get the updated templates
         await context.dispatch('getTemplates');
+        // Clear the loading modal
+        context.commit('resetLoadingModal');
       } catch (err) {
+        context.commit('resetLoadingModal');
         return Promise.reject(err);
       }
     },
     async postDispatches(context, data) {
-      // Define the request
-      const request = {
-        url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/dispatches?code=zxjm63HhIg6ZqUOE8xdHN8NnJmYh9ocBeFMXVxeBjYVFHEjI9amBFw==',
-        method: 'post',
-        data: data
-      }
-      // Make the request
       try {
+        // Define the request
+        const request = {
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/dispatches?code=zxjm63HhIg6ZqUOE8xdHN8NnJmYh9ocBeFMXVxeBjYVFHEjI9amBFw==',
+          method: 'post',
+          data: data
+        }
+        // Set the loading modal
+        context.commit('setLoadingModal', {
+          title: 'Lagrer',
+          message: 'Dette kan ta noen sekunder'
+        })
+        // Make the request
         await axios.request(request);
+        // Clear the loading modal
+        context.commit('resetLoadingModal');
         context.dispatch('getDispatches');
       } catch (err) {
+        context.commit('resetLoadingModal');
         context.commit('setModalError', err);
         return Promise.reject(err);
       }
     },
     async editDispatches(context, data) {
-      //Define the request 
-      const request = {
-        // url:'http://localhost:7071/api/dispatches/' + data._id, 
-        url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/dispatches/'+ data._id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
-        method: 'put',
-        data: data
-      }
-      console.log(data._id)
-      // Make the request
       try {
+        //Define the request 
+        const request = {
+          // url:'http://localhost:7071/api/dispatches/' + data._id, 
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/dispatches/'+ data._id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
+          method: 'put',
+          data: data
+        }
+        // Set the loading modal
+        context.commit('setLoadingModal', {
+          title: 'Lagrer',
+          message: 'Dette kan ta noen sekunder'
+        })
+        // Make the request
         await axios.request(request);
         await context.dispatch('getDispatches');
+        // Clear the loading modal
+        context.commit('resetLoadingModal');
       } catch (err) {
         context.commit('setModalError', err);
         return Promise.reject(err);
