@@ -1,23 +1,34 @@
 import { rest } from 'msw'
+import config from '../../config';
 
-export default [
-    rest.post('*/api/v1/matrikkelenheter*', (req, res, ctx) => {
-        return res(ctx.json(require('./data/MatrikkelEnhetIDs.json')));
-    }),
-    rest.post('*/api/v1/store', (req, res, ctx) => {
-        if(!req.body) { res(ctx.json( { message: 'No body specified' })) }
-        if(!Array.isArray(req.body)) { req.body = [req.body]; }
+let mockEndpoints = [];
 
-        if(req.body[0].type === 'MatrikkelenhetId') {
-            return res(ctx.json(require('./data/MatrikkelEnheter.json')));
-        } else if(req.body[0].type === 'PersonId') {
-            return res(ctx.json(require('./data/PersonerIBø.json')));
-        }
-    }),
-    rest.get('https://test-func-masseutsendelse.azurewebsites.net/api/getdispatches', (req, res, ctx) => {
-        return res(ctx.json(require('./data/Dispatches.json')));
-    }),
-    rest.get('https://test-func-masseutsendelse.azurewebsites.net/api/templates/*', (req, res, ctx) => {
-        return res(ctx.json(require('./data/Templates.json')));
-    })
-]
+if(config.MOCK_MASSEUTSENDELSE_API) {
+  mockEndpoints.push(rest.get('https://test-func-masseutsendelse.azurewebsites.net/api/getdispatches', (req, res, ctx) => {
+    return res(ctx.json(require('./data/Dispatches.json')));
+  }));
+  mockEndpoints.push(rest.get('https://test-func-masseutsendelse.azurewebsites.net/api/templates', (req, res, ctx) => {
+    return res(ctx.json(require('./data/Templates.json')));
+  }));
+}
+
+if(config.MOCK_MATRIKKEL_API) {
+  mockEndpoints.push(rest.post('*/api/v1/matrikkelenheter*', (req, res, ctx) => {
+    return res(ctx.json(require('./data/MatrikkelEnhetIDs.json')));
+  }));
+  mockEndpoints.push(rest.post('*/api/v1/store', (req, res, ctx) => {
+    if(!req.body) { res(ctx.json( { message: 'No body specified' })) }
+    if(!Array.isArray(req.body)) { req.body = [req.body]; }
+
+    if(req.body[0].type === 'MatrikkelenhetId') {
+      return res(ctx.json(require('./data/MatrikkelEnheter.json')));
+    } else if(req.body[0].type === 'PersonId') {
+      return res(ctx.json(require('./data/PersonerIBø.json')));
+    }
+  }))
+}
+
+console.log('== Mock endpoints ==');
+console.log(mockEndpoints);
+
+export default mockEndpoints;

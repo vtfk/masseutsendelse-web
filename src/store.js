@@ -11,6 +11,8 @@ import merge from 'lodash.merge';
 // Configure vue to use Vuex
 Vue.use(Vuex)
 
+console.log(config);
+
 /*
   Vuex store implementation
 */
@@ -65,7 +67,6 @@ const store = new Vuex.Store({
           template: req.template.template,
           documentDefinitionId: req.template.documentDefinitionId,
           data: {
-            test: 'test',
             ...merge(req.template.data, req.template.documentData),
           }
         }

@@ -76,11 +76,7 @@
           return-object
           @change="(e) => onTemplateChanged(e)" 
           style="max-width: 750px; width: 100%;"
-        >
-          <template #label>
-            <span class="required"><strong>* </strong></span>Mal
-          </template>
-        </VSelect>
+        />
         <div v-if="selectedTemplateSchema && selectedTemplateSchema.properties && Object.keys(selectedTemplateSchema.properties).length > 0" style="max-width: 750px; width: 100%;">
           <h2>Flettefelter</h2>
           <SchemaFields

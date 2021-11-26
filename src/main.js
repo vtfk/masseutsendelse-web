@@ -4,7 +4,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import { VuePlugin } from 'vuera'
-import Config from '../config';
+import config from '../config';
 import vuetify from './plugins/vuetify'
 
 /*
@@ -21,10 +21,10 @@ import ErrorField from './components/errors/ErrorField'; Vue.component('ErrorFie
 import ErrorModal from './components/errors/ErrorModal'; Vue.component('ErrorModal', ErrorModal);
 
 // Add global accessible object
-Vue.prototype.$config = Config;
+Vue.prototype.$config = config;
 
 // Setup the mock listner
-if(process.env.VUE_APP_USE_MOCK === 'true') {
+if(config.MOCK_ENABLED) {
   const { worker } = require('./mocks/browser');
   worker.start();
 }

@@ -2,5 +2,8 @@ export default {
     MATRIKKELPROXYAPI_BASE_URL: process.env.VUE_APP_MATRIKKELPROXYAPI_BASE_URL,
     MATRIKKELPROXYAPI_APIKEY: process.env.VUE_APP_MATRIKKELPROXUAPI_APIKEY,
     MATRIKKELPROXYAPI_CLIENTID: process.env.VUE_APP_MATRIKKELPROXUAPI_CLIENTID,
-    MASSEUTSENDELSEAPI_BASEURL: process.env.VUE_APP_MASSEUTSENDELSE_USE_DEVAPI ? 'http://localhost:7071/' : 'https://test-func-masseutsendelse.azurewebsites.net/'
+    MASSEUTSENDELSEAPI_BASEURL: process.env.VUE_APP_MASSEUTSENDELSE_USE_DEVAPI ? 'http://localhost:7071/' : 'https://test-func-masseutsendelse.azurewebsites.net/',
+    MOCK_MATRIKKEL_API: process.env.VUE_APP_MOCK_MATRIKKEL_API || false,
+    MOCK_MASSEUTSENDELSE_API: process.env.VUE_APP_MOCK_MASSEUTSENDELSE_API || false,
+    MOCK_ENABLED: process.env.VUE_APP_MOCK_MATRIKKEL_API || process.env.VUE_APP_MOCK_MASSEUTSENDELSE_API
 }
