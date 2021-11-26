@@ -289,12 +289,95 @@
       }
     },
     methods: {
+      reInitialState() {
+        return {
+            dispatch: {
+                title: '',
+                projectnumber: '',
+                body: '',
+                template: {
+                  _id: undefined,
+                  version: null,
+                  name: undefined,
+                  description:undefined,
+                  documentData: {},
+                  data: undefined,
+                  template: undefined
+                },
+                matrikkelEnheter: undefined,
+                stats: {
+                  affectedCount: null,
+                  area: null,
+                  totalOwners: null,
+                  privateOwners: null,
+                  businessOwners: null,
+                  units: []
+                },
+                polygon: {
+                  coordinatesystem: 'EUREF89 UTM Sone 32',
+                  filename: '',
+                  areal: null,
+                  vertices: [],
+                  extremes: {
+                    north: undefined,
+                    west: undefined,
+                    east: undefined,
+                    south: undefined,
+                    center: undefined
+                  }
+                },
+                geopolygon: {
+                  coordinateSystem: 'WGS 84',
+                  vertices: [],
+                  extremes: {
+                    north: undefined,
+                    west: undefined,
+                    east: undefined,
+                    south: undefined,
+                    center: undefined
+                  }
+                }
+              },
+              // The file provided by the fileuploader
+              uploadedFile: undefined,
+              // The genereated statistics from the MatrikkelAPI
+              statItems: [],
+              // The templates received from the API
+              // Templates will not reload if you press the "Angre" or "Start på nytt" button, 
+              // therefore we will not reset the templates array.
+              // templates: [], 
+              // The selected template in the template picker
+              selectedTemplate: undefined,
+              // The generated schema after picking a template
+              selectedTemplateSchema: undefined,
+              /*
+                Boolean state
+              */
+              // Are templates currently being loaded?
+              // When we reInitialState the state, isLoadingTemplates = false. 
+              isLoadingTemplates: false,
+              // Is the file currently being parsed?
+              isParsingFile: false,
+              // Is the matrikkel information approved?
+              isMatrikkelApproved: false,
+              // Has all required template-data been filled in?
+              isRequiredTemplateDataFilledIn: false,
+              // Is the matrikkel API currently beeing contacted?
+              isContactingMatrikkel: false,
+              // Is the dispatch approved to be sent inn?
+              isDispatchApproved: false,
+              // Has the file been loaded?
+              hasLoadedFile: false,
+        }
+      },
       reset(force = false) {
         if(force === false) {
           if(!confirm('Er du helt sikker på at du vil starte på nytt?')) {
             return;
           }
         }
+
+        Object.assign(this.$data, this.reInitialState());
 
         // Action states
         this.state = 'initial';
