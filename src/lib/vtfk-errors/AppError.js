@@ -4,6 +4,8 @@ export default class AppError extends Error {
     this.title = title;
     this.message = message;
     if(errors && Array.isArray(errors) && errors.length > 0) this.errors = errors;
-    Error.captureStackTrace(this, this.constructor);
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, this.constructor);
+    }
   }
 }
