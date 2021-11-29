@@ -2,8 +2,8 @@
   <div class="map-wrapper">
     <l-map ref="mymap" style="height: 100%; min-height: 400px; width: 100%; z-index: 1;" :zoom="mapZoom" :center="mapCenter">
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-      <l-marker v-for="(marker, i) in markers" :key="i" :lat-lng="marker"></l-marker>
-      <l-polygon :lat-lngs="polygon.coordinates" :fillColor="polygon.fillColor" :color="polygon.color"></l-polygon>
+      <l-marker v-for="(marker, i) in markers" :key="(i + 1) * (Math.random() * 100000)" :lat-lng="marker"></l-marker>
+      <l-polygon v-for="(p, i) in $props.polygons" :key="(Math.random() * 10000) * (i + 1)" :lat-lngs="p" :fillColor="polygon.fillColor" :color="polygon.color"></l-polygon>
     </l-map>
   </div>
 </template>
@@ -50,7 +50,7 @@ export default {
       type: Number,
       default: 14
     },
-    coordinates: {
+    polygons: {
       type: Array,
       default: () => [[59.265790569079115, 10.414842612222685],[59.26597348643685, 10.415928717894104], [59.26564549599459, 10.416589020770118], [59.26526073395536, 10.416570507602557], [59.26505573601051, 10.416811178747423], [59.26498950564053, 10.416218757477424], [59.265790569079115, 10.414842612222685]]
     }
@@ -65,7 +65,6 @@ export default {
       polygon: {
         color: this.$props.lineColor,
         fillColor: this.$props.fillColor,
-        coordinates: this.$props.coordinates
       }
     }
   },

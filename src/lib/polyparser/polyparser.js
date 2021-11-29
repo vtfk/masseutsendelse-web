@@ -37,6 +37,10 @@ async function readFile(file) {
   });
 }
 
+function copy(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 /*
   Class
 */
@@ -52,12 +56,27 @@ class PolyParser {
    */
   async parse(
     file,
-    options = {
+    options
+    )
+    {
+    // Default options
+    let defaultOptions = {
       inverseXY: false,
       fromProj4Projection: '+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs',
       toProj4Projection: '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees'
-    })
-    {
+    }
+    
+    // Set options
+    if(options) {
+      const tmpOptions = JSON.parse(JSON.stringify(options));
+      options = defaultOptions;
+      for(let key in tmpOptions) {
+        options[key] = tmpOptions[key];
+      }
+    } else {
+      options = defaultOptions;
+    }
+
     // Input validation
     if(!file) throw new AppError('No file provided', 'No file was provided for parsing');
     if(file.size === 0) throw new AppError('File error', 'The provided file is empty');
@@ -92,14 +111,13 @@ class PolyParser {
     if(!parsedData || !Array.isArray(parsedData) || parsedData.length === 0) throw new AppError('Unable to parse file', 'We attempted to parse the file but could not find any data');
 
     parsedData.forEach((polygon) => {
-      // Make sure that the polygon contains vertices and that they are self-closing
+      // if(i !== 1) return;
+      // Make sure that the polygon contains vertices
       if(!polygon.vertices || !Array.isArray(polygon.vertices) || polygon.vertices.length === 0) throw new AppError('Polygon is empty', 'One or more polygons in the file is empty');
-      if(polygon.vertices[0] != polygon.vertices[polygon.vertices.length]) {
-        polygon.vertices.push(polygon.vertices[0]);
-      }
-
+      
       // If applicable, swap the x and y coordinates before proceeding
       if(options.inverseXY) {
+        console.log('INVERSEING XY')
         polygon.vertices.forEach((vertice) => {
           const tmpX = vertice[0]
           vertice[0] = vertice[1];
@@ -107,11 +125,16 @@ class PolyParser {
         })
       }
       
+      // Make sure that the vertices are selfclosing
+      if(polygon.vertices[0] != polygon.vertices[polygon.vertices.length]) {
+        polygon.vertices.push(copy(polygon.vertices[0]));
+      }
+      
       // Validate and calculate the extreme points for the vertices
-      let extremeNorth = [polygon.vertices[0][0], polygon.vertices[1][1]];
-      let extremeWest = [polygon.vertices[0][0], polygon.vertices[1][1]];
-      let extremeEast = [polygon.vertices[0][0], polygon.vertices[1][1]];
-      let extremeSouth = [polygon.vertices[0][0], polygon.vertices[1][1]];
+      let extremeNorth = copy(polygon.vertices[0]);
+      let extremeWest = copy(polygon.vertices[0]);
+      let extremeEast = copy(polygon.vertices[0]);
+      let extremeSouth = copy(polygon.vertices[0]);
 
       polygon.vertices.forEach((vertice, i) => {
         // Make sure that all of the vertices in the polygon is in [x, y] format
@@ -119,10 +142,11 @@ class PolyParser {
         if(typeof vertice[0] !== 'number' || typeof vertice[1] !== 'number') throw new AppError('Vertice is invalid', `The vertice in position ${i} contains coordinates that are not numbers`, [vertice]);
         
         // Check if this vertice is one of the extremes
-        if(vertice[0] < extremeWest[0]) extremeWest = vertice;
-        else if(vertice[0] > extremeEast) extremeEast = vertice;
-        if(vertice[1] > extremeNorth[0]) extremeNorth = vertice;
-        else if(vertice[1] < extremeSouth) extremeSouth = vertice;
+        let vcopy = JSON.parse(JSON.stringify(vertice));
+        if(vertice[0] < extremeWest[0]) extremeWest = vcopy;
+        if(vertice[0] > extremeEast[0]) extremeEast = vcopy;
+        if(vertice[1] > extremeNorth[1]) extremeNorth = vcopy;
+        if(vertice[1] < extremeSouth[1]) extremeSouth = vcopy;
       })
 
       // Check that the polygon has atleast 4 points
@@ -155,16 +179,16 @@ class PolyParser {
 
     // Find the global extremes
     // Set as the first extremes as a starting point
-    let globalExtremeNorth = [returnObj.polygons[0].extremes.north[0], returnObj.polygons[0].extremes.north[1]]
-    let globalExtremeWest = [returnObj.polygons[0].extremes.west[0], returnObj.polygons[0].extremes.west[1]]
-    let globalExtremeEast = [returnObj.polygons[0].extremes.east[0], returnObj.polygons[0].extremes.east[1]]
-    let globalExtremeSouth = [returnObj.polygons[0].extremes.south[0], returnObj.polygons[0].extremes.south[1]]
+    let globalExtremeNorth = copy(returnObj.polygons[0].extremes.north)
+    let globalExtremeWest = copy(returnObj.polygons[0].extremes.west)
+    let globalExtremeEast = copy(returnObj.polygons[0].extremes.east)
+    let globalExtremeSouth = copy(returnObj.polygons[0].extremes.south)
     // Attempt to find extremer extremes
     returnObj.polygons.forEach((polygon) => {
-      if(globalExtremeNorth[1] > polygon.extremes.north[1]) globalExtremeNorth = [polygon.extremes.north[0], polygon.extremes.north[1]]
-      else if(globalExtremeSouth[1] < polygon.extremes.south[1]) globalExtremeSouth = [polygon.extremes.south[0], polygon.extremes.south[1]]
-      if(globalExtremeWest[1] < polygon.extremes.west[1]) globalExtremeWest = [polygon.extremes.west[0], polygon.extremes.west[1]]
-      else if (globalExtremeEast[1] < polygon.extremes.east[1]) globalExtremeEast = [polygon.extremes.east[0], polygon.extremes.east[1]]
+      if(globalExtremeNorth[1] > polygon.extremes.north[1]) globalExtremeNorth = copy(polygon.extremes.north)
+      if(globalExtremeSouth[1] < polygon.extremes.south[1]) globalExtremeSouth = copy(polygon.extremes.south)
+      if(globalExtremeWest[0] < polygon.extremes.west[0]) globalExtremeWest = copy(polygon.extremes.west)
+      if(globalExtremeEast[0] > polygon.extremes.east[0]) globalExtremeEast = copy(polygon.extremes.east)
     })
     // Calculate the center
     let globalCenter = [
@@ -186,6 +210,8 @@ class PolyParser {
     returnObj.polygons.forEach((i) => globalArea += i.area);
     returnObj.area = globalArea;
 
+    console.log('== Before transform ==');
+    console.log(returnObj);
     /*
       Transform all coordinates
     */
@@ -194,11 +220,11 @@ class PolyParser {
       
       // Transform the global extremes
       let transformedExtremes = {
-        north: proj4(options.fromProj4Projection, options.toProj4Projection, [globalExtremeNorth[0], globalExtremeNorth[1]]),
-        west: proj4(options.fromProj4Projection, options.toProj4Projection, [globalExtremeWest[0], globalExtremeWest[1]]),
-        east: proj4(options.fromProj4Projection, options.toProj4Projection, [globalExtremeEast[0], globalExtremeEast[1]]),
-        south: proj4(options.fromProj4Projection, options.toProj4Projection, [globalExtremeSouth[0], globalExtremeSouth[1]]),
-        center: proj4(options.fromProj4Projection, options.toProj4Projection, [globalCenter[0], globalCenter[1]])
+        north: proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeNorth)),
+        west: proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeWest)),
+        east: proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeEast)),
+        south: proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeSouth)),
+        center: proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalCenter))
       }
       // Set the extremes
       returnObj.transformedExtremes = transformedExtremes;
@@ -208,15 +234,15 @@ class PolyParser {
       transformedPolygons.forEach((polygon) => {
         // Transform the polygon extremes
         polygon.extremes = {
-          north: proj4(options.fromProj4Projection, options.toProj4Projection, [polygon.extremes.north[0], polygon.extremes.north[1]]),
-          west: proj4(options.fromProj4Projection, options.toProj4Projection, [polygon.extremes.west[0], polygon.extremes.west[1]]),
-          east: proj4(options.fromProj4Projection, options.toProj4Projection, [polygon.extremes.east[0], polygon.extremes.east[1]]),
-          south: proj4(options.fromProj4Projection, options.toProj4Projection, [polygon.extremes.south[0], polygon.extremes.south[1]]),
-          center: proj4(options.fromProj4Projection, options.toProj4Projection, [polygon.extremes.center[0], polygon.extremes.center[1]]),
+          north: proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.north)),
+          west: proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.west)),
+          east: proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.east)),
+          south: proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.south)),
+          center: proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.center)),
         }
         // Transform the vertices
         polygon.vertices.forEach((vertice, i) => {
-          polygon.vertices[i] = proj4(options.fromProj4Projection, options.toProj4Projection, [vertice[0], vertice[1]])
+          polygon.vertices[i] = proj4(options.fromProj4Projection, options.toProj4Projection, copy(vertice))
         })
         // Calculate the area of the polygon
         let tp = turfPolygon([polygon.vertices])
