@@ -14,7 +14,7 @@
     "@vtfk/components": "^0.2.1",
     "axios": "^0.22.0",
     "core-js": "^3.6.5",
-    "dxf-parser": "^1.0.2",
+    "dxf-parser": "1.1.2",
     "leaflet": "^1.7.1",
     "lodash.get": "^4.4.2",
     "lodash.keys": "^4.2.0",
