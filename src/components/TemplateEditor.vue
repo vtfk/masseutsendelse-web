@@ -97,7 +97,7 @@ export default {
     },
     showDocumentTemplateSelect: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   data() {

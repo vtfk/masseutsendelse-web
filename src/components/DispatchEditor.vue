@@ -65,6 +65,19 @@
             <span class="required"><strong>* </strong></span>Prosjektnummer
           </template>
         </VTextField>
+        <VTextField 
+          v-model="dispatch.archivenumber"
+          :disabled="isReadOnly"
+          placeholder="Angi et nummer"
+          hint="Angi et nummer"
+          label="Arkivnummer"
+          :required="true"
+          style="max-width: 750px; width: 100%;"
+        >
+          <template #label>
+            <span class="required"><strong>* </strong></span>Arkivnummer
+          </template>
+        </VTextField>
         <VSelect
           label="Velg mal"
           placeholder="Velg mal"
@@ -76,18 +89,14 @@
           return-object
           @change="(e) => onTemplateChanged(e)" 
           style="max-width: 750px; width: 100%;"
-        >
-          <template #label>
-            <span class="required"><strong>* </strong></span>Mal
-          </template>
-        </VSelect>
+        />
         <div v-if="selectedTemplateSchema && selectedTemplateSchema.properties && Object.keys(selectedTemplateSchema.properties).length > 0" style="max-width: 750px; width: 100%;">
           <h2>Flettefelter</h2>
           <SchemaFields
             v-model="dispatch.template.data"
             :schema="selectedTemplateSchema"
             :disabled="isReadOnly"
-            @changed="(data) => onTemplateDataChanged(data)"
+            @changed="onTemplateDataChanged()"
           />
         </div>
         <VTFKButton
@@ -157,6 +166,7 @@
   import turfArea from '@turf/area';
   import Sjablong from 'sjablong';
   import merge from 'lodash.merge'
+  import pick from 'lodash.pick';
 
   // Custom error class
   import AppError from '../lib/vtfk-errors/AppError';
@@ -191,7 +201,7 @@
         dispatch: {
           title: '',
           projectnumber: '',
-          body: '',
+          archivenumber: '',
           template: {
             _id: undefined,
             version: null,
@@ -287,7 +297,7 @@
       },
       isReadyToSave() {
         if(this.isReadOnly) return false;
-        if(!this.isRequiredTemplateDataFilledIn || !this.dispatch.projectnumber || !this.dispatch.title) return false;
+        if(!this.isRequiredTemplateDataFilledIn || !this.dispatch.title || !this.dispatch.projectnumber || !this.dispatch.archivenumber) return false;
         if(this.mode === 'new' && (!this.isDispatchApproved || !this.isMatrikkelApproved)) return false;
         return true;
       }
@@ -298,7 +308,7 @@
             dispatch: {
                 title: '',
                 projectnumber: '',
-                body: '',
+                archivenumber: '',
                 template: {
                   _id: undefined,
                   version: null,
@@ -375,12 +385,10 @@
         }
       },
       reset(force = false) {
-        if(force === false) {
-          if(!confirm('Er du helt sikker på at du vil starte på nytt?')) {
-            return;
-          }
-        }
+        // Validation
+        if(force === false && !confirm('Er du helt sikker på at du vil starte på nytt?')) return;
 
+        // Set the data back to the baseline
         Object.assign(this.$data, this.reInitialState());
 
         // Action states
@@ -790,10 +798,15 @@
           this.$store.commit('setModalError', new AppError('Kan ikke lagre', 'Det mangler en eller flere felter før du kan lagre'));
           return;
         }
-
-        // Confirm action
+        // User confirmation
         if(!confirm('Er du helt sikker på at du vil sende inn?')) return;
+
+        // Make a copy of the dispatch object before sending in
         var postObject = Object.assign(this.dispatch)
+
+        // Remove template if not specified
+        if(!this.dispatch.template._id) delete postObject.template;
+
         this.$emit('beforeSave');
         this.isLoading = true
         try {
@@ -804,44 +817,53 @@
           } else {
             throw new AppError('Kunne ikke lagre', 'Klarte ikke å avgjøre hvordan utsendelsen skulle lagres');
           }
+          console.log('Jeg er her!')
+          if(this.$route.path && this.$route.path.toLowerCase() !== '/utsendelser') this.$router.push('Utsendelser');
         } catch(err) {
           this.error = err;
         }
         this.isLoading = false
-        if(this.$route.path && this.$route.path.toLowerCase() !== '/utsendelser') this.$router.push('Utsendelser');
         this.$emit('saved');
       },
       onTemplateChanged(e) {
-        // TODO - Make sure that data is not overwritten on load
-        // Also make sure that any matching fields in data are carried over if they exist in a new template
-        if(!this.dispatch.template || !this.dispatch.template._id) {
-          this.dispatch.template = e;
-        }
-        this.selectedTemplate = e;
-        
         // Generate schema for the selectedTemplate
         const tmp = Buffer.from(e.template, 'base64').toString('utf8');
         this.selectedTemplateSchema = Sjablong.generateSchema(tmp, { requireAll: true })
+
+        // Generate a data object with each of the properties from the schema
+        let templateData = Sjablong.createObjectFromSchema(this.selectedTemplateSchema, false);
+
+        // If the template already have data, attempt to overwrite the templateData with them
+        if(this.dispatch.template && this.dispatch.template.data) {
+          // Get all the properties that exists in the schema
+          const matchingKeys = pick(this.dispatch.template.data, Object.keys(templateData));
+          // Overwrite templatedata with the matching information in the matching keys
+          templateData = merge(templateData, matchingKeys);
+        }
+        
+        // Update the template information
+        this.dispatch.template = e
+        this.dispatch.template.data = templateData;
+        this.selectedTemplate = e;
+
+        // Signal that templatedata has changed
         this.onTemplateDataChanged();
       },
-      onTemplateDataChanged(data) {
-        if(!this.selectedTemplateSchema) return;
-        console.log('== Selected schema ==')
-        console.log(this.selectedTemplateSchema);
-        // Check if all template data is filled in
-        if(this.selectedTemplateSchema && this.selectedTemplateSchema.properties && Object.keys(this.selectedTemplateSchema.properties).length === 0) {
+      determineIfTemplateIsOk() {
+        if(!this.selectedTemplateSchema || (this.selectedTemplateSchema && this.selectedTemplateSchema.properties && Object.keys(this.selectedTemplateSchema.properties).length === 0)) {
           this.isRequiredTemplateDataFilledIn = true;
         } else {
           try {
-            Sjablong.validateData(this.selectedTemplateSchema, data, { requireAll: true });
+            Sjablong.validateData(this.selectedTemplateSchema, this.dispatch.template.data, { requireAll: true });
             this.isRequiredTemplateDataFilledIn = true;
           }
           catch (err) {
             this.isRequiredTemplateDataFilledIn = false;
           }
         }
-
-        
+      },
+      onTemplateDataChanged() {
+        this.determineIfTemplateIsOk();
       },
       async loadTemplates() {
         this.isLoadingTemplates = true;
@@ -852,8 +874,13 @@
           this.error = new AppError('Kunne ikke hente hente inn maler', err);
           return;
         }
-        let sameTemplate = this.$store.state.templates.find((t) => t._id === this.dispatch.template._id)
-        if(sameTemplate) this.onTemplateChanged(sameTemplate);
+
+        // Attempt to match template with the dispatch, if applicable
+        if(this.dispatch.template) {
+          let sameTemplate = this.$store.state.templates.find((t) => t._id === this.dispatch.template._id)
+          if(sameTemplate) this.onTemplateChanged(sameTemplate);
+        }
+        
 
         this.isLoadingTemplates = false;
       },
@@ -884,6 +911,18 @@
       this.onTemplateDataChanged();
 
       this.loadTemplates();
+    },
+    watch: {
+      // This will trigger any time something on the dispatch object has changed
+      dispatch: {
+        handler: function(newVal) {
+          console.log('== Dispatch updated ==');
+          console.log(newVal);
+          // Check if all necessary template data is filled in
+          this.determineIfTemplateIsOk();
+        },
+        deep: true
+      }
     }
   }
 </script>
