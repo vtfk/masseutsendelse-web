@@ -1,7 +1,7 @@
 <template>
   <div style="margin-top: 1rem;">
     <!-- Feilmelding -->
-    <ErrorField v-if="error" :error="error" v-on:resetClicked="reset(true)" />
+    <ErrorField v-if="error" :error="error" v-on:resetClicked="reset(true)" :showResetButton="true" />
     <!-- Loaders -->
     <Loading v-else-if="isLoadingTemplates" title="Laster inn maler" />
     <!-- Fil opplasting -->
@@ -167,6 +167,8 @@
   import Sjablong from 'sjablong';
   import merge from 'lodash.merge'
   import pick from 'lodash.pick';
+  import PolyParser from '../lib/polyparser/polyparser';
+
 
   // Custom error class
   import AppError from '../lib/vtfk-errors/AppError';
@@ -606,6 +608,8 @@
       },
       async parseFiles(files) {
         try {
+          await PolyParser.parse(files[0]);
+
           if(!files || files.length == 0) {
             throw new AppError('Filopplastings feil', 'Det ble påkallet en filopplasting, men ingen fil ble lastet opp')
           }
@@ -618,7 +622,6 @@
           this.isParsingFile = true;
           let file = dxf_files[0];
           this.uploadedFile = file;
-          console.log(file)
           this.dispatch.polygon.filename = file.name
           let fileData = await this.readFile(file.data);
 
@@ -699,12 +702,13 @@
           let tp = turfPolygon([transformedVertices])
           let area = turfArea(tp);
           if(area) {
+            this.dispatch.polconsole.log('Transforming coordinates');
             this.dispatch.polygon.area = Math.round(area);
             this.dispatch.stats.area = this.dispatch.polygon.area;
             this.dispatch.geopolygon.area = this.dispatch.polygon.area;
           }
 
-          // Calculate the coordinates for the outmost points
+          // Cverticesalculate the coordinates for the outmost points
           let translatedNorth = proj4('EPSG:25832', 'EPSG:4326', {x: northPoint.x , y: northPoint.y});
           let translatedWest = proj4('EPSG:25832', 'EPSG:4326', {x: westPoint.x , y: westPoint.y});
           let translatedEast = proj4('EPSG:25832', 'EPSG:4326', {x: eastPoint.x , y: eastPoint.y});
@@ -735,7 +739,11 @@
           // Set that the file has been parsed
           this.isParsingFile = false;
         } catch (err) {
-          this.error = err;
+          console.log('Error');
+          console.error(err);
+          let error = err;
+          if(typeof error === 'string') error = new AppError('Error', error);
+          this.error = error;
         }
       },
       parseMatrikkelEnheter(Enheter) {

@@ -20,6 +20,7 @@
         <VTFKButton v-if="$props.showResetButton" style="margin-top: 1rem;" size="small" :passedProps="{onClick: () => { $emit('resetClicked') }}">Start på nytt</VTFKButton>
         <VTFKButton v-if="$props.showOkButton" style="margin-top: 1rem;" size="small" :passedProps="{onClick: () => { $emit('ok') }}">Ok</VTFKButton>
         <VTFKButton v-if="$props.error && $props.error.stack" style="margin-top: 1rem;" size="small" :passedProps="{onClick: () => { isShowStack = !isShowStack }}">{{!isShowStack ? 'Vis detaljer' : 'Skjul detaljer'}}</VTFKButton>
+        <VTFKButton style="display: none;" :passedProps="{onClick: () => { }}"/>
       </div>
     </div>
   </div>
