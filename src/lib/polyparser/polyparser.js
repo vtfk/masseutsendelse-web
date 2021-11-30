@@ -117,7 +117,6 @@ class PolyParser {
       
       // If applicable, swap the x and y coordinates before proceeding
       if(options.inverseXY) {
-        console.log('INVERSEING XY')
         polygon.vertices.forEach((vertice) => {
           const tmpX = vertice[0]
           vertice[0] = vertice[1];
@@ -159,7 +158,7 @@ class PolyParser {
       ]
 
       // Calculate the area of the polygon
-      let tp = turfPolygon([polygon.vertices])
+      let tp = turfPolygon([copy(polygon.vertices)])
       let area = turfArea(tp);
 
       // Update the return object
@@ -220,10 +219,10 @@ class PolyParser {
       
       // Transform the global extremes
       let transformedExtremes = {
-        north: proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeNorth)),
-        west: proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeWest)),
-        east: proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeEast)),
-        south: proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeSouth)),
+        north:  proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeNorth)),
+        west:   proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeWest)),
+        east:   proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeEast)),
+        south:  proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeSouth)),
         center: proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalCenter))
       }
       // Set the extremes
@@ -232,20 +231,24 @@ class PolyParser {
       // Transform the polygons
       let transformedPolygons = JSON.parse(JSON.stringify(returnObj.polygons));
       transformedPolygons.forEach((polygon) => {
-        // Transform the polygon extremes
-        polygon.extremes = {
-          north: proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.north)),
-          west: proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.west)),
-          east: proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.east)),
-          south: proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.south)),
-          center: proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.center)),
-        }
         // Transform the vertices
         polygon.vertices.forEach((vertice, i) => {
           polygon.vertices[i] = proj4(options.fromProj4Projection, options.toProj4Projection, copy(vertice))
         })
+        
+        // Transform the polygon extremes
+        polygon.extremes = {
+          north:  proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.north)),
+          west:   proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.west)),
+          east:   proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.east)),
+          south:  proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.south)),
+          center: proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.center)),
+        }
+        
+        console.log('== Mapped vertices ==');
+        console.log(polygon.vertices);
         // Calculate the area of the polygon
-        let tp = turfPolygon([polygon.vertices])
+        let tp = turfPolygon([copy(polygon.vertices)])
         let area = turfArea(tp);
         polygon.area = area;
       })
