@@ -5,7 +5,7 @@
     <!-- Loaders -->
     <Loading v-else-if="isLoadingTemplates" title="Laster inn maler" />
     <!-- Fil opplasting -->
-    <div v-else-if="!dispatch || geoPolygonVertices.length === 0">
+    <div v-else-if="!dispatch || dispatch.polygons.polygons.length === 0">
       <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
     </div>
     <div v-else-if="isParsingFile">
@@ -16,10 +16,7 @@
     <div v-else class="center-content">
       <Map
         style="max-width: 750px"
-        :polygons="geoPolygonVertices"
-        :center="dispatch.geopolygons.extremes.center"
-        :markers="[...geoPolygonMarkers, dispatch.geopolygons.extremes.center]"
-        :outerBounds="dispatch.geopolygons.extremes"
+        :polygons="dispatch.polygons"
         />  
       <div v-if="!isAllRequiredMatrikkelInfoRetreived && !isContactingMatrikkel" class="centeredColumn" style="margin-top: 1rem;">
         <VTFKButton :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
@@ -224,18 +221,19 @@
             businessOwners: null,
             units: []
           },
-          filepolygons: {
+          polygons: {
+            ESPG: '',
             coordinatesystem: 'EUREF89 UTM Sone 32',
             filename: '',
             areal: null,
-            polygons: [],
             extremes: {
               north: undefined,
               west: undefined,
               east: undefined,
               south: undefined,
               center: undefined
-            }
+            },
+            polygons: [],
           },
           geopolygons: {
             coordinateSystem: 'WGS 84',
@@ -305,32 +303,32 @@
         if(this.mode === 'new' && (!this.isDispatchApproved || !this.isMatrikkelApproved)) return false;
         return true;
       },
-      geoPolygonVertices() {
-        if(!this.dispatch.geopolygons || !this.dispatch.geopolygons.polygons) return [];
+      // geoPolygonVertices() {
+      //   if(!this.dispatch.geopolygons || !this.dispatch.geopolygons.polygons) return [];
 
-        let polygons = [];
-        this.dispatch.geopolygons.polygons.forEach((p) => polygons.push(p.vertices));
+      //   let polygons = [];
+      //   this.dispatch.geopolygons.polygons.forEach((p) => polygons.push(p.vertices));
 
-        return polygons;
-      },
-      geoPolygonMarkers() {
-        if(!this.dispatch.geopolygons || !this.dispatch.geopolygons.polygons) return [];
+      //   return polygons;
+      // },
+      // geoPolygonMarkers() {
+      //   if(!this.dispatch.geopolygons || !this.dispatch.geopolygons.polygons) return [];
 
-        let points = [];
+      //   let points = [];
 
-        // Add all extremes for each polygon
-        this.dispatch.geopolygons.polygons.forEach((p) => {
-          for(let key in p.extremes) {
-            points.push(p.extremes[key]);
-          }
-        })
+      //   // Add all extremes for each polygon
+      //   this.dispatch.geopolygons.polygons.forEach((p) => {
+      //     for(let key in p.extremes) {
+      //       points.push(p.extremes[key]);
+      //     }
+      //   })
         
-        // for(let key in this.dispatch.geopolygons.extremes) {
-        //   points.push(this.dispatch.geopolygons.extremes[key]);
-        // }
+      //   // for(let key in this.dispatch.geopolygons.extremes) {
+      //   //   points.push(this.dispatch.geopolygons.extremes[key]);
+      //   // }
 
-        return points;
-      }
+      //   return points;
+      // }
     },
     methods: {
       reInitialState() {
@@ -635,144 +633,16 @@
       async parseFiles(files) {
         try {
           let polygons = await PolyParser.parse(files[0], { inverseXY: true });
+          console.log('== From parser ==');
           console.log(polygons);
           // File polygons
-          this.dispatch.filepolygons = {
-            polygons: polygons.polygons,
-            extremes: polygons.extremes
-          };
+          this.$set(this.dispatch, 'polygons', polygons);
 
-          // Geo polygons
-          this.dispatch.geopolygons = {
-            polygons: polygons.transformedPolygons,
-            extremes: polygons.transformedExtremes,
-            area: polygons.transformedArea
-          }
-
-          // if(!files || files.length == 0) {
-          //   throw new AppError('Filopplastings feil', 'Det ble påkallet en filopplasting, men ingen fil ble lastet opp')
-          // }
-          // let dxf_files = files.filter((f) => f.name.toLowerCase().endsWith('.dxf'));
-          // if(!dxf_files || dxf_files.length === 0) {
-          //   throw new AppError('Feil filtype', 'Filen som ble lastet opp er av feil filtype. Filen må være av typen .dxf')
-          // }
-          
-          // this.hasLoadedFile = true;
-          // this.isParsingFile = true;
-          // let file = dxf_files[0];
-          // this.uploadedFile = file;
-          // this.dispatch.polygon.filename = file.name
-          // let fileData = await this.readFile(file.data);
-
-          // if(!fileData || fileData.length === 0) { throw new AppError('Filen er tom', 'Den opplastede .dxf-filen inneholder ingen data') }
-
-          // var parser = new DxfParser();
-          // let parsed = parser.parseSync(fileData);
-
-          // if(!parsed.entities) { throw new AppError('Fil inneholder ingen former', 'Filen inneholder ingen former') }
-
-          // let polygons = parsed.entities.filter((i => i.type === 'LWPOLYLINE'));
-          // if(polygons.length == 0) { throw new AppError('Fil inneholder ingen polygoner', 'Filen inneholder ingen polygoner') }
-          // else if(polygons.length > 1) { throw new AppError('Fil inneholder ingen polygoner', ('Filen må kun inneholde ett polygon, men det inne holder ' + polygons.length))  }
-
-          // const polygon = polygons[0];
-          // if(!polygon || !polygon.vertices || polygon.vertices.length === 0) {
-          //   throw new AppError('Polygonet mangler linjesegmenter', ('Polygonet i filen inneholder ingen linjesegmenter'))
-          // }
-  
-          // let vertices = polygons[0].vertices;
-
-          // // Define the coordinate translations
-          // proj4.defs([
-          //   [
-          //     'EPSG:4326',
-          //     '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees'],
-          //   [
-          //     'EPSG:25832',
-          //     '+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs'
-          //   ]
-          // ]);
-
-          // // Values for keeping track of the lowest and highest coordinate-values
-          // let lowX = vertices[0].x;
-          // let highX = vertices[0].x;
-          // let lowY = vertices[0].y;
-          // let highY = vertices[0].y;
-          
-          // // Points for all the 4 extreme coordinates in the polygon
-          // let northPoint = undefined;
-          // let westPoint = undefined;
-          // let eastPoint = undefined;
-          // let southPoint = undefined;
-
-          // // An array version of the non-transformed vertices (using [123, 321] instead of { x: 123, y: 321})
-          // let arrayifiedVertices = [];
-          // // The array that stores all the transformed vertices
-          // let transformedVertices = [];
-
-          // vertices.forEach((vertice) => {
-          //   // Make a copy of the vertice to not modify the source object
-          //   let vCopy = JSON.parse(JSON.stringify(vertice))
-          //   // Add the non transformed values into the array
-          //   arrayifiedVertices.push([vertice.y, vertice.x]);
-          //   // Transform the coordinates
-          //   let transformed = proj4('EPSG:25832', 'EPSG:4326', vCopy);
-          //   // Find the outermost points, used for calculating the center of the polygon
-          //   if(vertice.x > highX) { westPoint = vertice; highX = vertice.x; }
-          //   else if(vertice.x < lowX) { eastPoint = vertice; lowX = vertice.x; }
-          //   if(vertice.y > highY) { northPoint = vertice; highY = vertice.y; }
-          //   else if(vertice.y < lowY) { southPoint = vertice; lowY = vertice.y }
-          //   // Add the transformed points to the transformed array
-          //   transformedVertices.push([transformed.y, transformed.x]);
-          // })
-          // // Closing the polygon if necessary
-          // if(transformedVertices[0] != transformedVertices[transformedVertices.length - 1]) {
-          //   transformedVertices.push(transformedVertices[0]);
-          // }
-          
-          // // Calculate the center of the polygon
-          // let center = {
-          //   x: (lowX + highX) / 2,
-          //   y: (lowY + highY) / 2
-          // }
-          // let transformedCenter = proj4('EPSG:25832', 'EPSG:4326', JSON.parse(JSON.stringify(center)));
-
-          // // Calculate the area of the polygon in square meters
-          // let tp = turfPolygon([transformedVertices])
-          // let area = turfArea(tp);
-          // if(area) {
-          //   this.dispatch.polconsole.log('Transforming coordinates');
-          //   this.dispatch.polygon.area = Math.round(area);
-          //   this.dispatch.stats.area = this.dispatch.polygon.area;
-          //   this.dispatch.geopolygon.area = this.dispatch.polygon.area;
-          // }
-
-          // // Cverticesalculate the coordinates for the outmost points
-          // let translatedNorth = proj4('EPSG:25832', 'EPSG:4326', {x: northPoint.x , y: northPoint.y});
-          // let translatedWest = proj4('EPSG:25832', 'EPSG:4326', {x: westPoint.x , y: westPoint.y});
-          // let translatedEast = proj4('EPSG:25832', 'EPSG:4326', {x: eastPoint.x , y: eastPoint.y});
-          // let translatedSouth = proj4('EPSG:25832', 'EPSG:4326', {x: southPoint.x , y: southPoint.y});
-
-          // // Set the polygon for the dispatch object
-          // this.dispatch.polygon.coordinatesystem = 'EUREF89 UTM Sone 32';
-          // this.dispatch.polygon.vertices = arrayifiedVertices;
-          // this.dispatch.polygon.extremes = {
-          //   north: [northPoint.y, northPoint.x],
-          //   west: [westPoint.y, westPoint.x],
-          //   east: [eastPoint.y, eastPoint.x],
-          //   south: [southPoint.y, southPoint.x],
-          //   center: [center.y, center.x]
-          // };
-
-          // // Set the geopolygon for the dispatch object
-          // this.dispatch.geopolygon.coordinateSystem = 'WGS84';
-          // this.dispatch.geopolygon.vertices = transformedVertices;
-          // this.dispatch.geopolygon.extremes = {
-          //   north: [translatedNorth.y, translatedNorth.x],
-          //   west: [translatedWest.y, translatedWest.x],
-          //   east: [translatedEast.y, translatedEast.y],
-          //   south: [translatedSouth.y, translatedSouth.x],
-          //   center: [transformedCenter.y, transformedCenter.x]
+          // // Geo polygons
+          // this.dispatch.geopolygons = {
+          //   polygons: polygons.transformedPolygons,
+          //   extremes: polygons.transformedExtremes,
+          //   area: polygons.transformedArea
           // }
 
           // Set that the file has been parsed
@@ -928,7 +798,6 @@
           if(sameTemplate) this.onTemplateChanged(sameTemplate);
         }
         
-
         this.isLoadingTemplates = false;
       },
       previewPDF() {
@@ -962,9 +831,7 @@
     watch: {
       // This will trigger any time something on the dispatch object has changed
       dispatch: {
-        handler: function(newVal) {
-          console.log('== Dispatch updated ==');
-          console.log(newVal);
+        handler: function() {
           // Check if all necessary template data is filled in
           this.determineIfTemplateIsOk();
         },
