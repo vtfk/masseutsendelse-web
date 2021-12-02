@@ -14,7 +14,13 @@
     </div>
     <!-- Kart og matrikkel -->
     <div v-else class="center-content">
-      <Map style="max-width: 750px" :polygons="geoPolygonVertices" :center="dispatch.geopolygons.extremes.center" :markers="geoPolygonMarkers"/>  
+      <Map
+        style="max-width: 750px"
+        :polygons="geoPolygonVertices"
+        :center="dispatch.geopolygons.extremes.center"
+        :markers="[...geoPolygonMarkers, dispatch.geopolygons.extremes.center]"
+        :outerBounds="dispatch.geopolygons.extremes"
+        />  
       <div v-if="!isAllRequiredMatrikkelInfoRetreived && !isContactingMatrikkel" class="centeredColumn" style="margin-top: 1rem;">
         <VTFKButton :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
         <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>

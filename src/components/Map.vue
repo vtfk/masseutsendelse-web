@@ -2,15 +2,28 @@
   <div class="map-wrapper">
     <l-map ref="mymap" style="height: 100%; min-height: 400px; width: 100%; z-index: 1;" :zoom="mapZoom" :center="mapCenter">
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-      <l-marker v-for="(marker, i) in markers" :key="(i + 1) * (Math.random() * 100000)" :lat-lng="marker"></l-marker>
+      <!-- <l-marker v-for="(marker, i) in markers" :key="(i + 1) * (Math.random() * 100000)" :lat-lng="marker"></l-marker> -->
+      
+      <l-marker v-if="$props.outerBounds && $props.outerBounds.north" :lat-lng="$props.outerBounds.north">
+        <l-icon :icon-url="require('@/assets/icons/north-bound.svg')" />
+      </l-marker>
+      <l-marker v-if="$props.outerBounds && $props.outerBounds.west" :lat-lng="$props.outerBounds.west">
+        <l-icon :icon-url="require('@/assets/icons/west-bound.svg')" :icon-anchor="[30, 25]"/>
+      </l-marker>
+      <l-marker v-if="$props.outerBounds && $props.outerBounds.east" :lat-lng="$props.outerBounds.east">
+        <l-icon :icon-url="require('@/assets/icons/east-bound.svg')" :icon-anchor="[-5, 20]"/>
+      </l-marker>
+      <l-marker v-if="$props.outerBounds && $props.outerBounds.south" :lat-lng="$props.outerBounds.south">
+        <l-icon :icon-url="require('@/assets/icons/south-bound.svg')" :icon-anchor="[10, 0]" />
+      </l-marker>
       <l-polygon v-for="(p, i) in $props.polygons" :key="(Math.random() * 10000) * (i + 1)" :lat-lngs="p" :fillColor="polygon.fillColor" :color="polygon.color"></l-polygon>
     </l-map>
   </div>
 </template>
 
 <script>
-// import L from 'leaflet';
-import { LMap, LTileLayer, LMarker, LPolygon } from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker, LPolygon, LIcon } from 'vue2-leaflet';
+// import { icon } from 'leaflet';
 
 // Fix a bug where map markers are not shown
 import { Icon } from 'leaflet';
@@ -27,7 +40,8 @@ export default {
     LMap,
     LTileLayer,
     LMarker,
-    LPolygon
+    LPolygon,
+    LIcon
   },
   props: {
     center: {
@@ -37,6 +51,9 @@ export default {
     markers: {
       type: Array,
       default: () => [[59.2654381, 10.4159352]]
+    },
+    outerBounds: {
+      type: Object,
     },
     lineColor: {
       type: String,
@@ -65,7 +82,7 @@ export default {
       polygon: {
         color: this.$props.lineColor,
         fillColor: this.$props.fillColor,
-      }
+      },
     }
   },
   methods: {

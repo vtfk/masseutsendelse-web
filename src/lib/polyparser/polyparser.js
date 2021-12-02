@@ -14,7 +14,21 @@ const dxf = require('./parsers/dxf');
 /*
   Variables and constants
 */
-
+// Add definitions to proj4
+proj4.defs([
+  [
+    'EPSG:4326',
+    '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees'
+  ],
+  [
+    'EPSG:5972',
+    '+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs'
+  ],
+  [
+    'EPSG:25832',
+    '+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs'
+  ]
+]);
 /*
   Support functions
 */
@@ -41,6 +55,46 @@ function copy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
+/**
+ * 
+ * @param {Array[x, y]} coordinateSample A single coordinate in [x = EASTING, y = NORTHING] format
+ * @returns 
+ */
+function guessEPSGCodeAndOrder(coordinateSample) {
+  console.log('Guessing coordinate system for coordinate:');
+  console.log(coordinateSample);
+  let reversed = false;
+  let code = undefined;
+  // Make two passes to attempt to determine what EPSG code the coordinate falls under
+  // The second pass is with X and Y reversed to check if the data is passed in with northing, easting formating
+  for(let i = 0; i <= 1; i++) {
+    if(i == 1) {
+      reversed = true;
+      coordinateSample = [coordinateSample[1], coordinateSample[0]];
+    }
+    if(coordinateSample[0] > -90 && coordinateSample[0] < 90 && coordinateSample[1] > -180 && coordinateSample[1] < 180) code = 'EPSG:4326'
+    if(coordinateSample[0] > 322361.85 && coordinateSample[0] < 637396.44 && coordinateSample[1] > 6424859.18 && coordinateSample[1] < 7296440.28) code = 'EPSG:5972'
+    if(coordinateSample[0] > -1877994.66 && coordinateSample[0] < 3932281.56 && coordinateSample[1] > 836715.13 && coordinateSample < 9440581.95) code = 'EPSG:25832'
+  }
+
+  if(!code) return undefined;
+
+  return {
+    code: code,
+    reversed: reversed
+  }
+}
+/**
+ * 
+ * @param {[x: number, y: number, z?: number]} vertice 
+ */
+function reverseXY(vertice) {
+  const tmpX = vertice[0]
+  vertice[0] = vertice[1];
+  vertice[1] = tmpX;
+  return vertice;
+}
+
 /*
   Class
 */
@@ -50,7 +104,7 @@ class PolyParser {
    * @param {HTMLFile} file A file uploaded to a input-field
    * @param {object} options 
    * @param {boolean} options.inverseXY Should the X and Y coordinates switch places?
-   * @param {array} options.fromProj4Projection Proj4 projection string to transform from
+   * @param {array} EPSG.code Proj4 projection string to transform from
    * @param {string} options.toProj4Projection Proj4 projection string to transform to
    * 
    */
@@ -110,18 +164,25 @@ class PolyParser {
     // Make sure that we got valid data back
     if(!parsedData || !Array.isArray(parsedData) || parsedData.length === 0) throw new AppError('Unable to parse file', 'We attempted to parse the file but could not find any data');
 
+    // Make a initial check for the first vertice in the first polygon so it can be used to determine the EPSG code
+    if(!parsedData || !Array.isArray(parsedData) || parsedData.length === 0) throw new AppError('Polygon is empty', 'One or more polygons in the file is empty');
+    if(!parsedData[0].vertices || !Array.isArray(parsedData[0].vertices) || parsedData[0].vertices.length === 0) throw new AppError('Polygon is empty', 'One or more polygons in the file is empty');
+
+    // Attempt to determine the EPSG code and data direction
+    const EPSG = guessEPSGCodeAndOrder(parsedData[0].vertices[0]);
+    if(!EPSG.code) throw new AppError('Unsupported coordinate system', 'Could not determine the coordinate system based on the coordinates', [parsedData.polygons[0].vertices [0]]);
+
     parsedData.forEach((polygon) => {
       // if(i !== 1) return;
       // Make sure that the polygon contains vertices
       if(!polygon.vertices || !Array.isArray(polygon.vertices) || polygon.vertices.length === 0) throw new AppError('Polygon is empty', 'One or more polygons in the file is empty');
       
-      // If applicable, swap the x and y coordinates before proceeding
-      if(options.inverseXY) {
-        polygon.vertices.forEach((vertice) => {
-          const tmpX = vertice[0]
-          vertice[0] = vertice[1];
-          vertice[1] = tmpX;
-        })
+      // Reverse all coordinates if they are evaluated to be in reverse order
+      if(EPSG.reversed) {
+        console.log('REVERSING VERTICES');
+        for(let vertice of polygon.vertices) {
+          vertice = [vertice[1], vertice[0]];
+        }
       }
       
       // Make sure that the vertices are selfclosing
@@ -184,10 +245,10 @@ class PolyParser {
     let globalExtremeSouth = copy(returnObj.polygons[0].extremes.south)
     // Attempt to find extremer extremes
     returnObj.polygons.forEach((polygon) => {
-      if(globalExtremeNorth[1] > polygon.extremes.north[1]) globalExtremeNorth = copy(polygon.extremes.north)
-      if(globalExtremeSouth[1] < polygon.extremes.south[1]) globalExtremeSouth = copy(polygon.extremes.south)
-      if(globalExtremeWest[0] < polygon.extremes.west[0]) globalExtremeWest = copy(polygon.extremes.west)
-      if(globalExtremeEast[0] > polygon.extremes.east[0]) globalExtremeEast = copy(polygon.extremes.east)
+      if(polygon.extremes.north[1] > globalExtremeNorth[1]) globalExtremeNorth = copy(polygon.extremes.north);
+      if(polygon.extremes.south[1] < globalExtremeSouth[1]) globalExtremeSouth = copy(polygon.extremes.south)
+      if(polygon.extremes.west[0] < globalExtremeWest[0]) globalExtremeWest = copy(polygon.extremes.west)
+      if(polygon.extremes.east[0] > globalExtremeEast[0]) globalExtremeEast = copy(polygon.extremes.east)
     })
     // Calculate the center
     let globalCenter = [
@@ -209,21 +270,24 @@ class PolyParser {
     returnObj.polygons.forEach((i) => globalArea += i.area);
     returnObj.area = globalArea;
 
-    console.log('== Before transform ==');
-    console.log(returnObj);
     /*
-      Transform all coordinates
+      Transform all coordinates, if applicable
     */
-    if(options.fromProj4Projection && options.toProj4Projection) {
-      console.log('Transforming coordinates');
-      
+    // If the EPSG.code is 4326 it is in WGS 84 (Long/Lat) format, no transformation is required https://epsg.io/4326
+    if(EPSG.code === 'EPSG:4326') {
+      returnObj.transformedExtremes = returnObj.extremes;
+      returnObj.transformedPolygons = returnObj.polygons;
+      return returnObj;
+    }
+
+    if(EPSG.code) {
       // Transform the global extremes
       let transformedExtremes = {
-        north:  proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeNorth)),
-        west:   proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeWest)),
-        east:   proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeEast)),
-        south:  proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalExtremeSouth)),
-        center: proj4(options.fromProj4Projection, options.toProj4Projection, copy(globalCenter))
+        north:  reverseXY(proj4(EPSG.code, 'EPSG:4326', copy(globalExtremeNorth))),
+        west:   reverseXY(proj4(EPSG.code, 'EPSG:4326', copy(globalExtremeWest))),
+        east:   reverseXY(proj4(EPSG.code, 'EPSG:4326', copy(globalExtremeEast))),
+        south:  reverseXY(proj4(EPSG.code, 'EPSG:4326', copy(globalExtremeSouth))),
+        center: reverseXY(proj4(EPSG.code, 'EPSG:4326', copy(globalCenter)))
       }
       // Set the extremes
       returnObj.transformedExtremes = transformedExtremes;
@@ -233,20 +297,18 @@ class PolyParser {
       transformedPolygons.forEach((polygon) => {
         // Transform the vertices
         polygon.vertices.forEach((vertice, i) => {
-          polygon.vertices[i] = proj4(options.fromProj4Projection, options.toProj4Projection, copy(vertice))
+          polygon.vertices[i] = reverseXY(proj4(EPSG.code, options.toProj4Projection, copy(vertice)));
         })
         
         // Transform the polygon extremes
         polygon.extremes = {
-          north:  proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.north)),
-          west:   proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.west)),
-          east:   proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.east)),
-          south:  proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.south)),
-          center: proj4(options.fromProj4Projection, options.toProj4Projection, copy(polygon.extremes.center)),
+          north:  reverseXY(proj4(EPSG.code, options.toProj4Projection, copy(polygon.extremes.north))),
+          west:   reverseXY(proj4(EPSG.code, options.toProj4Projection, copy(polygon.extremes.west))),
+          east:   reverseXY(proj4(EPSG.code, options.toProj4Projection, copy(polygon.extremes.east))),
+          south:  reverseXY(proj4(EPSG.code, options.toProj4Projection, copy(polygon.extremes.south))),
+          center: reverseXY(proj4(EPSG.code, options.toProj4Projection, copy(polygon.extremes.center))),
         }
         
-        console.log('== Mapped vertices ==');
-        console.log(polygon.vertices);
         // Calculate the area of the polygon
         let tp = turfPolygon([copy(polygon.vertices)])
         let area = turfArea(tp);

@@ -4,7 +4,7 @@ import config from '../../config';
 let mockEndpoints = [];
 
 if(config.MOCK_MASSEUTSENDELSE_API) {
-  mockEndpoints.push(rest.get('https://test-func-masseutsendelse.azurewebsites.net/api/getdispatches', (req, res, ctx) => {
+  mockEndpoints.push(rest.get('*/api/dispatches', (req, res, ctx) => {
     return res(ctx.json(require('./data/Dispatches.json')));
   }));
   mockEndpoints.push(rest.get('*/api/templates', (req, res, ctx) => {

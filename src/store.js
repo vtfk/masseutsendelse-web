@@ -11,6 +11,7 @@ import merge from 'lodash.merge';
 // Configure vue to use Vuex
 Vue.use(Vuex)
 
+console.log('== Configuration ==');
 console.log(config);
 
 /*
@@ -95,7 +96,7 @@ const store = new Vuex.Store({
       try {
         // Define the request
         const request = {
-          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/dispatches/',
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/dispatches',
           method: 'GET',
         }
         // Reset the data
