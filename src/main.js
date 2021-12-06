@@ -8,6 +8,18 @@ import config from '../config';
 import vuetify from './plugins/vuetify'
 
 /*
+  Async function for setting up mocking if applicable, this will be called before VUE is initialized
+*/
+async function prepareEnvironment() {
+  /// Setup the MSW mocking if applicable
+  if(config.MOCK_ENABLED) {
+    console.log('== Starting MSW mocking ==')
+    const { worker } = require('./mocks/browser');
+    await worker.start();
+  }
+}
+
+/*
   Import CSS
 */
 import 'leaflet/dist/leaflet.css';                    // Used by leaflet for displaying maps
@@ -22,12 +34,6 @@ import ErrorModal from './components/errors/ErrorModal'; Vue.component('ErrorMod
 
 // Add global accessible object
 Vue.prototype.$config = config;
-
-// Setup the mock listner
-if(config.MOCK_ENABLED) {
-  const { worker } = require('./mocks/browser');
-  worker.start();
-}
 
 // Use Vuera to use react components in Vue
 Vue.use(VuePlugin)
@@ -48,9 +54,11 @@ Vue.config.errorHandler = function(err, vm, info) {
   console.log(info);
 }
 
-new Vue({
-  vuetify,
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+prepareEnvironment().then(() => {
+  new Vue({
+    vuetify,
+    router,
+    store,
+    render: h => h(App)
+  }).$mount('#app')  
+})

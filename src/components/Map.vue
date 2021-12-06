@@ -121,13 +121,10 @@ export default {
       }
       
       this.$set(this, 'polygonArray', polygons.polygons);
-      console.log('The parsing fis done!');
     },
     onMapReady() {
       // Zoom the map to fit the extremes
-      console.log('The map is ready!')
       const bounds = [this.extremes.north, this.extremes.west, this.extremes.east, this.extremes.south];
-      console.log(bounds);
       this.$refs.map.mapObject.fitBounds(bounds);
     }
   },

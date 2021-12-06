@@ -225,11 +225,8 @@ class PolyParser {
 
       // Attempt to check if the coordinate is in Northing / Easting format, is so, set reversed to true.
       // This will work well around norway but will yield wrong results other places in the world
-      if(coordinateSample[0] > 31) {
-        console.log('It seems to be in the reverse order');
-        reversed = true;
-      }
-
+      if(coordinateSample[0] > 31) reversed = true;
+      
     } else {
       // The coordinates are in some other CRS, attempt to figure out what
       // Make two passes to attempt to determine what EPSG code the coordinate falls under
