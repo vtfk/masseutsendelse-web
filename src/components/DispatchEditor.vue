@@ -512,20 +512,8 @@
             })
           })
 
-          /*
-            Legg til stat cards
-          */
-          this.statItems.push({ text: 'Enheter', value: matrikkelEnhetIds.length })
-          this.statItems.push({ text: 'Unike eiere', value: matrikkelEiere.length })
+          // Hent ut juridiske eiere
           let juridiskeEiere = matrikkelEiere.filter((e) => e.$type.toLowerCase().includes('juridisk'));
-          this.statItems.push({ text: 'Juridiske eiere', value: juridiskeEiere.length })
-          this.statItems.push({ text: 'Private eiere', value: matrikkelEiere.length - juridiskeEiere.length })
-          if(this.dispatch.stats.area > 1000) {
-            this.statItems.push({ text: 'Areal', value: this.dispatch.stats.area / 1000, postvalue: ' KM²'})
-          } else {
-            this.statItems.push({ text: 'Areal', value: this.dispatch.stats.area, postvalue: ' M²'})
-          }
-          
 
           /*
             Fyll data inn i dispatch objekt
@@ -534,6 +522,23 @@
           this.dispatch.stats.privateOwners = matrikkelEiere.length - juridiskeEiere.length;
           this.dispatch.stats.businessOwners = juridiskeEiere.length;
           this.dispatch.stats.totalOwners = matrikkelEiere.length;
+          this.dispatch.stats.area = this.dispatch.polygons.area;
+
+          /*
+            Legg til stat cards
+          */
+          this.statItems.push({ text: 'Enheter', value: matrikkelEnhetIds.length })
+          this.statItems.push({ text: 'Unike eiere', value: matrikkelEiere.length })
+          this.statItems.push({ text: 'Juridiske eiere', value: juridiskeEiere.length })
+          this.statItems.push({ text: 'Private eiere', value: matrikkelEiere.length - juridiskeEiere.length })
+          if(this.dispatch.stats.area > 1000) {
+            this.statItems.push({ text: 'Areal', value: Math.round(this.dispatch.stats.area / 1000), postvalue: ' KM²'})
+          } else {
+            this.statItems.push({ text: 'Areal', value: Math.round(this.dispatch.stats.area), postvalue: ' M²'})
+          }
+          
+
+          
 
           matrikkelEnheter.forEach((enhet) => {
             // Hent ut generell informasjon om matrikkel enheten som skal lagres i databasen
