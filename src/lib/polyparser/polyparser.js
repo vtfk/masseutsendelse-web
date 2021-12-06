@@ -10,6 +10,7 @@ import { polygon as turfPolygon }  from '@turf/helpers';
 import turfArea from '@turf/area';
 // Parsers
 const dxf = require('./parsers/dxf');
+const kml = require('./parsers/kml');
 
 /*
   Variables and constants
@@ -116,6 +117,9 @@ class PolyParser {
       case 'dxf':
         parsedData = dxf.parse(fileData);
         break;
+      case 'kml':
+        parsedData = await kml.parse(fileData);
+        break;
       default:
         throw new AppError('Could not parse', `We were unable to find a parser for filetype '${extension}'`);
     }
@@ -133,7 +137,6 @@ class PolyParser {
     returnObj.EPSG = EPSG.code;
 
     parsedData.forEach((polygon) => {
-      // if(i !== 1) return;
       // Make sure that the polygon contains vertices
       if(!polygon.vertices || !Array.isArray(polygon.vertices) || polygon.vertices.length === 0) throw new AppError('Polygon is empty', 'One or more polygons in the file is empty');
       
@@ -212,16 +215,33 @@ class PolyParser {
   guessEPSGCodeAndOrder(coordinateSample) {
     let reversed = false;
     let code = undefined;
-    // Make two passes to attempt to determine what EPSG code the coordinate falls under
-    // The second pass is with X and Y reversed to check if the data is passed in with northing, easting formating
-    for(let i = 0; i <= 1; i++) {
-      if(i == 1) {
+
+    // Make a check if the coordinates are long or lat
+    if((coordinateSample[0] > -90 && coordinateSample[0] < 90 && coordinateSample[1] > -180 && coordinateSample[1] < 180) ||
+    (coordinateSample[1] > -90 && coordinateSample[1] < 90 && coordinateSample[0] > -180 && coordinateSample[0] < 180) 
+    ) {
+      // The EPSG code for WGS84 (lat, long)
+      code = '4326'
+
+      // Attempt to check if the coordinate is in Northing / Easting format, is so, set reversed to true.
+      // This will work well around norway but will yield wrong results other places in the world
+      if(coordinateSample[0] > 31) {
+        console.log('It seems to be in the reverse order');
         reversed = true;
-        coordinateSample = [coordinateSample[1], coordinateSample[0]];
       }
-      if(coordinateSample[0] > -90 && coordinateSample[0] < 90 && coordinateSample[1] > -180 && coordinateSample[1] < 180) code = '4326'
-      if(coordinateSample[0] > 322361.85 && coordinateSample[0] < 637396.44 && coordinateSample[1] > 6424859.18 && coordinateSample[1] < 7296440.28) code = '5972'
-      if(coordinateSample[0] > -1877994.66 && coordinateSample[0] < 3932281.56 && coordinateSample[1] > 836715.13 && coordinateSample < 9440581.95) code = '25832'
+
+    } else {
+      // The coordinates are in some other CRS, attempt to figure out what
+      // Make two passes to attempt to determine what EPSG code the coordinate falls under
+      // The second pass is with X and Y reversed to check if the data is passed in with northing, easting formating
+      for(let i = 0; i <= 1; i++) {
+        if(i == 1) {
+          reversed = true;
+          coordinateSample = [coordinateSample[1], coordinateSample[0]];
+        }
+        if(coordinateSample[0] > 322361.85 && coordinateSample[0] < 637396.44 && coordinateSample[1] > 6424859.18 && coordinateSample[1] < 7296440.28) code = '5972'
+        if(coordinateSample[0] > -1877994.66 && coordinateSample[0] < 3932281.56 && coordinateSample[1] > 836715.13 && coordinateSample < 9440581.95) code = '25832'
+      }
     }
 
     if(!code) return undefined;

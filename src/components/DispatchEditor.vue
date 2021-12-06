@@ -5,12 +5,11 @@
     <!-- Loaders -->
     <Loading v-else-if="isLoadingTemplates" title="Laster inn maler" />
     <!-- Fil opplasting -->
-    <div v-else-if="!dispatch || dispatch.polygons.polygons.length === 0">
+    <div v-else-if="!uploadedFile">
       <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
     </div>
-    <div v-else-if="isParsingFile">
-      <p class="typography heading-two">Filen bearbeides, vent litt<p/>
-      <VTFKSpinner size="xlarge"/>
+    <div v-else-if="isParsingFile" class="centeredColumn">
+      <Loading title="Filen behandles" message="Dette kan ta noen sekunder" />
     </div>
     <!-- Kart og matrikkel -->
     <div v-else class="center-content">
@@ -150,7 +149,7 @@
     Import dependencies
   */
   // VTFK komponenter
-  import { Button, Spinner, Checkbox } from '@vtfk/components'
+  import { Button, Checkbox } from '@vtfk/components'
 
   // Prosjektkomponenter
   import UploadField from '../components/UploadField.vue'
@@ -176,7 +175,6 @@
     name: 'dispatchEditor',
     components: {
       'VTFKButton': Button,
-      'VTFKSpinner': Spinner,
       'VTFKCheckbox': Checkbox,
       UploadField,
       Map,
@@ -223,7 +221,7 @@
           },
           polygons: {
             ESPG: '',
-            coordinatesystem: 'EUREF89 UTM Sone 32',
+            coordinatesystem: '',
             filename: '',
             areal: null,
             extremes: {
@@ -234,17 +232,6 @@
               center: undefined
             },
             polygons: [],
-          },
-          geopolygons: {
-            coordinateSystem: 'WGS 84',
-            polygons: [],
-            extremes: {
-              north: undefined,
-              west: undefined,
-              east: undefined,
-              south: undefined,
-              center: undefined
-            }
           }
         },
         // The file provided by the fileuploader
@@ -303,32 +290,6 @@
         if(this.mode === 'new' && (!this.isDispatchApproved || !this.isMatrikkelApproved)) return false;
         return true;
       },
-      // geoPolygonVertices() {
-      //   if(!this.dispatch.geopolygons || !this.dispatch.geopolygons.polygons) return [];
-
-      //   let polygons = [];
-      //   this.dispatch.geopolygons.polygons.forEach((p) => polygons.push(p.vertices));
-
-      //   return polygons;
-      // },
-      // geoPolygonMarkers() {
-      //   if(!this.dispatch.geopolygons || !this.dispatch.geopolygons.polygons) return [];
-
-      //   let points = [];
-
-      //   // Add all extremes for each polygon
-      //   this.dispatch.geopolygons.polygons.forEach((p) => {
-      //     for(let key in p.extremes) {
-      //       points.push(p.extremes[key]);
-      //     }
-      //   })
-        
-      //   // for(let key in this.dispatch.geopolygons.extremes) {
-      //   //   points.push(this.dispatch.geopolygons.extremes[key]);
-      //   // }
-
-      //   return points;
-      // }
     },
     methods: {
       reInitialState() {
@@ -355,8 +316,8 @@
                   businessOwners: null,
                   units: []
                 },
-                filepolygons: {
-                  coordinatesystem: 'EUREF89 UTM Sone 32',
+                polygons: {
+                  EPSG: '',
                   polygons: [],
                   extremes: {
                     north: undefined,
@@ -365,17 +326,6 @@
                     south: undefined,
                     center: undefined
                   },
-                },
-                geopolygons: {
-                  coordinateSystem: 'WGS 84',
-                  polygons: [],
-                  extremes: {
-                    north: undefined,
-                    west: undefined,
-                    east: undefined,
-                    south: undefined,
-                    center: undefined
-                  }
                 }
               },
               // The file provided by the fileuploader
@@ -632,18 +582,14 @@
       },
       async parseFiles(files) {
         try {
+          this.uploadedFile = files;
+          this.isParsingFile = true;
           let polygons = await PolyParser.parse(files[0], { inverseXY: true });
+
           console.log('== From parser ==');
           console.log(polygons);
           // File polygons
           this.$set(this.dispatch, 'polygons', polygons);
-
-          // // Geo polygons
-          // this.dispatch.geopolygons = {
-          //   polygons: polygons.transformedPolygons,
-          //   extremes: polygons.transformedExtremes,
-          //   area: polygons.transformedArea
-          // }
 
           // Set that the file has been parsed
           this.isParsingFile = false;

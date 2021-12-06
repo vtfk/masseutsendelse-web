@@ -1,6 +1,6 @@
 <template>
   <div class="map-wrapper">
-    <l-map ref="mymap" style="height: 100%; min-height: 400px; width: 100%; z-index: 1;" :zoom="mapZoom" :center="mapCenter">
+    <l-map ref="map" style="height: 100%; min-height: 400px; width: 100%; z-index: 1;" :zoom="mapZoom" :center="mapCenter" v-on:ready="onMapReady()" >
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
       <!-- <l-marker v-for="(marker, i) in markers" :key="(i + 1) * (Math.random() * 100000)" :lat-lng="marker"></l-marker> -->
       
@@ -23,7 +23,6 @@
 
 <script>
 import { LMap, LTileLayer, LMarker, LPolygon, LIcon } from 'vue2-leaflet';
-// import { icon } from 'leaflet';
 
 // Fix a bug where map markers are not shown
 import { Icon } from 'leaflet';
@@ -52,6 +51,10 @@ export default {
     markers: {
       type: Array,
       default: () => [[59.2654381, 10.4159352]]
+    },
+    showCenterPin: {
+      type: Boolean,
+      default: true
     },
     outerBounds: {
       type: Object,
@@ -83,26 +86,22 @@ export default {
         color: this.$props.lineColor,
         fillColor: this.$props.fillColor,
       },
-      polygonArray: [],
+      polygonArray: undefined,
       extremes: undefined,
     }
   },
   methods: {
     invalidateMapSize() {
-      this.$refs.mymap.mapObject.invalidateSize(); 
+      this.$refs.map.mapObject.invalidateSize(); 
     },
     parsePolygons(polygons) {
       // Input validation
       if(!polygons) return [];
-      console.log('== Parsing in map ==');
-      console.log(polygons);
 
       // Transform vertices if applicable
       let pindex = -1;
       for(let polygon of polygons.polygons) {
         pindex++;
-        console.log('Parsing polygon');
-        console.log(polygon)
         let vindex = -1;
         for(let vertice of polygon.vertices) {
           vindex++;
@@ -113,25 +112,30 @@ export default {
       // Transform center
       this.mapCenter = polyparser.swapXY(polyparser.transformCoordinates(this.polygon.EPSG, undefined, polygons.center));
 
+      // Transform extremes
       this.extremes = {
         north: polyparser.swapXY(polyparser.transformCoordinates(this.polygon.EPSG, undefined, polygons.extremes.north)),
         west: polyparser.swapXY(polyparser.transformCoordinates(this.polygon.EPSG, undefined, polygons.extremes.west)),
         east: polyparser.swapXY(polyparser.transformCoordinates(this.polygon.EPSG, undefined, polygons.extremes.east)),
         south: polyparser.swapXY(polyparser.transformCoordinates(this.polygon.EPSG, undefined, polygons.extremes.south)),
       }
-
-      console.log('Parsed in map');
-      console.log(polygons);
       
       this.$set(this, 'polygonArray', polygons.polygons);
+      console.log('The parsing fis done!');
+    },
+    onMapReady() {
+      // Zoom the map to fit the extremes
+      console.log('The map is ready!')
+      const bounds = [this.extremes.north, this.extremes.west, this.extremes.east, this.extremes.south];
+      console.log(bounds);
+      this.$refs.map.mapObject.fitBounds(bounds);
     }
   },
   created() {
     this.parsePolygons(this.$props.polygons);
-    // document.addEventListener('resize', () => console.log('Hei'));
+    this.$set(this, 'polygonArray', this.polygonArray);
   },
   beforeDestroy() {
-    // document.removeEventListener('resize', () => this.invalidateMapSize());
   },
   mounted() {
     setTimeout(() => {
@@ -139,10 +143,6 @@ export default {
     }, 100);
   },
   watch: {
-    // polygons: function (newVal) {
-    //   console.log('WATCH FOUND CHANGE')
-    //   this.parsePolygons(JSON.parse(JSON.stringify(newVal)));
-    // }
   }
 }
 </script>
