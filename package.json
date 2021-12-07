@@ -13,7 +13,7 @@
     "@turf/helpers": "^6.5.0",
     "@vtfk/components": "^0.2.1",
     "axios": "^0.22.0",
-    "core-js": "3.19.2",
+    "core-js": "3.19.3",
     "dxf-parser": "^1.0.2",
     "leaflet": "^1.7.1",
     "lodash.get": "^4.4.2",
