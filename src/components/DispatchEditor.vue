@@ -5,7 +5,7 @@
     <!-- Loaders -->
     <Loading v-else-if="isLoadingTemplates" title="Laster inn maler" />
     <!-- Fil opplasting -->
-    <div v-else-if="!uploadedFile">
+    <div v-else-if="mode === 'new' && !uploadedFile">
       <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
     </div>
     <div v-else-if="isParsingFile" class="centeredColumn">
@@ -536,9 +536,6 @@
           } else {
             this.statItems.push({ text: 'Areal', value: Math.round(this.dispatch.stats.area), postvalue: ' M²'})
           }
-          
-
-          
 
           matrikkelEnheter.forEach((enhet) => {
             // Hent ut generell informasjon om matrikkel enheten som skal lagres i databasen

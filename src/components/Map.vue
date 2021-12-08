@@ -1,6 +1,7 @@
 <template>
   <div class="map-wrapper">
-    <l-map ref="map" style="height: 100%; min-height: 400px; width: 100%; z-index: 1;" :zoom="mapZoom" :center="mapCenter" v-on:ready="onMapReady()" >
+    <Loading v-if="isParsing" title="Forbereder kart" />
+    <l-map v-else ref="map" :style="mapStyle" :zoom="$props.zoom" :center="mapCenter" v-on:ready="onMapReady()" >
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
       <!-- <l-marker v-for="(marker, i) in markers" :key="(i + 1) * (Math.random() * 100000)" :lat-lng="marker"></l-marker> -->
       
@@ -23,6 +24,7 @@
 
 <script>
 import { LMap, LTileLayer, LMarker, LPolygon, LIcon } from 'vue2-leaflet';
+import Loading from './Loading.vue';
 
 // Fix a bug where map markers are not shown
 import { Icon } from 'leaflet';
@@ -41,9 +43,17 @@ export default {
     LTileLayer,
     LMarker,
     LPolygon,
-    LIcon
+    LIcon,
+    Loading
   },
   props: {
+    polygons: {
+      type: Object
+    },
+    height: {
+      type: String,
+      default: '400px'
+    },
     center: {
       type: Array,
       default: () => [59.2654381, 10.4159352]
@@ -71,12 +81,11 @@ export default {
       type: Number,
       default: 14
     },
-    polygons: {
-      type: Object
-    }
+    
   },
   data() {
     return {
+      isParsing: true,
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       mapZoom: this.$props.zoom,
@@ -90,13 +99,23 @@ export default {
       extremes: undefined,
     }
   },
+  computed: {
+    mapStyle() {
+      return `height: 100%; min-height: ${this.$props.height}; width: 100%; z-index: 1;`
+    }
+  },
   methods: {
     invalidateMapSize() {
+      if(this.extremes && this.extremes.north) {
+        const bounds = [this.extremes.north, this.extremes.west, this.extremes.east, this.extremes.south];
+        this.$refs.map.mapObject.fitBounds(bounds, { padding: [-20, -20] });
+      }
       this.$refs.map.mapObject.invalidateSize(); 
     },
     parsePolygons(polygons) {
       // Input validation
       if(!polygons) return [];
+      this.isParsing = true;
 
       // Transform vertices if applicable
       let pindex = -1;
@@ -121,15 +140,18 @@ export default {
       }
       
       this.$set(this, 'polygonArray', polygons.polygons);
+      this.isParsing = false;
     },
     onMapReady() {
+      // Parse polygon
+      this.parsePolygons(JSON.parse(JSON.stringify(this.$props.polygons)));
+      this.$set(this, 'polygonArray', this.polygonArray);
       // Zoom the map to fit the extremes
-      const bounds = [this.extremes.north, this.extremes.west, this.extremes.east, this.extremes.south];
-      this.$refs.map.mapObject.fitBounds(bounds);
+      this.invalidateMapSize();
     }
   },
   created() {
-    this.parsePolygons(this.$props.polygons);
+    this.parsePolygons(JSON.parse(JSON.stringify(this.$props.polygons)));
     this.$set(this, 'polygonArray', this.polygonArray);
   },
   beforeDestroy() {

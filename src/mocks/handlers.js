@@ -3,7 +3,7 @@ import config from '../../config';
 
 let mockEndpoints = [];
 
-if(config.MOCK_MASSEUTSENDELSE_API) {
+if(config.MOCK_MASSEUTSENDELSE_API === 'true') {
   mockEndpoints.push(rest.get('*/api/dispatches', (req, res, ctx) => {
     return res(ctx.json(require('./data/Dispatches.json')));
   }));
