@@ -105,14 +105,14 @@
       <v-dialog
         v-if="dialogMap"
         v-model="dialogMap"
-        width="80%"
+        width="60%"
       >
         <v-card>
           <v-card-title>
             Kart
           </v-card-title>
           <v-card-text>
-            <Map :coordinates="selectedDispatch.geopolygon.vertices" :center="selectedDispatch.geopolygon.extremes.center" :markers="[selectedDispatch.geopolygon.extremes.center]"/>
+            <Map :polygons="selectedDispatch.polygons" height="60vh" />
           </v-card-text>
           <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
             <VTFKButton 

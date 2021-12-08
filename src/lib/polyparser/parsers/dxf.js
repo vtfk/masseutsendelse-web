@@ -41,8 +41,6 @@ export function parse(text) {
       });
     });
 
-    // Get the metadata from the polygon
-
     return polygonArray;
   } catch (err) {
     throw new AppError(err.title || 'Error', err.message);
