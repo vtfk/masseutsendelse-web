@@ -170,7 +170,6 @@ export default {
   },
   methods: {
     onMarkdownChanged() {
-      console.log('Something has changed');
       this.hasChanged = true;
       this.activeTemplate.template = this.$refs.editor.editor.getMarkdown();
       this.$set(this.activeTemplate, 'template', Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64'));
@@ -343,7 +342,6 @@ export default {
       // this.$refs.editor.editor.insertText('$$vtfk\nJadda');
     })
     this.$refs.editor.editor.addCommand('wysiwyg', 'insertPlaceholder', () => {
-      console.log('Legger til!!');
       this.$refs.editor.editor.insertText('$$vtfk\nJadda');
       const md = this.$refs.editor.editor.getMarkdown();
       this.$refs.editor.editor.setMarkdown(md);

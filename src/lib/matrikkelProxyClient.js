@@ -3,6 +3,8 @@
 */
 import config from '../../config';
 import axios from "axios";
+import AppError from './vtfk-errors/AppError';
+import { removeKeys } from '@vtfk/utilities';
 
 export default class MatrikkelProxyClient {
   constructor(APIBaseURL, APIKey, ClientId) {
@@ -92,7 +94,9 @@ export default class MatrikkelProxyClient {
         'X-API-KEY': this.apiKey,
         'Content-Type': 'application/json'
       },
-      data: items
+      data: {
+        items: items
+      }
     }
 
     // Make the request
@@ -109,8 +113,8 @@ export default class MatrikkelProxyClient {
    static getItemType(Item) {
     if(!Item) { return undefined; }
 
-    if(Item.$type || Item.type) {
-      return Item.$type || Item.type;
+    if(Item._type || Item.type) {
+      return Item._type || Item.type;
     }
 
     return 'unknown';
@@ -129,11 +133,51 @@ export default class MatrikkelProxyClient {
     }
     else if(Object.keys(Item).length === 1) {
       return Item[Object.keys(Item)[0]]
-    } else if (Object.keys(Item).length === 3 && Item.$type && Item.$namespace) {
+    } else if (Object.keys(Item).length === 3 && Item._type && Item._namespace) {
       let key = Object.keys(Item).find((k) => k !== '$');
       if(key) { return Item[key]; }
     }
     
     return Item;
   }
-}
+  
+  /**
+   * 
+   * @param {Object} data Data object containing MatrikkelEnheter
+   */
+  static getMatrikkelEnheterOwnerCentric(matrikkelUnits, matrikkelOwners) {
+    if(!matrikkelUnits) throw new AppError('MatrikkelEnheter missing', 'No MatrikkelEnheter is provided');
+
+    // Object to store
+    let returnedOwners = {};
+
+    // Loop through units as they contains the owner information
+    for(let unit of matrikkelUnits) {
+      unit.eierforhold.forEach((ownership) => {
+
+        // Retreive the owner for the ownership
+        const owner = matrikkelOwners.find((o) => o.id.value === ownership.eierId);
+        if(!owner) throw new AppError('Kunne ikke finne eier til eierskap', `Eier med id ${ownership.eierforhold} kunne ikke finnes for ${unit.bruksnavn}`)
+
+        // Add the owner to the returnedOwners object if not already exists
+        if(!returnedOwners[ownership.eierId]) {
+          returnedOwners[ownership.eierId] = {...owner, ownerships: [] }
+          if(owner.id.value) returnedOwners[ownership.eierId].id = owner.id.value;
+        }
+
+        // Push the ownership to the owner
+        returnedOwners[ownership.eierId].ownerships.push({
+          ...ownership,
+          unit: removeKeys(unit, ['eierforhold'])
+        })
+      })
+    }
+
+    // Convert from object to array
+    let ownerArray = [];
+    for(const key in returnedOwners) ownerArray.push(returnedOwners[key]);
+
+    // Return the array
+    return ownerArray;
+  }
+} 
