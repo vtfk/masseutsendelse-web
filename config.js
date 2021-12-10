@@ -5,5 +5,5 @@ export default {
     MASSEUTSENDELSEAPI_BASEURL: process.env.VUE_APP_MASSEUTSENDELSEAPI_BASE_URL || 'https://test-func-masseutsendelse.azurewebsites.net/',
     MOCK_MATRIKKEL_API: process.env.VUE_APP_MOCK_MATRIKKEL_API || false,
     MOCK_MASSEUTSENDELSE_API: process.env.VUE_APP_MOCK_MASSEUTSENDELSE_API || false,
-    MOCK_ENABLED: process.env.VUE_APP_MOCK_MATRIKKEL_API || process.env.VUE_APP_MOCK_MASSEUTSENDELSE_API
+    MOCK_ENABLED: process.env.VUE_APP_MOCK_MATRIKKEL_API === 'true' || process.env.VUE_APP_MOCK_MASSEUTSENDELSE_API === 'true'
 }

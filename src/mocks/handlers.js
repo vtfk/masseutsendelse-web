@@ -12,7 +12,7 @@ if(config.MOCK_MASSEUTSENDELSE_API === 'true') {
   }));
 }
 
-if(config.MOCK_MATRIKKEL_API) {
+if(config.MOCK_MATRIKKEL_API === 'true') {
   mockEndpoints.push(rest.post('*/api/v1/matrikkelenheter*', (req, res, ctx) => {
     return res(ctx.json(require('./data/MatrikkelEnhetIDs.json')));
   }));

@@ -151,8 +151,6 @@ const store = new Vuex.Store({
     },
     async postTemplate(context, template) {
       try {
-        console.log('== Posting template ==');
-        console.log(template);
         // Define the request
         const request = {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',

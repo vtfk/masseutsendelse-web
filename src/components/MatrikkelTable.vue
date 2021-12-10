@@ -4,9 +4,9 @@
       <td :colspan="headers.length" style="padding: 1rem 1rem;">
         <h2>Eierforhold</h2>
         <VDataTable :headers="eierHeader" :items="item.eierforhold" item-key="id" :hide-default-footer="true">
-          <template v-slot:[`item.$type`]="{ item }">
-            <div v-if="item.$type">
-              <div v-if="item.$type.toLowerCase().includes('juridisk')">
+          <template v-slot:[`item._type`]="{ item }">
+            <div v-if="item._type">
+              <div v-if="item._type.toLowerCase().includes('juridisk')">
                 🏢 Juridisk 
               </div>
               <div v-else>
@@ -53,7 +53,7 @@
           },
           {
             text: 'Type',
-            value: '$type'
+            value: '_type'
           },
           {
             text: 'Gårds #',
@@ -83,7 +83,7 @@
           },
           {
             text: 'Type',
-            value: '$type'
+            value: '_type'
           },
           {
             text: 'Eier',

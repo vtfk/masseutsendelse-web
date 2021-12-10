@@ -28,7 +28,13 @@
         <!-- Cards som viser stats om informasjonen -->
         <StatCards :items="statItems"/>
         <!-- Matrikkel table -->
-        <MatrikkelTable :items="dispatch.matrikkelEnheter" item-key="bruksnavn" />
+        <!-- <MatrikkelTable :items="dispatch.matrikkelEnheter" item-key="bruksnavn" /> -->
+        <h2>Eiere / Mottakere</h2>
+        <MatrikkelOwnerTable :items="dispatch.owners" item-key="id" @excludeOwner="(e) => excludeOwner(e)" />
+        <div v-if="dispatch.excludedOwners" style="width: 100%;">
+          <h2>Ekskluderte mottakere</h2>
+          <MatrikkelOwnerTable type="excluded" :items="dispatch.excludedOwners" item-key="id" @includeOwner="(e) => includeOwner(e)" style="margin-top: 1rem" />
+        </div>
         <div v-if="mode === 'new'" class="centeredColumn">
           <!-- Angreknapp -->
           <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
@@ -107,14 +113,15 @@
           :passedProps="{onClick: () => { previewPDF() }}">Se forhåndsvisning
         </VTFKButton>
         <div v-if="mode === 'new'" class="centeredColumn">
-          <VTFKCheckbox
+          <v-checkbox v-model="isDispatchApproved" class="mt-1" :label="'Følgende informasjon skal sendes ut til ' + dispatch.owners.length + ' mottakere'" />
+          <!-- <VTFKCheckbox
             v-if="isAllRequiredMatrikkelInfoRetreived"
             value="false"
             class="mt-1"
             name="dispatchApproved"
-            :label="'Følgende informasjon skal sendes ut til ' + dispatch.stats.totalOwners + ' mottakere'"
+            :label="'Følgende informasjon skal sendes ut til ' + dispatch.owners.length + ' mottakere'"
             :passedProps="{ onChange: () => { isDispatchApproved = !isDispatchApproved; }}"
-          />
+          /> -->
         </div>
         <div style="display: flex; justify-content: center; gap: 0.5rem; width: 100%;">
           <VTFKButton
@@ -149,14 +156,15 @@
     Import dependencies
   */
   // VTFK komponenter
-  import { Button, Checkbox } from '@vtfk/components'
+  import { Button } from '@vtfk/components'
 
   // Prosjektkomponenter
   import UploadField from '../components/UploadField.vue'
   import Map from '../components/Map.vue'
   import StatCards from '../components/StatCards.vue'
   import Loading from './Loading.vue'
-  import MatrikkelTable from '../components/MatrikkelTable.vue';
+  // import MatrikkelTable from '../components/MatrikkelTable.vue';
+  import MatrikkelOwnerTable from '../components/MatrikkelOwnerTable.vue';
   import DispatchStatusSelect from '../components/DispatchStatusSelect.vue';
   import SchemaFields from '../components/SchemaFields.vue';
 
@@ -167,7 +175,6 @@
   import pick from 'lodash.pick';
   import PolyParser from '../lib/polyparser/polyparser';
 
-
   // Custom error class
   import AppError from '../lib/vtfk-errors/AppError';
 
@@ -175,11 +182,11 @@
     name: 'dispatchEditor',
     components: {
       'VTFKButton': Button,
-      'VTFKCheckbox': Checkbox,
+      // 'VTFKCheckbox': Checkbox,
       UploadField,
       Map,
       StatCards,
-      MatrikkelTable,
+      MatrikkelOwnerTable,
       DispatchStatusSelect,
       SchemaFields,
       Loading,
@@ -210,6 +217,8 @@
             data: undefined,
             template: undefined
           },
+          owners: [],
+          excludedOwners: [],
           matrikkelEnheter: undefined,
           stats: {
             affectedCount: null,
@@ -503,17 +512,23 @@
           }
 
           /*
-            Oppdater hovedmatrikkel objekt med innhentet eierinformasjon
+            Generer ett datasett hvor eiere er først med alle eierforhold under
           */
-          matrikkelEnheter.forEach((enhet) => {
-            enhet.eierforhold.forEach((eierforhold) => {
-              let match = matrikkelEiere.find((eier) => MatrikkelProxyClient.getItemValue(eier.id) == eierforhold.eierId)
-              eierforhold.eier = match;
-            })
-          })
+          const ownerCentric = MatrikkelProxyClient.getMatrikkelEnheterOwnerCentric(matrikkelEnheter, matrikkelEiere);
+          this.dispatch.owners = ownerCentric;
+
+          // /*
+          //   Oppdater hovedmatrikkel objekt med innhentet eierinformasjon
+          // */
+          // matrikkelEnheter.forEach((enhet) => {
+          //   enhet.eierforhold.forEach((eierforhold) => {
+          //     let match = matrikkelEiere.find((eier) => MatrikkelProxyClient.getItemValue(eier.id) == eierforhold.eierId)
+          //     eierforhold.eier = match;
+          //   })
+          // })
 
           // Hent ut juridiske eiere
-          let juridiskeEiere = matrikkelEiere.filter((e) => e.$type.toLowerCase().includes('juridisk'));
+          let juridiskeEiere = matrikkelEiere.filter((e) => e._type.toLowerCase().includes('juridisk'));
 
           /*
             Fyll data inn i dispatch objekt
@@ -564,6 +579,28 @@
           this.error = err;
         }
       },
+      excludeOwner(owner) {
+        // Add the owner to the excludedOwners array
+        if(!this.dispatch.excludedOwners) this.dispatch.excludedOwners = [];
+        this.dispatch.excludedOwners.push(owner);
+        this.$set(this.dispatch, 'excludedOwners', this.dispatch.excludedOwners);
+        // Filter away the exluded owner from the owners array
+        this.dispatch.owners = this.dispatch.owners.filter((o) => o.id !== owner.id);
+        this.$set(this.dispatch, 'owners', this.dispatch.owners);
+        // Flip the checkboxes so they will have to be checked again
+        this.isDispatchApproved = false;
+      },
+      includeOwner(owner) {
+
+        // Add the exlcuded owner
+        this.dispatch.owners.push(owner);
+        this.$set(this.dispatch, 'owners', this.dispatch.owners);
+        // Remove the owner from the exluded array
+        this.dispatch.excludedOwners = this.dispatch.excludedOwners.filter((o) => o.id !== owner.id);
+        this.$set(this.dispatch, 'excludedOwners', this.dispatch.excludedOwners);
+        // Flip the checkboxes so they will have to be checked again
+        this.isDispatchApproved = false;
+      },
       async readFile(file) {
         // Always return a Promise
         return new Promise((resolve, reject) => {
@@ -588,8 +625,6 @@
           this.isParsingFile = true;
           let polygons = await PolyParser.parse(files[0], { inverseXY: true });
 
-          console.log('== From parser ==');
-          console.log(polygons);
           // File polygons
           this.$set(this.dispatch, 'polygons', polygons);
 
@@ -602,60 +637,6 @@
           if(typeof error === 'string') error = new AppError('Error', error);
           this.error = error;
         }
-      },
-      parseMatrikkelEnheter(Enheter) {
-        if(!Enheter) { return; }
-        if(!Array.isArray(Enheter)) { Enheter = [Enheter]; }
-
-        let parsed = [];
-        Enheter.forEach((enhet) => {
-          let item = {}
-          let type = MatrikkelProxyClient.getItemType(enhet);
-
-          let id = 'unresolved';
-          if(enhet && enhet.id) {
-            if(enhet.id.value) { id = enhet.id.value; }
-            else { id = enhet.id; }
-          }
-
-          item = {
-            bruksnavn: enhet.bruksnavn,
-            oppgittAreal: enhet.historiskOppgittAreal || 0,
-            id: id,
-            type: type
-          }
-
-          // Hent ut matrikkel informasjon
-          if(enhet.matrikkelnummer) {
-            item.gardsnummer = enhet.matrikkelnummer.gardsnummer;
-            item.bruksnummer = enhet.matrikkelnummer.bruksnummer;
-            item.festenummer = enhet.matrikkelnummer.festenummer;
-            item.kommuneId = enhet.matrikkelnummer.kommuneId;
-          }
-
-          // Hent ut eierinformasjon
-          if(enhet.eierforhold) {
-            if(enhet.eierforhold.item) { enhet.eierforhold = enhet.eierforhold.item }
-            if(!Array.isArray(enhet.eierforhold)) { enhet.eierforhold = [enhet.eierforhold]; }
-
-            let eiere = [];
-            enhet.eierforhold.forEach((eierforhold) => {
-              eiere.push({
-                datoFra: eierforhold.datoFra,
-                type: MatrikkelProxyClient.getItemType(eierforhold),
-                eierId: eierforhold.eierId,
-                eierforholdKode: eierforhold.eierforholdKodeId,
-                kommuneId: eierforhold.kommuneId,
-                andelsnummer: eierforhold.andelsnummer,
-                andel: eierforhold.andel,
-              })
-            })
-            item.eiere = eiere;
-          }
-
-          parsed.push(item);
-        })
-        return parsed;
       },
       async saveOrEditDispatch() {
         // Input validation
@@ -682,7 +663,6 @@
           } else {
             throw new AppError('Kunne ikke lagre', 'Klarte ikke å avgjøre hvordan utsendelsen skulle lagres');
           }
-          console.log('Jeg er her!')
           if(this.$route.path && this.$route.path.toLowerCase() !== '/utsendelser') this.$router.push('Utsendelser');
         } catch(err) {
           this.error = err;
