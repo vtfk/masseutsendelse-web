@@ -317,6 +317,8 @@
                   template: undefined
                 },
                 matrikkelEnheter: undefined,
+                owners: [],
+                excludeOwners: [],
                 stats: {
                   affectedCount: null,
                   area: null,

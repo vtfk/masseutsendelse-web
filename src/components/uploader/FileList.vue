@@ -9,8 +9,8 @@
           <td style="padding-left: 0.5rem; text-align: left;">
             {{file.name}}
           </td>
-          <td>
-            <button class="iconBtn" @click="removeFile(file)"><v-icon>mdi-delete</v-icon></button>
+          <td style="width: 75px">
+            <button class="iconBtn" icon @click="removeFile(file)"><v-icon>mdi-delete</v-icon></button>
           </td>
         </tr>
       </tbody>
@@ -54,10 +54,16 @@ export default {
 
 <style>
   .wrapper {
-    background-color: #D5E1E5;
+    
+    background-color: #BACDD4;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
   }
+
+  .tableRow:nth-child(even) {
+    background-color: #D5E1E5;
+  }
+
   .iconBtn {
     width: 1.9rem;
     max-width: 1.9rem!important;
@@ -84,10 +90,6 @@ export default {
 
   table tr:last-child td:last-child {
     border-bottom-right-radius: 10px;
-  }
-
-  .tableRow:nth-child(even) {
-    background-color: #BACDD4;
   }
 
 </style>
