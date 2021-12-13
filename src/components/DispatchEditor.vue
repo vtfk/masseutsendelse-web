@@ -6,6 +6,7 @@
     <Loading v-else-if="isLoadingTemplates" title="Laster inn maler" />
     <!-- Fil opplasting -->
     <div v-else-if="mode === 'new' && !uploadedFile">
+      <h2>Last opp polygonet</h2>
       <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
     </div>
     <div v-else-if="isParsingFile" class="centeredColumn">
@@ -44,107 +45,105 @@
       </div>
       <!-- Prosjekt informasjon -->
       <div v-if="isMatrikkelApproved || mode === 'edit'" class="card shadow centeredColumn" style="margin-top: 1rem;">
-        <h1>Masseutsendelse</h1>
-        <DispatchStatusSelect v-if="mode === 'edit'" v-model="dispatch.status" :disabled="isLocked"/>
-        <!-- En input for prosjekt navn, en for prosjekt nr -->
-        <VTextField 
-          v-model="dispatch.title"
-          :disabled="isReadOnly"
-          placeholder="Angi et prosjektnavn"
-          hint="Angi et prosjektnavn"
-          label="Prosjekt navn"
-          :required="true"
-          style="max-width: 750px; width: 100%;"
-        >
-          <template #label>
-            <span class="required"><strong>* </strong></span>Prosjektnavn
-          </template>
-        </VTextField>
-        <VTextField 
-          v-model="dispatch.projectnumber"
-          :disabled="isReadOnly"
-          placeholder="Angi et nummer"
-          hint="Angi et nummer"
-          label="Prosjekt nummer"
-          :required="true"
-          style="max-width: 750px; width: 100%;"
-        >
-          <template #label>
-            <span class="required"><strong>* </strong></span>Prosjektnummer
-          </template>
-        </VTextField>
-        <VTextField 
-          v-model="dispatch.archivenumber"
-          :disabled="isReadOnly"
-          placeholder="Angi et nummer"
-          hint="Angi et nummer"
-          label="Arkivnummer"
-          :required="true"
-          style="max-width: 750px; width: 100%;"
-        >
-          <template #label>
-            <span class="required"><strong>* </strong></span>Arkivnummer
-          </template>
-        </VTextField>
-        <VSelect
-          label="Velg mal"
-          placeholder="Velg mal"
-          :disabled="isReadOnly"
-          :value="dispatch.template"
-          :items="this.templates"
-          item-text="name"
-          item-value="_id"
-          return-object
-          @change="(e) => onTemplateChanged(e)" 
-          style="max-width: 750px; width: 100%;"
-        />
-        <div v-if="selectedTemplateSchema && selectedTemplateSchema.properties && Object.keys(selectedTemplateSchema.properties).length > 0" style="max-width: 750px; width: 100%;">
-          <h2>Flettefelter</h2>
-          <SchemaFields
-            v-model="dispatch.template.data"
-            :schema="selectedTemplateSchema"
+        <div style="width: 60%">
+          <h1>Masseutsendelse</h1>
+          <DispatchStatusSelect v-if="mode === 'edit'" v-model="dispatch.status" :disabled="isLocked"/>
+          <!-- En input for prosjekt navn, en for prosjekt nr -->
+          <VTextField 
+            v-model="dispatch.title"
             :disabled="isReadOnly"
-            @changed="onTemplateDataChanged()"
-          />
-        </div>
-        <VTFKButton
-          class="mt-1"
-          :disabled="!isRequiredTemplateDataFilledIn"
-          :passedProps="{onClick: () => { previewPDF() }}">Se forhåndsvisning
-        </VTFKButton>
-        <div v-if="mode === 'new'" class="centeredColumn">
-          <v-checkbox v-model="isDispatchApproved" class="mt-1" :label="'Følgende informasjon skal sendes ut til ' + dispatch.owners.length + ' mottakere'" />
-          <!-- <VTFKCheckbox
-            v-if="isAllRequiredMatrikkelInfoRetreived"
-            value="false"
-            class="mt-1"
-            name="dispatchApproved"
-            :label="'Følgende informasjon skal sendes ut til ' + dispatch.owners.length + ' mottakere'"
-            :passedProps="{ onChange: () => { isDispatchApproved = !isDispatchApproved; }}"
-          /> -->
-        </div>
-        <div style="display: flex; justify-content: center; gap: 0.5rem; width: 100%;">
-          <VTFKButton
-            style="margin-top: 1rem;"
-            :disabled="!isReadyToSave"
-            type='secondary' size='small'
-            :passedProps="{onClick: () => { saveOrEditDispatch(); }}"
+            placeholder="Angi et prosjektnavn"
+            hint="Angi et prosjektnavn"
+            label="Prosjekt navn"
+            :required="true"
+            style="max-width: 750px; width: 100%;"
           >
-            <span v-if="mode == 'new'">Send til godkjenning</span>
-            <span v-else>Lagre</span>
-          </VTFKButton>
-          <VTFKButton v-if="mode === 'new'"
-            style="margin-top: 1rem;"
-            type='secondary' size='small'
-            :passedProps="{onClick: () => {reset()}}"
-          >Start på nytt
-          </VTFKButton>
-          <VTFKButton v-else
-            style="margin-top: 1rem;"
-            type='secondary' size='small'
-            :passedProps="{onClick: () => {$emit('close')}}"
-          >Lukk
-          </VTFKButton>
+            <template #label>
+              <span class="required"><strong>* </strong></span>Prosjektnavn
+            </template>
+          </VTextField>
+          <VTextField 
+            v-model="dispatch.projectnumber"
+            :disabled="isReadOnly"
+            placeholder="Angi et nummer"
+            hint="Angi et nummer"
+            label="Prosjekt nummer"
+            :required="true"
+            style="max-width: 750px; width: 100%;"
+          >
+            <template #label>
+              <span class="required"><strong>* </strong></span>Prosjektnummer
+            </template>
+          </VTextField>
+          <VTextField 
+            v-model="dispatch.archivenumber"
+            :disabled="isReadOnly"
+            placeholder="Angi et nummer"
+            hint="Angi et nummer"
+            label="Arkivnummer"
+            :required="true"
+            style="max-width: 750px; width: 100%;"
+          >
+            <template #label>
+              <span class="required"><strong>* </strong></span>Arkivnummer
+            </template>
+          </VTextField>
+          <VSelect
+            label="Velg mal"
+            placeholder="Velg mal"
+            :disabled="isReadOnly"
+            :value="dispatch.template"
+            :items="this.templates"
+            item-text="name"
+            item-value="_id"
+            return-object
+            @change="(e) => onTemplateChanged(e)" 
+            style="max-width: 750px; width: 100%;"
+          />
+          <div v-if="selectedTemplateSchema && selectedTemplateSchema.properties && Object.keys(selectedTemplateSchema.properties).length > 0" style="max-width: 750px; width: 100%;">
+            <h2>Flettefelter</h2>
+            <SchemaFields
+              v-model="dispatch.template.data"
+              :schema="selectedTemplateSchema"
+              :disabled="isReadOnly"
+              @changed="onTemplateDataChanged()"
+            />
+          </div>
+          <h3 style="margin-bottom: 0.2rem">Vedlegg</h3>
+          <upload-field v-model="dispatch.attachments" style="width: 100%" />
+          <div v-if="mode === 'new'" class="centeredColumn" style="margin-top: 1rem">
+            <VTFKButton
+              class="mt-1"
+              :disabled="!isRequiredTemplateDataFilledIn"
+              :passedProps="{onClick: () => { previewPDF() }}">Se forhåndsvisning
+            </VTFKButton>
+          </div>
+          <div v-if="mode === 'new'" class="centeredColumn" style="margin-top: 2rem">
+            <v-checkbox v-model="isDispatchApproved" :label="'Følgende informasjon skal sendes ut til ' + dispatch.owners.length + ' mottakere'" />
+          </div>
+          <div style="display: flex; justify-content: center; gap: 0.5rem; width: 100%;">
+            <VTFKButton
+              style="margin-top: 1rem;"
+              :disabled="!isReadyToSave"
+              type='secondary' size='small'
+              :passedProps="{onClick: () => { saveOrEditDispatch(); }}"
+            >
+              <span v-if="mode == 'new'">Send til godkjenning</span>
+              <span v-else>Lagre</span>
+            </VTFKButton>
+            <VTFKButton v-if="mode === 'new'"
+              style="margin-top: 1rem;"
+              type='secondary' size='small'
+              :passedProps="{onClick: () => {reset()}}"
+            >Start på nytt
+            </VTFKButton>
+            <VTFKButton v-else
+              style="margin-top: 1rem;"
+              type='secondary' size='small'
+              :passedProps="{onClick: () => {$emit('close')}}"
+            >Lukk
+            </VTFKButton>
+          </div>
         </div>
       </div>
     </div>
@@ -159,7 +158,7 @@
   import { Button } from '@vtfk/components'
 
   // Prosjektkomponenter
-  import UploadField from '../components/UploadField.vue'
+  import UploadField from './uploader/UploadField.vue'
   import Map from '../components/Map.vue'
   import StatCards from '../components/StatCards.vue'
   import Loading from './Loading.vue'
@@ -217,6 +216,7 @@
             data: undefined,
             template: undefined
           },
+          attachments: [],
           owners: [],
           excludedOwners: [],
           matrikkelEnheter: undefined,
