@@ -33,24 +33,24 @@ proj4.defs([
 /*
   Support functions
 */
-async function readFile(file) {
-  // Always return a Promise
-  return new Promise((resolve, reject) => {
-    let content = '';
-    const reader = new FileReader();
-    // Wait till complete
-    reader.onloadend = function(e) {
-      content = e.target.result;
-      // const result = content.split(/\r\n|\n/);
-      resolve(content);
-    };
-    // Make sure to handle error states
-    reader.onerror = function(e) {
-      reject(e);
-    };
-    reader.readAsText(file);
-  });
-}
+// async function readFile(file) {
+//   // Always return a Promise
+//   return new Promise((resolve, reject) => {
+//     let content = '';
+//     const reader = new FileReader();
+//     // Wait till complete
+//     reader.onloadend = function(e) {
+//       content = e.target.result;
+//       // const result = content.split(/\r\n|\n/);
+//       resolve(content);
+//     };
+//     // Make sure to handle error states
+//     reader.onerror = function(e) {
+//       reject(e);
+//     };
+//     reader.readAsText(file);
+//   });
+// }
 
 function copy(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -108,7 +108,7 @@ class PolyParser {
     let extension = file.name.substring(file.name.lastIndexOf('.') + 1);
 
     // Attempt to read the file
-    const fileData = await readFile(file.data);
+    const fileData = file.data;
     if(!fileData || fileData.length === 0) { throw new AppError('The file is empty', 'We were able to read the file, but it was empty'); }
 
     // Attempt to parse the file

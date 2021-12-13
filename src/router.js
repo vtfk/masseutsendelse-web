@@ -9,23 +9,39 @@ Vue.use(VueRouter);
 import HomeView from './views/Home'
 import UtsendelserView from './views/Utsendelser'
 import TemplateView from './views/Templates'
+import DevelopmentView from './views/Development'
 
-const router = new VueRouter({
+/*
+  Setup routes
+*/
+let routes = [
+  {
+    path: '/',
+    component: HomeView
+  },
+  {
+    path: '/utsendelser',
+    component: UtsendelserView
+  },
+  {
+    path: '/maler',
+    component: TemplateView
+  }
+]
+
+if(process.env.NODE_ENV === 'development') {
+  routes.push({
+    path: '/dev',
+    component: DevelopmentView
+  })
+}
+
+/*
+  Setup the router
+*/
+let router = new VueRouter({
   mode: 'history',
-  routes: [
-    {
-      path: '/',
-      component: HomeView
-    },
-    {
-      path: '/utsendelser',
-      component: UtsendelserView
-    },
-    {
-      path: '/maler',
-      component: TemplateView
-    }
-  ]
+  routes: routes
 });
 
 // Error handler
