@@ -28,8 +28,7 @@
       <div v-else class="centeredColumn" style="margin-top: 1rem;">
         <!-- Cards som viser stats om informasjonen -->
         <StatCards :items="statItems"/>
-        <!-- Matrikkel table -->
-        <!-- <MatrikkelTable :items="dispatch.matrikkelEnheter" item-key="bruksnavn" /> -->
+        <!-- Matrikkel eiere -->
         <h2>Eiere / Mottakere</h2>
         <MatrikkelOwnerTable :items="dispatch.owners" item-key="id" @excludeOwner="(e) => excludeOwner(e)" />
         <div v-if="dispatch.excludedOwners" style="width: 100%;">
@@ -110,7 +109,7 @@
             />
           </div>
           <h3 style="margin-bottom: 0.2rem">Vedlegg</h3>
-          <upload-field v-model="dispatch.attachments" style="width: 100%" />
+          <upload-field v-model="dispatch.attachments" @downloadBlob="(e) => downloadBlob(e)" style="width: 100%" />
           <div v-if="mode === 'new'" class="centeredColumn" style="margin-top: 1rem">
             <VTFKButton
               class="mt-1"
@@ -162,7 +161,6 @@
   import Map from '../components/Map.vue'
   import StatCards from '../components/StatCards.vue'
   import Loading from './Loading.vue'
-  // import MatrikkelTable from '../components/MatrikkelTable.vue';
   import MatrikkelOwnerTable from '../components/MatrikkelOwnerTable.vue';
   import DispatchStatusSelect from '../components/DispatchStatusSelect.vue';
   import SchemaFields from '../components/SchemaFields.vue';
@@ -173,6 +171,10 @@
   import merge from 'lodash.merge'
   import pick from 'lodash.pick';
   import PolyParser from '../lib/polyparser/polyparser';
+  import FileSaver from 'file-saver';
+
+  // Config
+  import config from '../../config';
 
   // Custom error class
   import AppError from '../lib/vtfk-errors/AppError';
@@ -181,7 +183,6 @@
     name: 'dispatchEditor',
     components: {
       'VTFKButton': Button,
-      // 'VTFKCheckbox': Checkbox,
       UploadField,
       Map,
       StatCards,
@@ -516,8 +517,15 @@
           /*
             Generer ett datasett hvor eiere er først med alle eierforhold under
           */
-          const ownerCentric = MatrikkelProxyClient.getMatrikkelEnheterOwnerCentric(matrikkelEnheter, matrikkelEiere);
-          this.dispatch.owners = ownerCentric;
+          let ownerCentric = MatrikkelProxyClient.getMatrikkelEnheterOwnerCentric(matrikkelEnheter, matrikkelEiere);
+
+          // Remove any pre-removed users
+          if(config.EXCLUDED_OWNER_IDS && Array.isArray(config.EXCLUDED_OWNER_IDS)) {
+            this.dispatch.excludedOwners = ownerCentric.filter((o) => config.EXCLUDED_OWNER_IDS.includes(o.nummer));
+            this.dispatch.owners = ownerCentric.filter((o) => !config.EXCLUDED_OWNER_IDS.includes(o.nummer));
+          } else {
+            this.dispatch.owners = ownerCentric;
+          }
 
           // /*
           //   Oppdater hovedmatrikkel objekt med innhentet eierinformasjon
@@ -593,7 +601,6 @@
         this.isDispatchApproved = false;
       },
       includeOwner(owner) {
-
         // Add the exlcuded owner
         this.dispatch.owners.push(owner);
         this.$set(this.dispatch, 'owners', this.dispatch.owners);
@@ -602,6 +609,31 @@
         this.$set(this.dispatch, 'excludedOwners', this.dispatch.excludedOwners);
         // Flip the checkboxes so they will have to be checked again
         this.isDispatchApproved = false;
+      },
+      async downloadBlob(blob) {
+        if(this.mode === 'edit') {
+          console.log('== Downloading blob from dispatch editor ==');
+          console.log(blob);
+          const options = {
+            dispatchId: this.dispatch._id,
+            blobId: blob._id
+          }
+          const blobContent = await this.$store.dispatch('downloadBlob', options)
+          
+          console.log('Using filesaver')
+          var b = new Blob([blobContent], {type: blob.type});
+          FileSaver.saveAs(b, blob.name);
+
+          // Create a temporary link element and click it to download the data
+          // var a = document.createElement('a');
+          // // let mimeType = 'data:text/' + 'txt' + ';encoding:utf-8'
+          // // mimeType = mimeType || 'application/octet-stream';
+          // var universalBOM = "\uFEFF";
+          // a.setAttribute('href', blob.type + ',' + encodeURIComponent(universalBOM+blobContent));
+          // a.setAttribute('download', blob.name);
+          // window.document.body.appendChild(a);
+          // a.click();
+        }
       },
       async readFile(file) {
         // Always return a Promise
@@ -659,7 +691,7 @@
         this.isLoading = true
         try {
           if(this.mode === 'new') {
-            await this.$store.dispatch('postDispatches', postObject)
+            await this.$store.dispatch('postDispatches', postObject);
           } else if (this.mode === 'edit') {
             await this.$store.dispatch('editDispatches', postObject);
           } else {

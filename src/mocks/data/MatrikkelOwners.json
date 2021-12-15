@@ -1,0 +1,2599 @@
+[
+  {
+    "_type": "FysiskPerson",
+    "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+    "id": "1659450",
+    "oppdateringsdato": "2020-06-15T22:25:33.808000000+02:00",
+    "versjonId": "4",
+    "oppdatertAv": "smatmynd",
+    "versjon": "1592252733808",
+    "nummer": "03066936278",
+    "navn": "BERGSKÅS TONJE VEDVIK",
+    "postadresse": {
+      "adresselinje2": "LIVEGEN 223",
+      "adresselinje3": "3803 BØ I TELEMARK",
+      "postnummeromradeId": "426345794",
+      "landKodeId": "5001"
+    },
+    "uuid": {
+      "navnerom": "https://data.geonorge.no/matrikkel",
+      "uuid": "0ec6e13f-9a01-55b2-93c2-f9035ac06fed"
+    },
+    "etternavn": "BERGSKÅS",
+    "fornavn": "TONJE VEDVIK",
+    "spesifisertRegTypeKodeId": "1",
+    "bostedsadresse": {
+      "kommunenummer": "3817",
+      "adressekode": "1079",
+      "husnummer": "223",
+      "gardsnummer": "0",
+      "bruksnummer": "0",
+      "festenummer": "0",
+      "undernummer": "0",
+      "postnummer": "3803"
+    },
+    "personStatusKodeId": "1",
+    "dsf": {
+      "FODT": "030669",
+      "PERS": "36278",
+      "INR": "03066936325",
+      "FODTAR": "1969",
+      "STAT-KD": "1",
+      "STAT": "BOSATT",
+      "NAVN-S": "Bergskås",
+      "NAVN-F": "Tonje",
+      "NAVN-M": "Vedvik",
+      "NAVN": "Bergskås Tonje Vedvik",
+      "NAVN-D": "20110702",
+      "ADRR": "20200319",
+      "ADRF": "20200319",
+      "ADR": "Livegen 223",
+      "POSTN": "3803",
+      "POSTS": "BØ I TELEMARK",
+      "KOMNR": "3817",
+      "KOMNA": "MIDT-TELEMARK",
+      "GATE": "01079",
+      "HUS": "0223",
+      "ADRTYPE": "O",
+      "INVF": null,
+      "INVF-N": null,
+      "INVF-R": null,
+      "INVF-F": null,
+      "FKOM": "3807",
+      "FKOM-N": "SKIEN",
+      "FKOM-R": "20200319",
+      "FKOM-F": "20200319",
+      "UTVT": null,
+      "UTVT-N": null,
+      "UTVT-R": null,
+      "UTVT-F": null,
+      "AARSADR": "26",
+      "SPES-KD": "0",
+      "SPES": "VANLIG BOSATT",
+      "SKKR": "0003",
+      "VAKR": "0001",
+      "GRUNNKR": "0105",
+      "MELD": "",
+      "EKT-FODT": "300671",
+      "EKT-PERS": "47525",
+      "EKT-INR": "30067148461",
+      "Barn": [
+        {
+          "BAR-FODT": "020509",
+          "BAR-PERS": "96851",
+          "BAR-INR": "02050996952",
+          "BAR-KJO": "K"
+        },
+        {
+          "BAR-FODT": "200698",
+          "BAR-PERS": "33048",
+          "BAR-INR": "20069833457",
+          "BAR-KJO": "K"
+        },
+        {
+          "BAR-FODT": "280301",
+          "BAR-PERS": "89460",
+          "BAR-INR": "28030190347",
+          "BAR-KJO": "K"
+        }
+      ],
+      "MOR-FODT": "220350",
+      "MOR-PERS": "39604",
+      "MOR-INR": "22035040142",
+      "FAR-FODT": "100448",
+      "FAR-PERS": "26564",
+      "FAR-INR": "10044826721",
+      "SIVS-KD": "2",
+      "SIVS": "GIFT",
+      "SIVS-D": "20110702",
+      "AARSSIV": "11",
+      "Statsborgerskap": {
+        "STATB-KD": "000",
+        "STATB": "NORSK"
+      },
+      "KJONN": "K",
+      "AARSNVN": "07",
+      "FODKNR": "0805",
+      "FODK": "PORSGRUNN *",
+      "FODS": null,
+      "FNR": "03066936278",
+      "bostedsAdresse": {
+        "ADR": "Livegen 223",
+        "POSTN": "3803",
+        "POSTS": "BØ I TELEMARK"
+      },
+      "postAdresse": {
+        "ADR": "Livegen 223",
+        "POSTN": "3803",
+        "POSTS": "BØ I TELEMARK"
+      }
+    },
+    "ownerships": [
+      {
+        "_type": "PersonTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T23:54:06.346000000+02:00",
+        "versjonId": "2",
+        "oppdatertAv": "smatmynd",
+        "id": "6364263768",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "0",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "82915c60-e439-5ea8-9f8c-3a8773421fc3"
+        },
+        "andel": {
+          "teller": "1",
+          "nevner": "2"
+        },
+        "datoFra": "2020-04-02",
+        "eierId": "1659450",
+        "andelsnummer": "5",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525213751"
+          },
+          "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
+          "versjonId": "10",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592253053865",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "311",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2015-09-28",
+          "historiskOppgittAreal": "0.0",
+          "historiskArealkildeId": "0",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken 47, tomt 3",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T02:29:27.594000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "525213757",
+            "hovedteig": "true",
+            "teigId": "525213750",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "95d124c2-0d90-5059-bf3d-ab830fea4264"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "0c101634-8ba5-5244-a9d5-9b78aea91111"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_type": "FysiskPerson",
+    "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+    "id": "3222760",
+    "oppdateringsdato": "2020-06-15T23:23:31.579000000+02:00",
+    "versjonId": "5",
+    "oppdatertAv": "smatmynd",
+    "versjon": "1592256211579",
+    "nummer": "09098539120",
+    "navn": "SANDA TORSTEIN",
+    "postadresse": {
+      "adresselinje2": "GYMNASBAKKEN 45",
+      "adresselinje3": "3802 BØ I TELEMARK",
+      "postnummeromradeId": "426345793",
+      "landKodeId": "5001"
+    },
+    "uuid": {
+      "navnerom": "https://data.geonorge.no/matrikkel",
+      "uuid": "04cac8de-3f59-5690-9895-3090e908f1b0"
+    },
+    "etternavn": "SANDA",
+    "fornavn": "TORSTEIN",
+    "spesifisertRegTypeKodeId": "1",
+    "bostedsadresse": {
+      "kommunenummer": "3817",
+      "adressekode": "1037",
+      "husnummer": "45",
+      "gardsnummer": "0",
+      "bruksnummer": "0",
+      "festenummer": "0",
+      "undernummer": "0",
+      "postnummer": "3802"
+    },
+    "personStatusKodeId": "1",
+    "dsf": {
+      "FODT": "090985",
+      "PERS": "39120",
+      "INR": "09098539226",
+      "FODTAR": "1985",
+      "STAT-KD": "1",
+      "STAT": "BOSATT",
+      "NAVN-S": "Sanda",
+      "NAVN-F": "Torstein",
+      "NAVN-M": null,
+      "NAVN": "Sanda Torstein",
+      "NAVN-D": "19860119",
+      "ADRR": "20160526",
+      "ADRF": "20160526",
+      "ADR": "Gymnasbakken 45",
+      "POSTN": "3802",
+      "POSTS": "BØ I TELEMARK",
+      "KOMNR": "3817",
+      "KOMNA": "MIDT-TELEMARK",
+      "GATE": "01037",
+      "HUS": "0045",
+      "ADRTYPE": "O",
+      "INVF": null,
+      "INVF-N": null,
+      "INVF-R": null,
+      "INVF-F": null,
+      "FKOM": "0301",
+      "FKOM-N": "OSLO",
+      "FKOM-R": "20120424",
+      "FKOM-F": "20120422",
+      "UTVT": null,
+      "UTVT-N": null,
+      "UTVT-R": null,
+      "UTVT-F": null,
+      "AARSADR": "48",
+      "SPES-KD": "0",
+      "SPES": "VANLIG BOSATT",
+      "SKKR": "0008",
+      "VAKR": "0001",
+      "GRUNNKR": "0202",
+      "MELD": "",
+      "EKT-FODT": "170389",
+      "EKT-PERS": "29275",
+      "EKT-INR": "17038929579",
+      "Barn": [
+        {
+          "BAR-FODT": "130620",
+          "BAR-PERS": "94405",
+          "BAR-INR": "13062094661",
+          "BAR-KJO": "K"
+        },
+        {
+          "BAR-FODT": "170117",
+          "BAR-PERS": "91190",
+          "BAR-INR": "17011791564",
+          "BAR-KJO": "M"
+        }
+      ],
+      "MOR-FODT": "191256",
+      "MOR-PERS": "35205",
+      "MOR-INR": "19125635623",
+      "FAR-FODT": "221156",
+      "FAR-PERS": "31997",
+      "FAR-INR": "22115632537",
+      "SIVS-KD": "2",
+      "SIVS": "GIFT",
+      "SIVS-D": "20180825",
+      "AARSSIV": "11",
+      "Statsborgerskap": {
+        "STATB-KD": "000",
+        "STATB": "NORSK"
+      },
+      "KJONN": "M",
+      "FODKNR": "0602",
+      "FODK": "DRAMMEN *",
+      "FODS": "BSS",
+      "FNR": "09098539120",
+      "bostedsAdresse": {
+        "ADR": "Gymnasbakken 45",
+        "POSTN": "3802",
+        "POSTS": "BØ I TELEMARK"
+      },
+      "postAdresse": {
+        "ADR": "Gymnasbakken 45",
+        "POSTN": "3802",
+        "POSTS": "BØ I TELEMARK"
+      }
+    },
+    "ownerships": [
+      {
+        "_type": "PersonTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T23:29:48.262000000+02:00",
+        "versjonId": "3",
+        "oppdatertAv": "smatmynd",
+        "id": "556588066",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "0",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "fb09cd84-b497-55f2-ab25-c3a4a4e6ada1"
+        },
+        "andel": {
+          "teller": "1",
+          "nevner": "2"
+        },
+        "datoFra": "2016-06-06",
+        "eierId": "3222760",
+        "andelsnummer": "4",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525214804"
+          },
+          "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
+          "versjonId": "9",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592253053865",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "312",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2015-09-28",
+          "historiskOppgittAreal": "0.0",
+          "historiskArealkildeId": "0",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken 45, tomt 4",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T02:29:27.594000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "525214814",
+            "hovedteig": "true",
+            "teigId": "525214803",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "780947ca-7471-50ca-864b-62a6f77a89f8"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "e52544b0-6268-5691-bafb-a55d4f92c099"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_type": "FysiskPerson",
+    "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+    "id": "4581299",
+    "oppdateringsdato": "2020-06-16T00:33:02.202000000+02:00",
+    "versjonId": "4",
+    "oppdatertAv": "smatmynd",
+    "versjon": "1592260382202",
+    "nummer": "15093647944",
+    "navn": "HOLTA BJØRN",
+    "postadresse": {
+      "adresselinje2": "GYMNASBAKKEN 43",
+      "adresselinje3": "3802 BØ I TELEMARK",
+      "postnummeromradeId": "426345793",
+      "landKodeId": "5001"
+    },
+    "uuid": {
+      "navnerom": "https://data.geonorge.no/matrikkel",
+      "uuid": "ef8ab403-1f6d-53d6-a94d-b5642f40dd27"
+    },
+    "etternavn": "HOLTA",
+    "fornavn": "BJØRN",
+    "spesifisertRegTypeKodeId": "1",
+    "bostedsadresse": {
+      "kommunenummer": "3817",
+      "adressekode": "1037",
+      "husnummer": "43",
+      "gardsnummer": "0",
+      "bruksnummer": "0",
+      "festenummer": "0",
+      "undernummer": "0",
+      "postnummer": "3802"
+    },
+    "personStatusKodeId": "1",
+    "dsf": {
+      "FODT": "150936",
+      "PERS": "47944",
+      "INR": "15093648243",
+      "FODTAR": "1936",
+      "STAT-KD": "1",
+      "STAT": "BOSATT",
+      "NAVN-S": "Holta",
+      "NAVN-F": "Bjørn",
+      "NAVN-M": null,
+      "NAVN": "Holta Bjørn",
+      "NAVN-D": null,
+      "ADRR": "20160701",
+      "ADRF": "20160701",
+      "ADR": "Gymnasbakken 43",
+      "POSTN": "3802",
+      "POSTS": "BØ I TELEMARK",
+      "KOMNR": "3817",
+      "KOMNA": "MIDT-TELEMARK",
+      "GATE": "01037",
+      "HUS": "0043",
+      "ADRTYPE": "O",
+      "INVF": null,
+      "INVF-N": null,
+      "INVF-R": null,
+      "INVF-F": null,
+      "FKOM": "0822",
+      "FKOM-N": "SAUHERAD *",
+      "FKOM-R": "20160701",
+      "FKOM-F": "20160701",
+      "UTVT": null,
+      "UTVT-N": null,
+      "UTVT-R": null,
+      "UTVT-F": null,
+      "AARSADR": "48",
+      "SPES-KD": "0",
+      "SPES": "VANLIG BOSATT",
+      "SKKR": "0008",
+      "VAKR": "0001",
+      "GRUNNKR": "0202",
+      "MELD": "",
+      "EKT-FODT": "010634",
+      "EKT-PERS": "48032",
+      "EKT-INR": "01063448106",
+      "Barn": [
+        {
+          "BAR-FODT": "040868",
+          "BAR-PERS": "47456",
+          "BAR-INR": "04086847513",
+          "BAR-KJO": "K"
+        },
+        {
+          "BAR-FODT": "111077",
+          "BAR-PERS": "48581",
+          "BAR-INR": "11107748736",
+          "BAR-KJO": "M"
+        },
+        {
+          "BAR-FODT": "170661",
+          "BAR-PERS": "40369",
+          "BAR-INR": "17066140704",
+          "BAR-KJO": "M"
+        },
+        {
+          "BAR-FODT": "240365",
+          "BAR-PERS": "31661",
+          "BAR-INR": "24036532276",
+          "BAR-KJO": "K"
+        },
+        {
+          "BAR-FODT": "290659",
+          "BAR-PERS": "47577",
+          "BAR-INR": "29065948466",
+          "BAR-KJO": "M"
+        }
+      ],
+      "SIVS-KD": "2",
+      "SIVS": "GIFT",
+      "SIVS-D": "19590221",
+      "Statsborgerskap": {
+        "STATB-KD": "000",
+        "STATB": "NORSK"
+      },
+      "KJONN": "M",
+      "FODKNR": "0822",
+      "FODK": "SAUHERAD *",
+      "FODS": null,
+      "FNR": "15093647944",
+      "bostedsAdresse": {
+        "ADR": "Gymnasbakken 43",
+        "POSTN": "3802",
+        "POSTS": "BØ I TELEMARK"
+      },
+      "postAdresse": {
+        "ADR": "Gymnasbakken 43",
+        "POSTN": "3802",
+        "POSTS": "BØ I TELEMARK"
+      }
+    },
+    "ownerships": [
+      {
+        "_type": "PersonTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T23:27:58.412000000+02:00",
+        "versjonId": "3",
+        "oppdatertAv": "smatmynd",
+        "id": "556589508",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "0",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "c2a348ac-fb3a-5170-b1f0-3e6240f9017e"
+        },
+        "andel": {
+          "teller": "1",
+          "nevner": "2"
+        },
+        "datoFra": "2016-06-06",
+        "eierId": "4581299",
+        "andelsnummer": "3",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525217531"
+          },
+          "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
+          "versjonId": "9",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592253053865",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "313",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2015-09-28",
+          "historiskOppgittAreal": "0.0",
+          "historiskArealkildeId": "0",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken 47, tomt 5",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T02:29:17.812000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "525217542",
+            "hovedteig": "true",
+            "teigId": "525217530",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "6b55edb8-f0ae-585b-829f-ab6fffb5f595"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "1d61ad9a-17f0-5c37-b201-d1291f07af55"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_type": "FysiskPerson",
+    "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+    "id": "4929626",
+    "oppdateringsdato": "2020-06-16T00:50:45.885000000+02:00",
+    "versjonId": "6",
+    "oppdatertAv": "smatmynd",
+    "versjon": "1592261445885",
+    "nummer": "17038929275",
+    "navn": "NYHUS LILL-KATRIN",
+    "postadresse": {
+      "adresselinje2": "GYMNASBAKKEN 45",
+      "adresselinje3": "3802 BØ I TELEMARK",
+      "postnummeromradeId": "426345793",
+      "landKodeId": "5001"
+    },
+    "uuid": {
+      "navnerom": "https://data.geonorge.no/matrikkel",
+      "uuid": "678b8386-b0f2-56b8-88fc-167989b1404f"
+    },
+    "etternavn": "NYHUS",
+    "fornavn": "LILL-KATRIN",
+    "spesifisertRegTypeKodeId": "1",
+    "bostedsadresse": {
+      "kommunenummer": "3817",
+      "adressekode": "1037",
+      "husnummer": "45",
+      "gardsnummer": "0",
+      "bruksnummer": "0",
+      "festenummer": "0",
+      "undernummer": "0",
+      "postnummer": "3802"
+    },
+    "personStatusKodeId": "1",
+    "dsf": {
+      "FODT": "170389",
+      "PERS": "29275",
+      "INR": "17038929579",
+      "FODTAR": "1989",
+      "STAT-KD": "1",
+      "STAT": "BOSATT",
+      "NAVN-S": "Nyhus",
+      "NAVN-F": "Lill-Katrin",
+      "NAVN-M": null,
+      "NAVN": "Nyhus Lill-Katrin",
+      "NAVN-D": null,
+      "ADRR": "20160526",
+      "ADRF": "20160525",
+      "ADR": "Gymnasbakken 45",
+      "POSTN": "3802",
+      "POSTS": "BØ I TELEMARK",
+      "KOMNR": "3817",
+      "KOMNA": "MIDT-TELEMARK",
+      "GATE": "01037",
+      "HUS": "0045",
+      "ADRTYPE": "O",
+      "INVF": null,
+      "INVF-N": null,
+      "INVF-R": null,
+      "INVF-F": null,
+      "FKOM": "0624",
+      "FKOM-N": "ØVRE EIKER *",
+      "FKOM-R": "20110826",
+      "FKOM-F": "20110820",
+      "UTVT": null,
+      "UTVT-N": null,
+      "UTVT-R": null,
+      "UTVT-F": null,
+      "AARSADR": "48",
+      "SPES-KD": "0",
+      "SPES": "VANLIG BOSATT",
+      "SKKR": "0008",
+      "VAKR": "0001",
+      "GRUNNKR": "0202",
+      "MELD": "",
+      "EKT-FODT": "090985",
+      "EKT-PERS": "39120",
+      "EKT-INR": "09098539226",
+      "Barn": [
+        {
+          "BAR-FODT": "130620",
+          "BAR-PERS": "94405",
+          "BAR-INR": "13062094661",
+          "BAR-KJO": "K"
+        },
+        {
+          "BAR-FODT": "170117",
+          "BAR-PERS": "91190",
+          "BAR-INR": "17011791564",
+          "BAR-KJO": "M"
+        }
+      ],
+      "MOR-FODT": "260564",
+      "MOR-PERS": "45411",
+      "MOR-INR": "26056446129",
+      "FAR-FODT": "290364",
+      "FAR-PERS": "43780",
+      "FAR-INR": "29036444661",
+      "SIVS-KD": "2",
+      "SIVS": "GIFT",
+      "SIVS-D": "20180825",
+      "AARSSIV": "11",
+      "Statsborgerskap": {
+        "STATB-KD": "000",
+        "STATB": "NORSK"
+      },
+      "KJONN": "K",
+      "FODKNR": "0602",
+      "FODK": "DRAMMEN *",
+      "FODS": "SSH BUSKERUD",
+      "FNR": "17038929275",
+      "bostedsAdresse": {
+        "ADR": "Gymnasbakken 45",
+        "POSTN": "3802",
+        "POSTS": "BØ I TELEMARK"
+      },
+      "postAdresse": {
+        "ADR": "Gymnasbakken 45",
+        "POSTN": "3802",
+        "POSTS": "BØ I TELEMARK"
+      }
+    },
+    "ownerships": [
+      {
+        "_type": "PersonTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T23:29:48.262000000+02:00",
+        "versjonId": "3",
+        "oppdatertAv": "smatmynd",
+        "id": "556588065",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "0",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "410afd63-166d-50f8-95ee-51c9c2c8278b"
+        },
+        "andel": {
+          "teller": "1",
+          "nevner": "2"
+        },
+        "datoFra": "2016-06-06",
+        "eierId": "4929626",
+        "andelsnummer": "3",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525214804"
+          },
+          "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
+          "versjonId": "9",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592253053865",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "312",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2015-09-28",
+          "historiskOppgittAreal": "0.0",
+          "historiskArealkildeId": "0",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken 45, tomt 4",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T02:29:27.594000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "525214814",
+            "hovedteig": "true",
+            "teigId": "525214803",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "780947ca-7471-50ca-864b-62a6f77a89f8"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "e52544b0-6268-5691-bafb-a55d4f92c099"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_type": "FysiskPerson",
+    "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+    "id": "5566176",
+    "oppdateringsdato": "2021-09-21T12:22:02.817000000+02:00",
+    "versjonId": "10",
+    "oppdatertAv": "eksternregister1",
+    "versjon": "1632219722817",
+    "nummer": "20018949742",
+    "navn": "KNATTERUD EIRIK IDLAND",
+    "postadresse": {
+      "adresselinje2": "Prestevegen 2",
+      "adresselinje3": "3802 BØ I TELEMARK",
+      "postnummeromradeId": "426345793",
+      "landKodeId": "5001"
+    },
+    "uuid": {
+      "navnerom": "https://data.geonorge.no/matrikkel",
+      "uuid": "4008ffca-4c96-5e2d-b3c8-5f2431190499"
+    },
+    "etternavn": "KNATTERUD",
+    "fornavn": "EIRIK IDLAND",
+    "spesifisertRegTypeKodeId": "10",
+    "bostedsadresse": {
+      "kommunenummer": "3817",
+      "adressekode": "1051",
+      "husnummer": "2",
+      "gardsnummer": "0",
+      "bruksnummer": "0",
+      "festenummer": "0",
+      "undernummer": "0",
+      "postnummer": "3802"
+    },
+    "personStatusKodeId": "1",
+    "dsf": {
+      "FODT": "200189",
+      "PERS": "49742",
+      "INR": "20018950155",
+      "FODTAR": "1989",
+      "STAT-KD": "1",
+      "STAT": "BOSATT",
+      "NAVN-S": "Knatterud",
+      "NAVN-F": "Eirik",
+      "NAVN-M": "Idland",
+      "NAVN": "Knatterud Eirik Idland",
+      "NAVN-D": "19970709",
+      "ADRR": "20210630",
+      "ADRF": "20210629",
+      "ADR": "Prestevegen 2",
+      "POSTN": "3802",
+      "POSTS": "BØ I TELEMARK",
+      "KOMNR": "3817",
+      "KOMNA": "MIDT-TELEMARK",
+      "GATE": "01051",
+      "HUS": "0002",
+      "ADRTYPE": "O",
+      "BOLIGNR": "H0101",
+      "INVF": "684",
+      "INVF-N": "USA",
+      "INVF-R": "20090728",
+      "INVF-F": "20090728",
+      "FKOM": "0602",
+      "FKOM-N": "DRAMMEN *",
+      "FKOM-R": "20170905",
+      "FKOM-F": "20170901",
+      "UTVT": null,
+      "UTVT-N": null,
+      "UTVT-R": null,
+      "UTVT-F": null,
+      "AARSADR": "24",
+      "SPES-KD": "0",
+      "SPES": "VANLIG BOSATT",
+      "SKKR": "0008",
+      "VAKR": "0001",
+      "GRUNNKR": "0202",
+      "MELD": "",
+      "MOR-FODT": "110968",
+      "MOR-PERS": "33859",
+      "MOR-INR": "11096834022",
+      "FAR-FODT": "210966",
+      "FAR-PERS": "29181",
+      "FAR-INR": "21096629666",
+      "SIVS-KD": "1",
+      "SIVS": "UGIFT",
+      "SIVS-D": "19890120",
+      "Statsborgerskap": {
+        "STATB-KD": "000",
+        "STATB": "NORSK"
+      },
+      "KJONN": "M",
+      "AARSNVN": "07",
+      "FODKNR": "0805",
+      "FODK": "PORSGRUNN *",
+      "FODS": null,
+      "FNR": "20018949742",
+      "bostedsAdresse": {
+        "ADR": "Prestevegen 2",
+        "POSTN": "3802",
+        "POSTS": "BØ I TELEMARK"
+      },
+      "postAdresse": {
+        "ADR": "Prestevegen 2",
+        "POSTN": "3802",
+        "POSTS": "BØ I TELEMARK"
+      }
+    },
+    "ownerships": [
+      {
+        "_type": "PersonTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2021-01-07T04:05:44.890000000+01:00",
+        "versjonId": "1",
+        "oppdatertAv": "eksternregister2",
+        "id": "6390251504",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "0",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "3fe92ec7-941d-5198-8445-6bf83701d827"
+        },
+        "andel": {
+          "teller": "1",
+          "nevner": "1"
+        },
+        "datoFra": "2021-01-06",
+        "eierId": "5566176",
+        "andelsnummer": "4",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "68577932"
+          },
+          "oppdateringsdato": "2021-11-09T13:44:42.920000000+01:00",
+          "versjonId": "6",
+          "oppdatertAv": "nklajord",
+          "versjon": "1636461882920",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "207",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "1994-11-02",
+          "historiskOppgittAreal": "5362426.0",
+          "historiskArealkildeId": "5",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "HOLMEN",
+          "teigerForMatrikkelenhet": [
+            {
+              "oppdateringsdato": "2020-06-18T02:23:17.063000000+02:00",
+              "versjonId": "2",
+              "oppdatertAv": "smatmynd",
+              "id": "294183192",
+              "hovedteig": "true",
+              "teigId": "68913440",
+              "uuid": {
+                "navnerom": "https://data.geonorge.no/matrikkel",
+                "uuid": "a3c32469-ed5a-50e1-9167-d9e0d7adf7af"
+              }
+            },
+            {
+              "oppdateringsdato": "2020-06-18T02:23:17.063000000+02:00",
+              "versjonId": "2",
+              "oppdatertAv": "smatmynd",
+              "id": "294183193",
+              "hovedteig": "false",
+              "teigId": "68913372",
+              "uuid": {
+                "navnerom": "https://data.geonorge.no/matrikkel",
+                "uuid": "7f36f229-c2c4-50d4-a077-9dd6535191f0"
+              }
+            },
+            {
+              "oppdateringsdato": "2020-06-18T02:23:17.063000000+02:00",
+              "versjonId": "2",
+              "oppdatertAv": "smatmynd",
+              "id": "294183194",
+              "hovedteig": "false",
+              "teigId": "68913285",
+              "uuid": {
+                "navnerom": "https://data.geonorge.no/matrikkel",
+                "uuid": "57ebe45f-d46a-5ff9-9134-35b599e3159e"
+              }
+            }
+          ],
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "true",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "true",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "53fe8aa3-4d77-55f7-8a6f-dcf6f1ed312f"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_type": "FysiskPerson",
+    "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+    "id": "7895912",
+    "oppdateringsdato": "2020-06-16T03:28:20.431000000+02:00",
+    "versjonId": "4",
+    "oppdatertAv": "smatmynd",
+    "versjon": "1592270900431",
+    "nummer": "30067147525",
+    "navn": "BERGSKÅS TROND",
+    "postadresse": {
+      "adresselinje2": "LIVEGEN 223",
+      "adresselinje3": "3803 BØ I TELEMARK",
+      "postnummeromradeId": "426345794",
+      "landKodeId": "5001"
+    },
+    "uuid": {
+      "navnerom": "https://data.geonorge.no/matrikkel",
+      "uuid": "3daad4f5-97e7-5e32-8ed6-75dc40f1cafa"
+    },
+    "etternavn": "BERGSKÅS",
+    "fornavn": "TROND",
+    "spesifisertRegTypeKodeId": "1",
+    "bostedsadresse": {
+      "kommunenummer": "3817",
+      "adressekode": "1079",
+      "husnummer": "223",
+      "gardsnummer": "0",
+      "bruksnummer": "0",
+      "festenummer": "0",
+      "undernummer": "0",
+      "postnummer": "3803"
+    },
+    "personStatusKodeId": "1",
+    "dsf": {
+      "FODT": "300671",
+      "PERS": "47525",
+      "INR": "30067148461",
+      "FODTAR": "1971",
+      "STAT-KD": "1",
+      "STAT": "BOSATT",
+      "NAVN-S": "Bergskås",
+      "NAVN-F": "Trond",
+      "NAVN-M": null,
+      "NAVN": "Bergskås Trond",
+      "NAVN-D": null,
+      "ADRR": "20200319",
+      "ADRF": "20200319",
+      "ADR": "Livegen 223",
+      "POSTN": "3803",
+      "POSTS": "BØ I TELEMARK",
+      "KOMNR": "3817",
+      "KOMNA": "MIDT-TELEMARK",
+      "GATE": "01079",
+      "HUS": "0223",
+      "ADRTYPE": "O",
+      "INVF": null,
+      "INVF-N": null,
+      "INVF-R": null,
+      "INVF-F": null,
+      "FKOM": "3807",
+      "FKOM-N": "SKIEN",
+      "FKOM-R": "20200319",
+      "FKOM-F": "20200319",
+      "UTVT": null,
+      "UTVT-N": null,
+      "UTVT-R": null,
+      "UTVT-F": null,
+      "AARSADR": "26",
+      "SPES-KD": "0",
+      "SPES": "VANLIG BOSATT",
+      "SKKR": "0003",
+      "VAKR": "0001",
+      "GRUNNKR": "0105",
+      "MELD": "",
+      "EKT-FODT": "030669",
+      "EKT-PERS": "36278",
+      "EKT-INR": "03066936325",
+      "Barn": [
+        {
+          "BAR-FODT": "020509",
+          "BAR-PERS": "96851",
+          "BAR-INR": "02050996952",
+          "BAR-KJO": "K"
+        },
+        {
+          "BAR-FODT": "050103",
+          "BAR-PERS": "88165",
+          "BAR-INR": "05010388289",
+          "BAR-KJO": "M"
+        },
+        {
+          "BAR-FODT": "060399",
+          "BAR-PERS": "48778",
+          "BAR-INR": "06039948819",
+          "BAR-KJO": "M"
+        }
+      ],
+      "MOR-FODT": "090846",
+      "MOR-PERS": "34848",
+      "MOR-INR": "09084634992",
+      "FAR-FODT": "270150",
+      "FAR-PERS": "48102",
+      "FAR-INR": "27015048883",
+      "SIVS-KD": "2",
+      "SIVS": "GIFT",
+      "SIVS-D": "20110702",
+      "AARSSIV": "11",
+      "Statsborgerskap": {
+        "STATB-KD": "000",
+        "STATB": "NORSK"
+      },
+      "KJONN": "M",
+      "FODKNR": "0807",
+      "FODK": "NOTODDEN *",
+      "FODS": null,
+      "FNR": "30067147525",
+      "bostedsAdresse": {
+        "ADR": "Livegen 223",
+        "POSTN": "3803",
+        "POSTS": "BØ I TELEMARK"
+      },
+      "postAdresse": {
+        "ADR": "Livegen 223",
+        "POSTN": "3803",
+        "POSTS": "BØ I TELEMARK"
+      }
+    },
+    "ownerships": [
+      {
+        "_type": "PersonTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T23:54:06.346000000+02:00",
+        "versjonId": "2",
+        "oppdatertAv": "smatmynd",
+        "id": "6364263769",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "0",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "ef4c0a77-999a-5545-bc49-dc538597941c"
+        },
+        "andel": {
+          "teller": "1",
+          "nevner": "2"
+        },
+        "datoFra": "2020-04-02",
+        "eierId": "7895912",
+        "andelsnummer": "4",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525213751"
+          },
+          "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
+          "versjonId": "10",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592253053865",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "311",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2015-09-28",
+          "historiskOppgittAreal": "0.0",
+          "historiskArealkildeId": "0",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken 47, tomt 3",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T02:29:27.594000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "525213757",
+            "hovedteig": "true",
+            "teigId": "525213750",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "95d124c2-0d90-5059-bf3d-ab830fea4264"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "0c101634-8ba5-5244-a9d5-9b78aea91111"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_type": "JuridiskPerson",
+    "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+    "id": "9278455",
+    "oppdateringsdato": "2020-06-16T04:47:17.804000000+02:00",
+    "versjonId": "3",
+    "oppdatertAv": "smatmynd",
+    "versjon": "1592275637804",
+    "nummer": "947820915",
+    "navn": "STUDENTSAMSKIPNADEN I TELEMARK",
+    "postadresse": {
+      "adresselinje1": "Kjølnes ring 56",
+      "adresselinje3": "3918 PORSGRUNN",
+      "landKodeId": "5001"
+    },
+    "uuid": {
+      "navnerom": "https://data.geonorge.no/matrikkel",
+      "uuid": "f203aab4-b661-5184-bfcc-a76027bd1dc5"
+    },
+    "forretningsadresse": {
+      "adresselinje1": "Kjølnes ring 56",
+      "adresselinje3": "3918 PORSGRUNN",
+      "landKodeId": "5001"
+    },
+    "organisasjonsformKode": {
+      "orgformNavn": "Annet foretak iflg. særsk. lov",
+      "orgformKode": "SÆR"
+    },
+    "slettetDato": "2015-12-18",
+    "brreg": {
+      "organisasjonsnummer": "947820915",
+      "navn": "STUDENTSAMSKIPNADEN I TELEMARK",
+      "organisasjonsform": {
+        "kode": "SÆR",
+        "beskrivelse": "Annet foretak iflg. særskilt lov",
+        "_links": "https://data.brreg.no/enhetsregisteret/api/organisasjonsformer/S%C3%86R"
+      },
+      "slettedato": "2015-12-18",
+      "_links": "https://data.brreg.no/enhetsregisteret/api/enheter/947820915"
+    },
+    "ownerships": [
+      {
+        "_type": "JuridiskPersonIkkeTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T23:26:42.648000000+02:00",
+        "versjonId": "5",
+        "oppdatertAv": "smatmynd",
+        "id": "525222652",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "11",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "1db9aadd-e45b-56a0-8585-9bb18352bfec"
+        },
+        "datoTil": "2015-10-01",
+        "eierId": "9278455",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525222618"
+          },
+          "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
+          "versjonId": "9",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592253053865",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "314",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2015-09-28",
+          "historiskOppgittAreal": "0.0",
+          "historiskArealkildeId": "0",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken 39-41, tomt 6",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T02:29:17.812000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "525222651",
+            "hovedteig": "true",
+            "teigId": "525222617",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "dfa51e47-3958-5711-ae08-9b47bc93d89d"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "d9cd6824-c306-59c3-bf8a-fe3aac5ec525"
+          }
+        }
+      },
+      {
+        "_type": "JuridiskPersonIkkeTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T23:26:27.475000000+02:00",
+        "versjonId": "5",
+        "oppdatertAv": "smatmynd",
+        "id": "525217543",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "11",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "8f4f9ded-d49a-5e48-8e67-e1ea8e23f2a9"
+        },
+        "datoTil": "2015-10-01",
+        "eierId": "9278455",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525217531"
+          },
+          "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
+          "versjonId": "9",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592253053865",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "313",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2015-09-28",
+          "historiskOppgittAreal": "0.0",
+          "historiskArealkildeId": "0",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken 47, tomt 5",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T02:29:17.812000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "525217542",
+            "hovedteig": "true",
+            "teigId": "525217530",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "6b55edb8-f0ae-585b-829f-ab6fffb5f595"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "1d61ad9a-17f0-5c37-b201-d1291f07af55"
+          }
+        }
+      },
+      {
+        "_type": "JuridiskPersonIkkeTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T22:20:39.958000000+02:00",
+        "versjonId": "5",
+        "oppdatertAv": "smatmynd",
+        "id": "525213758",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "11",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "dfe37657-4295-5121-ab66-583b30daaa1d"
+        },
+        "datoTil": "2015-10-01",
+        "eierId": "9278455",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525213751"
+          },
+          "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
+          "versjonId": "10",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592253053865",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "311",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2015-09-28",
+          "historiskOppgittAreal": "0.0",
+          "historiskArealkildeId": "0",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken 47, tomt 3",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T02:29:27.594000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "525213757",
+            "hovedteig": "true",
+            "teigId": "525213750",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "95d124c2-0d90-5059-bf3d-ab830fea4264"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "0c101634-8ba5-5244-a9d5-9b78aea91111"
+          }
+        }
+      },
+      {
+        "_type": "JuridiskPersonIkkeTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T23:26:42.648000000+02:00",
+        "versjonId": "5",
+        "oppdatertAv": "smatmynd",
+        "id": "525214815",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "11",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "7ce1d45c-a37c-5ac5-abde-862e4b87c50e"
+        },
+        "datoTil": "2015-10-01",
+        "eierId": "9278455",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525214804"
+          },
+          "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
+          "versjonId": "9",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592253053865",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "312",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2015-09-28",
+          "historiskOppgittAreal": "0.0",
+          "historiskArealkildeId": "0",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken 45, tomt 4",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T02:29:27.594000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "525214814",
+            "hovedteig": "true",
+            "teigId": "525214803",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "780947ca-7471-50ca-864b-62a6f77a89f8"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "e52544b0-6268-5691-bafb-a55d4f92c099"
+          }
+        }
+      },
+      {
+        "_type": "JuridiskPersonIkkeTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T23:25:51.987000000+02:00",
+        "versjonId": "5",
+        "oppdatertAv": "smatmynd",
+        "id": "525205390",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "11",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "f06054b5-f22b-53ff-b59c-17c4ed7e8114"
+        },
+        "datoTil": "2015-10-01",
+        "eierId": "9278455",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525205379"
+          },
+          "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
+          "versjonId": "13",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592253053865",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "310",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2015-09-28",
+          "historiskOppgittAreal": "0.0",
+          "historiskArealkildeId": "0",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken 49-51, Tomt 1",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T02:29:27.594000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "525205389",
+            "hovedteig": "true",
+            "teigId": "525205378",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "916b6aa1-ad8a-5b93-bea7-f000c4c25832"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "760cc611-76c7-50a9-ac5c-26edc33c7ec9"
+          }
+        }
+      },
+      {
+        "_type": "JuridiskPersonIkkeTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T23:25:51.987000000+02:00",
+        "versjonId": "5",
+        "oppdatertAv": "smatmynd",
+        "id": "525223365",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "11",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "3e446149-36e4-580e-946c-bb5e59633bad"
+        },
+        "datoTil": "2015-10-01",
+        "eierId": "9278455",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525222624"
+          },
+          "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
+          "versjonId": "10",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592253053865",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "315",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2015-09-28",
+          "historiskOppgittAreal": "0.0",
+          "historiskArealkildeId": "0",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken, tomt 7, vegareal",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T02:29:27.594000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "525223364",
+            "hovedteig": "true",
+            "teigId": "525222623",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "69dbb6a8-8e32-5382-8899-11f17ab78330"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "588fdcbd-c1d1-5f12-9182-8cc34532a71e"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_type": "JuridiskPerson",
+    "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+    "id": "10520065",
+    "oppdateringsdato": "2020-06-16T05:35:14.595000000+02:00",
+    "versjonId": "2",
+    "oppdatertAv": "smatmynd",
+    "versjon": "1592278514595",
+    "nummer": "991670149",
+    "navn": "BØ NORMISJON",
+    "postadresse": {
+      "adresselinje1": "Gymnasbakken 55",
+      "postnummeromradeId": "426345793",
+      "landKodeId": "5001"
+    },
+    "uuid": {
+      "navnerom": "https://data.geonorge.no/matrikkel",
+      "uuid": "dec51e5c-f615-51ed-9d88-0308e4e1b41d"
+    },
+    "forretningsadresse": {
+      "adresselinje1": "Gymnasbakken 55",
+      "postnummeromradeId": "426345793",
+      "landKodeId": "5001"
+    },
+    "organisasjonsformKode": {
+      "orgformNavn": "Forening/lag/innretning",
+      "orgformKode": "FLI"
+    },
+    "brreg": {
+      "organisasjonsnummer": "991670149",
+      "navn": "BØ NORMISJON",
+      "organisasjonsform": {
+        "kode": "FLI",
+        "beskrivelse": "Forening/lag/innretning",
+        "_links": "https://data.brreg.no/enhetsregisteret/api/organisasjonsformer/FLI"
+      },
+      "hjemmeside": "www.bonormisjon.no",
+      "registreringsdatoEnhetsregisteret": "2007-10-11",
+      "registrertIMvaregisteret": false,
+      "naeringskode1": {
+        "beskrivelse": "Religiøse organisasjoner",
+        "kode": "94.910"
+      },
+      "antallAnsatte": 0,
+      "forretningsadresse": {
+        "land": "Norge",
+        "landkode": "NO",
+        "postnummer": "3802",
+        "poststed": "BØ I TELEMARK",
+        "adresse": "Gymnasbakken 55",
+        "kommune": "MIDT-TELEMARK",
+        "kommunenummer": "3817"
+      },
+      "stiftelsesdato": "1932-09-01",
+      "institusjonellSektorkode": {
+        "kode": "7000",
+        "beskrivelse": "Ideelle organisasjoner"
+      },
+      "registrertIForetaksregisteret": false,
+      "registrertIStiftelsesregisteret": false,
+      "registrertIFrivillighetsregisteret": false,
+      "konkurs": false,
+      "underAvvikling": false,
+      "underTvangsavviklingEllerTvangsopplosning": false,
+      "maalform": "Bokmål",
+      "_links": "https://data.brreg.no/enhetsregisteret/api/enheter/991670149"
+    },
+    "ownerships": [
+      {
+        "_type": "JuridiskPersonTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T22:54:03.024000000+02:00",
+        "versjonId": "3",
+        "oppdatertAv": "smatmynd",
+        "id": "68581949",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "0",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "407d4e29-670b-5e5e-8ca6-d58b58edaf25"
+        },
+        "andel": {
+          "teller": "1",
+          "nevner": "1"
+        },
+        "datoFra": "2007-11-19",
+        "eierId": "10520065",
+        "andelsnummer": "2",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "68581735"
+          },
+          "oppdateringsdato": "2020-06-15T20:26:34.378000000+02:00",
+          "versjonId": "6",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592245594378",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "270",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2007-03-01",
+          "historiskOppgittAreal": "496.5",
+          "historiskArealkildeId": "1",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Parkeringsareal til Bø bedehus",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T01:40:27.676000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "68915781",
+            "hovedteig": "true",
+            "teigId": "68915529",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "7de2390b-8712-5b99-9981-7b720f70acde"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "2137e10a-8910-515a-b188-ff7629537a23"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_type": "JuridiskPerson",
+    "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+    "id": "503312057",
+    "oppdateringsdato": "2020-06-16T16:02:46.237000000+02:00",
+    "versjonId": "4",
+    "oppdatertAv": "smatmynd",
+    "versjon": "1592316166237",
+    "nummer": "914458811",
+    "navn": "STUDENTSAMSKIPNADEN I SØRØST NORGE",
+    "postadresse": {
+      "adresselinje1": "Raveien 189B",
+      "postnummeromradeId": "1004170",
+      "landKodeId": "5001"
+    },
+    "uuid": {
+      "navnerom": "https://data.geonorge.no/matrikkel",
+      "uuid": "737341bb-31af-593d-9dc0-b10bb7362d40"
+    },
+    "forretningsadresse": {
+      "adresselinje1": "Raveien 189B",
+      "postnummeromradeId": "1004170",
+      "landKodeId": "5001"
+    },
+    "organisasjonsformKode": {
+      "orgformNavn": "Annet foretak iflg. særsk. lov",
+      "orgformKode": "SÆR"
+    },
+    "brreg": {
+      "organisasjonsnummer": "914458811",
+      "navn": "STUDENTSAMSKIPNADEN I SØRØST-NORGE",
+      "organisasjonsform": {
+        "kode": "SÆR",
+        "beskrivelse": "Annet foretak iflg. særskilt lov",
+        "_links": "https://data.brreg.no/enhetsregisteret/api/organisasjonsformer/S%C3%86R"
+      },
+      "hjemmeside": "www.ssn.no",
+      "registreringsdatoEnhetsregisteret": "2014-11-13",
+      "registrertIMvaregisteret": true,
+      "frivilligMvaRegistrertBeskrivelser": "Utleier av bygg eller anlegg",
+      "naeringskode1": {
+        "beskrivelse": "Aktiviteter i andre interesseorganisasjoner ikke nevnt annet sted",
+        "kode": "94.991"
+      },
+      "naeringskode2": {
+        "beskrivelse": "Drift av restauranter og kafeer",
+        "kode": "56.101"
+      },
+      "antallAnsatte": 218,
+      "forretningsadresse": {
+        "land": "Norge",
+        "landkode": "NO",
+        "postnummer": "3184",
+        "poststed": "BORRE",
+        "adresse": "Raveien 189B",
+        "kommune": "HORTEN",
+        "kommunenummer": "3801"
+      },
+      "stiftelsesdato": "2014-10-28",
+      "institusjonellSektorkode": {
+        "kode": "7000",
+        "beskrivelse": "Ideelle organisasjoner"
+      },
+      "registrertIForetaksregisteret": true,
+      "registrertIStiftelsesregisteret": false,
+      "registrertIFrivillighetsregisteret": false,
+      "sisteInnsendteAarsregnskap": "2020",
+      "konkurs": false,
+      "underAvvikling": false,
+      "underTvangsavviklingEllerTvangsopplosning": false,
+      "maalform": "Bokmål",
+      "_links": "https://data.brreg.no/enhetsregisteret/api/enheter/914458811"
+    },
+    "ownerships": [
+      {
+        "_type": "JuridiskPersonTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T23:29:17.634000000+02:00",
+        "versjonId": "3",
+        "oppdatertAv": "smatmynd",
+        "id": "551403277",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "0",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "4901ff85-e330-502c-b07c-f2bb2b4a1661"
+        },
+        "andel": {
+          "teller": "1",
+          "nevner": "1"
+        },
+        "datoFra": "2016-04-05",
+        "eierId": "503312057",
+        "andelsnummer": "3",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "68579848"
+          },
+          "oppdateringsdato": "2020-06-15T20:26:34.378000000+02:00",
+          "versjonId": "6",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592245594378",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "242",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2004-03-08",
+          "historiskOppgittAreal": "6330.3",
+          "historiskArealkildeId": "1",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken, fellesareal",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T01:48:08.492000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "68914914",
+            "hovedteig": "true",
+            "teigId": "68914677",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "663dbbe0-a7bb-5909-9f5f-3a44f3513551"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "e7b8149d-69f7-5292-90b6-7d428e81ed96"
+          }
+        }
+      },
+      {
+        "_type": "JuridiskPersonTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T22:37:57.748000000+02:00",
+        "versjonId": "3",
+        "oppdatertAv": "smatmynd",
+        "id": "551404435",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "0",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "647ed97e-a2c4-557b-b7bb-364b6769a033"
+        },
+        "andel": {
+          "teller": "1",
+          "nevner": "1"
+        },
+        "datoFra": "2016-04-05",
+        "eierId": "503312057",
+        "andelsnummer": "2",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525222624"
+          },
+          "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
+          "versjonId": "10",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592253053865",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "315",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2015-09-28",
+          "historiskOppgittAreal": "0.0",
+          "historiskArealkildeId": "0",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken, tomt 7, vegareal",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T02:29:27.594000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "525223364",
+            "hovedteig": "true",
+            "teigId": "525222623",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "69dbb6a8-8e32-5382-8899-11f17ab78330"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "588fdcbd-c1d1-5f12-9182-8cc34532a71e"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_type": "JuridiskPerson",
+    "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+    "id": "536597124",
+    "oppdateringsdato": "2020-06-16T16:18:56.733000000+02:00",
+    "versjonId": "2",
+    "oppdatertAv": "smatmynd",
+    "versjon": "1592317136733",
+    "nummer": "916125038",
+    "navn": "GYMNASBAKKEN I BORETTSLAG",
+    "postadresse": {
+      "adresselinje1": "Postboks 44",
+      "postnummeromradeId": "1004535",
+      "landKodeId": "5001"
+    },
+    "uuid": {
+      "navnerom": "https://data.geonorge.no/matrikkel",
+      "uuid": "41950a9d-516e-5742-8c2a-e65de113e9dd"
+    },
+    "forretningsadresse": {
+      "adresselinje1": "Jernbanegata 25",
+      "postnummeromradeId": "1004548",
+      "landKodeId": "5001"
+    },
+    "organisasjonsformKode": {
+      "orgformNavn": "Borettslag",
+      "orgformKode": "BRL"
+    },
+    "brreg": {
+      "organisasjonsnummer": "916125038",
+      "navn": "GYMNASBAKKEN I BORETTSLAG",
+      "organisasjonsform": {
+        "kode": "BRL",
+        "beskrivelse": "Borettslag",
+        "_links": "https://data.brreg.no/enhetsregisteret/api/organisasjonsformer/BRL"
+      },
+      "postadresse": {
+        "land": "Norge",
+        "landkode": "NO",
+        "postnummer": "3901",
+        "poststed": "PORSGRUNN",
+        "adresse": "Postboks 44",
+        "kommune": "PORSGRUNN",
+        "kommunenummer": "3806"
+      },
+      "registreringsdatoEnhetsregisteret": "2015-10-27",
+      "registrertIMvaregisteret": false,
+      "naeringskode1": {
+        "beskrivelse": "Borettslag",
+        "kode": "68.201"
+      },
+      "antallAnsatte": 0,
+      "forretningsadresse": {
+        "land": "Norge",
+        "landkode": "NO",
+        "postnummer": "3916",
+        "poststed": "PORSGRUNN",
+        "adresse": "Jernbanegata 25",
+        "kommune": "PORSGRUNN",
+        "kommunenummer": "3806"
+      },
+      "stiftelsesdato": "2015-09-18",
+      "institusjonellSektorkode": {
+        "kode": "8300",
+        "beskrivelse": "Borettslag o.l."
+      },
+      "registrertIForetaksregisteret": true,
+      "registrertIStiftelsesregisteret": false,
+      "registrertIFrivillighetsregisteret": false,
+      "sisteInnsendteAarsregnskap": "2020",
+      "konkurs": false,
+      "underAvvikling": false,
+      "underTvangsavviklingEllerTvangsopplosning": false,
+      "maalform": "Bokmål",
+      "_links": "https://data.brreg.no/enhetsregisteret/api/enheter/916125038"
+    },
+    "ownerships": [
+      {
+        "_type": "JuridiskPersonTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T23:05:57.432000000+02:00",
+        "versjonId": "3",
+        "oppdatertAv": "smatmynd",
+        "id": "552078476",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "0",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "a648c4e2-0214-5d23-98e8-f80a786dfc24"
+        },
+        "andel": {
+          "teller": "1",
+          "nevner": "1"
+        },
+        "datoFra": "2016-04-13",
+        "eierId": "536597124",
+        "andelsnummer": "3",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525205379"
+          },
+          "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
+          "versjonId": "13",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592253053865",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "310",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2015-09-28",
+          "historiskOppgittAreal": "0.0",
+          "historiskArealkildeId": "0",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken 49-51, Tomt 1",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T02:29:27.594000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "525205389",
+            "hovedteig": "true",
+            "teigId": "525205378",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "916b6aa1-ad8a-5b93-bea7-f000c4c25832"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "760cc611-76c7-50a9-ac5c-26edc33c7ec9"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_type": "JuridiskPerson",
+    "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person",
+    "id": "585795431",
+    "oppdateringsdato": "2020-06-16T16:44:03.188000000+02:00",
+    "versjonId": "2",
+    "oppdatertAv": "smatmynd",
+    "versjon": "1592318643188",
+    "nummer": "918703136",
+    "navn": "GYMNASBAKKEN II BORETTSLAG",
+    "postadresse": {
+      "adresselinje1": "Postboks 44",
+      "postnummeromradeId": "1004535",
+      "landKodeId": "5001"
+    },
+    "uuid": {
+      "navnerom": "https://data.geonorge.no/matrikkel",
+      "uuid": "9463b4f3-08c1-5bc4-983a-02aaa6a1065c"
+    },
+    "forretningsadresse": {
+      "adresselinje1": "Jernbanegata 25",
+      "postnummeromradeId": "1004548",
+      "landKodeId": "5001"
+    },
+    "organisasjonsformKode": {
+      "orgformNavn": "Borettslag",
+      "orgformKode": "BRL"
+    },
+    "brreg": {
+      "organisasjonsnummer": "918703136",
+      "navn": "GYMNASBAKKEN II BORETTSLAG",
+      "organisasjonsform": {
+        "kode": "BRL",
+        "beskrivelse": "Borettslag",
+        "_links": "https://data.brreg.no/enhetsregisteret/api/organisasjonsformer/BRL"
+      },
+      "postadresse": {
+        "land": "Norge",
+        "landkode": "NO",
+        "postnummer": "3901",
+        "poststed": "PORSGRUNN",
+        "adresse": "Postboks 44",
+        "kommune": "PORSGRUNN",
+        "kommunenummer": "3806"
+      },
+      "registreringsdatoEnhetsregisteret": "2017-03-23",
+      "registrertIMvaregisteret": false,
+      "naeringskode1": {
+        "beskrivelse": "Borettslag",
+        "kode": "68.201"
+      },
+      "antallAnsatte": 0,
+      "forretningsadresse": {
+        "land": "Norge",
+        "landkode": "NO",
+        "postnummer": "3916",
+        "poststed": "PORSGRUNN",
+        "adresse": "Jernbanegata 25",
+        "kommune": "PORSGRUNN",
+        "kommunenummer": "3806"
+      },
+      "stiftelsesdato": "2017-02-18",
+      "institusjonellSektorkode": {
+        "kode": "8300",
+        "beskrivelse": "Borettslag o.l."
+      },
+      "registrertIForetaksregisteret": true,
+      "registrertIStiftelsesregisteret": false,
+      "registrertIFrivillighetsregisteret": false,
+      "sisteInnsendteAarsregnskap": "2020",
+      "konkurs": false,
+      "underAvvikling": false,
+      "underTvangsavviklingEllerTvangsopplosning": false,
+      "maalform": "Bokmål",
+      "_links": "https://data.brreg.no/enhetsregisteret/api/enheter/918703136"
+    },
+    "ownerships": [
+      {
+        "_type": "JuridiskPersonTinglystEierforhold",
+        "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+        "oppdateringsdato": "2020-06-17T23:35:45.518000000+02:00",
+        "versjonId": "3",
+        "oppdatertAv": "smatmynd",
+        "id": "591510487",
+        "kommuneId": "3817",
+        "eierforholdKodeId": "0",
+        "uuid": {
+          "navnerom": "https://data.geonorge.no/matrikkel",
+          "uuid": "d67affd9-acae-5f11-8240-6b8953e313d5"
+        },
+        "andel": {
+          "teller": "1",
+          "nevner": "1"
+        },
+        "datoFra": "2017-06-08",
+        "eierId": "585795431",
+        "andelsnummer": "3",
+        "unit": {
+          "_type": "Grunneiendom",
+          "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+          "id": {
+            "_type": "GrunneiendomId",
+            "_namespace": "http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet",
+            "value": "525222618"
+          },
+          "oppdateringsdato": "2020-06-15T22:30:53.865000000+02:00",
+          "versjonId": "9",
+          "oppdatertAv": "smatmynd",
+          "versjon": "1592253053865",
+          "matrikkelnummer": {
+            "kommuneId": "3817",
+            "gardsnummer": "53",
+            "bruksnummer": "314",
+            "festenummer": "0",
+            "seksjonsnummer": "0"
+          },
+          "etableringsdato": "2015-09-28",
+          "historiskOppgittAreal": "0.0",
+          "historiskArealkildeId": "0",
+          "tinglyst": "true",
+          "skyld": "0.0",
+          "bruksnavn": "Gymnasbakken 39-41, tomt 6",
+          "teigerForMatrikkelenhet": {
+            "oppdateringsdato": "2020-06-18T02:29:17.812000000+02:00",
+            "versjonId": "2",
+            "oppdatertAv": "smatmynd",
+            "id": "525222651",
+            "hovedteig": "true",
+            "teigId": "525222617",
+            "uuid": {
+              "navnerom": "https://data.geonorge.no/matrikkel",
+              "uuid": "dfa51e47-3958-5711-ae08-9b47bc93d89d"
+            }
+          },
+          "erSeksjonert": "false",
+          "harAktiveFestegrunner": "false",
+          "harAnmerketKlage": "false",
+          "harRegistrertGrunnerverv": "false",
+          "harRegistrertJordskifteKrevd": "false",
+          "inngarISamlaFastEiendom": "false",
+          "harGrunnforurensing": "false",
+          "harKulturminne": "false",
+          "harAvtaleGrensePunktfeste": "false",
+          "harAvtaleStedbundenRettighet": "false",
+          "utgatt": "false",
+          "underSammenslaingBestar": "false",
+          "underSammenslaingUtgar": "false",
+          "oppmalingIkkeFullfort": "false",
+          "grensepunktmerkingMangler": "false",
+          "mangelMatrikkelforingskrav": "false",
+          "nymatrikulert": "false",
+          "etterML9BTilH": "false",
+          "kommunalTilleggsdel": {
+            "kartblader": "",
+            "brukAvGrunnKodeId": "0",
+            "kommentarer": "",
+            "matrikkelenhetReferanser": "",
+            "undereiendommerIds": ""
+          },
+          "uuid": {
+            "navnerom": "https://data.geonorge.no/matrikkel",
+            "uuid": "d9cd6824-c306-59c3-bf8a-fe3aac5ec525"
+          }
+        }
+      }
+    ]
+  }
+]

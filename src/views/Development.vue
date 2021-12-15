@@ -23,10 +23,6 @@ export default {
     }
   },
   methods: {
-    addFiles(e){
-      console.log('Adding files');
-      console.log(e);
-    }
   }
 }
 </script>

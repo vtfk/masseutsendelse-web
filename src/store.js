@@ -245,6 +245,47 @@ const store = new Vuex.Store({
         context.commit('setModalError', err);
         return Promise.reject(err);
       }
+    },
+    async downloadBlob(context, options) {
+      try {
+        if(!options) throw new AppError('Options ikke satt', 'Du kan ikke laste ned en fil uten å sende med innstillinger');
+        if(!options.dispatchId) throw new AppError('options.dispatchId', 'Du kan ikke laste ned en fil uten å sende med dispatchId');
+        if(!options.blobId) throw new AppError('options.dispatchId', 'Du kan ikke laste ned en fil uten å sende med blodId');
+
+        const request = {
+          method: 'get',
+          url: `${config.MASSEUTSENDELSEAPI_BASEURL}api/blob/${options.dispatchId}/${options.blobId}/?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==`,
+        }
+
+        const response = await axios.request(request);
+        
+        const dataUrl = response.data;
+        
+        // Generate a byteString from the dataUrl
+        var byteString = Buffer.from(dataUrl.split(',')[1], 'base64');
+
+        // separate out the mime component
+        var mimeString = dataUrl.split(',')[0].split(':')[1].split(';')[0]
+
+        // write the bytes of the string to an ArrayBuffer
+        var ab = new ArrayBuffer(byteString.length);
+
+        // create a view into the buffer
+        var ia = new Uint8Array(ab);
+
+        // set the bytes of the buffer to the correct values
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        // write the ArrayBuffer to a blob, and you're done
+        var blob = new Blob([ab], {type: mimeString});
+        return blob;
+        
+      } catch(err) {
+        context.commit('setModalError', err);
+        return Promise.reject(err);
+      }
     }
   }
 })

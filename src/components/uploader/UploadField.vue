@@ -13,7 +13,13 @@
       </div>
     </div>
     <!-- File list -->
-    <file-list v-if="availableFiles.length > 0 && $props.showList" :files="availableFiles" style="margin-top: -1rem; padding-top: 1.5rem" @removeFiles="(e) => removeFiles(e)" />
+    <file-list v-if="availableFiles.length > 0 && $props.showList"
+      :files="availableFiles"
+      :downloadBaseUrl="$props.downloadBaseUrl"
+      style="margin-top: -1rem; padding-top: 1.5rem"
+      @removeFiles="(e) => removeFiles(e)"
+      @downloadBlob="(e) => $emit('downloadBlob', e)"
+    />
   </div>
 </template>
 
@@ -44,6 +50,15 @@ async function readFile(file) {
   });
 }
 
+async function readFileAsDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();                  // Create the reader
+    reader.onloadend = () => resolve(reader.result);  // onLoaded event for the reader
+    reader.onerror = (e) => reject(e);                // onError event for the reader
+    reader.readAsDataURL(file);                       // Start the reader
+  });
+}
+
 export default {
   name: 'UploadField',
   components: {
@@ -68,6 +83,9 @@ export default {
     showList: {
       type: Boolean,
       default: true
+    },
+    downloadBaseUrl: {
+      type: String
     }
   },
   data() {
@@ -124,6 +142,7 @@ export default {
 
         // Read the file
         let fileData = await readFile(file);
+        let fileDataUrl = await readFileAsDataURL(file);
 
         var fileObject = {
           name: file.name,
@@ -131,8 +150,9 @@ export default {
           size: file.size,
           lastModified: file.lastModified,
           lastModifiedDate: file.lastModifiedDate,
+          base64: Buffer.from(fileData).toString('base64'),
           data: fileData,
-          base64: Buffer.from(fileData, 'utf8').toString('base64')
+          dataUrl: fileDataUrl,
         }
         tmpFiles.push(fileObject);
       }
@@ -159,9 +179,6 @@ export default {
       if(!e) { return; }
       if(!e.dataTransfer) { return;}
       if(!e.dataTransfer.files) { return;}
-
-      console.log('Data transfer files');
-      console.log(e.dataTransfer.files);
 
       this.AddFiles(e.dataTransfer.files);
     },
