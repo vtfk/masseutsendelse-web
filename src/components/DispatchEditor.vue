@@ -171,8 +171,7 @@
   import merge from 'lodash.merge'
   import pick from 'lodash.pick';
   import PolyParser from '../lib/polyparser/polyparser';
-  import FileSaver from 'file-saver';
-
+  // TODO: Avinstaller file-saver
   // Config
   import config from '../../config';
 
@@ -616,23 +615,17 @@
           console.log(blob);
           const options = {
             dispatchId: this.dispatch._id,
-            blobId: blob._id
+            blobId: blob.name
           }
           const blobContent = await this.$store.dispatch('downloadBlob', options)
-          
-          console.log('Using filesaver')
-          var b = new Blob([blobContent], {type: blob.type});
-          FileSaver.saveAs(b, blob.name);
-
-          // Create a temporary link element and click it to download the data
-          // var a = document.createElement('a');
-          // // let mimeType = 'data:text/' + 'txt' + ';encoding:utf-8'
-          // // mimeType = mimeType || 'application/octet-stream';
-          // var universalBOM = "\uFEFF";
-          // a.setAttribute('href', blob.type + ',' + encodeURIComponent(universalBOM+blobContent));
-          // a.setAttribute('download', blob.name);
-          // window.document.body.appendChild(a);
-          // a.click();
+          console.log('== Blob content ==');
+          console.log(blobContent);
+          // Download the file
+          const link = document.createElement('a');
+          link.href = blobContent.content;
+          link.setAttribute('download', blob.name);
+          document.body.appendChild(link);
+          link.click()
         }
       },
       async readFile(file) {

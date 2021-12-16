@@ -126,15 +126,16 @@ export default {
       if(!Array.isArray(files)) files = [files];
 
       let tmpFiles = [];
-      if(this.$props.value) JSON.parse(JSON.stringify(this.$props.value));
-      else if(this.$props.files) JSON.parse(JSON.stringify(this.$props.files));
+      // Make a copy of the existing files if any
+      if(this.$props.value) tmpFiles = JSON.parse(JSON.stringify(this.$props.value));
+      else if(this.$props.files) tmpFiles = JSON.parse(JSON.stringify(this.$props.files));
 
       let foundError = false;
       for(const file of files) {
         // Check if the file is already added to the array
-        this.availableFiles.forEach(existingFile => {
+        tmpFiles.forEach(existingFile => {
           if(existingFile.name == file.name) {
-            alert("The file is already added");
+            alert(`The file ${file.name} is already added`);
             foundError = true;
           }
         })
@@ -150,7 +151,6 @@ export default {
           size: file.size,
           lastModified: file.lastModified,
           lastModifiedDate: file.lastModifiedDate,
-          base64: Buffer.from(fileData).toString('base64'),
           data: fileData,
           dataUrl: fileDataUrl,
         }

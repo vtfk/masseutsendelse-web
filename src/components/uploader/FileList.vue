@@ -64,10 +64,12 @@ export default {
         return;
       }
       // If no base URL has been provided
-      if(!this.$props.downloadBaseUrl) this.$emit('downloadBlob', blob);
-
-
-      
+      if(this.$props.downloadBaseUrl) {
+        console.log('== Downloading from url ==')
+      } else {
+        // If no downloadBaseUrl has been provided
+        this.$emit('downloadBlob', blob);
+      }
     }
   }
 }
