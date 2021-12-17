@@ -15,13 +15,13 @@
       <div class="header-part swansDown user-image"><VTFKInitialsBadge firstName="Noen" lastName="André"/></div>
       <div class="header-part">
         <VTFKIconDropdownNav>
-          <VTFKIconDropdownNavItem title='Hjelp' :onClick="() => { }" />
+          <VTFKIconDropdownNavItem title='Hjelp' :onClick="showGuide"/>
           <VTFKIconDropdownNavItem title='Utsendelser' :onClick="() => { route('/utsendelser') }" />
           <VTFKIconDropdownNavItem title='Maler' :onClick="() => { route('/maler') }" />
           <VTFKIconDropdownNavItem title="Logg ut" href="https://www.vtfk.no" />
         </VTFKIconDropdownNav>
       </div>
-    </div>
+      </div>
   </div>
 </template>
 
@@ -29,13 +29,13 @@
 // VTFK komponenter
 import { InitialsBadge, IconDropdownNav, IconDropdownNavItem } from '@vtfk/components'
 
-
 export default {
   name: 'Header',
   components: {
     'VTFKInitialsBadge': InitialsBadge,
     'VTFKIconDropdownNav': IconDropdownNav,
     'VTFKIconDropdownNavItem': IconDropdownNavItem,
+      
   },
   data() {
     return {
@@ -46,6 +46,9 @@ export default {
       if(!route) { return }
 
       this.$router.push(route);
+    },
+    showGuide() {
+      this.$root.$emit('GuideBtnModal')
     }
   }
 }

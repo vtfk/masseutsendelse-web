@@ -2,11 +2,13 @@
   <div style="text-align: left;">
     <VTFKButton :passedProps="{onClick: onClick}">Se mer</VTFKButton>
     <VTFKModal title="Guide" :open="isShowModal" :onDismiss="() => { this.isShowModal = false }" style="z-index: 1000;">
-      <div style="width: 100%; padding-left: 4rem; margin-top: -2rem;">
+      <div class="border" style="width: 100%; padding-left: 4rem; margin-top: -2rem;">
         <!-- Om siden -->
         <div class="header-part typography heading-two">Om siden</div>
         <p class="typography paragraph">
-          Tekst om siden
+          I oppstart av reguleringsplaner eller tilsvarende, er det et behov for å kommunisere ut informasjon til grunneiere. <br>
+          Dette kan dreie seg om noen få til flere tusen grunneiere på en plan. Masseutsendelse skal gjør denne jobben lettere. <br>
+          Ved å benytte seg av tredjeparts apier og egenutviklede apier vil masseutsendelse ta seg av utsendelse og arkivering av informasjonen sendt ut til grunneiere. 
         </p>
         <span class="error">Det er viktig at polygonet benytter koordinatsystem EUREF89 UTM Sone 32</span>
         <!-- Bruk av siden -->
@@ -16,9 +18,10 @@
           2. Verifiser at polygonet treffer korrekt på kart<br>
           3. Trykk på Kontakt Matrikkel-knappen<br>
           4. Verifiser at innhentet informasjon ser korrekt ut<br>
-          5. Fyll ut informasjon om varslet som skal sendes ut til alle eiere<br>
-          6. Trykk forhåndsvisning og kvitter ut at utsendelsen ser korrekt ut<br>
-          7. Trykk Send inn<br>
+          5. Om nødvendig ekskludere mottakere
+          6. Fyll ut informasjon om varslet som skal sendes ut til alle eiere<br>
+          7. Trykk forhåndsvisning og kvitter ut at utsendelsen ser korrekt ut<br>
+          8. Trykk Send inn<br>
           <br>
           Utsendelsen vil så legges i en kø og sendes ut klokken 00:00
         </p>
@@ -68,6 +71,11 @@ export default {
       isShowModal: false
     }
   },
+  mounted() {
+    this.$root.$on('GuideBtnModal', () => {
+      this.onClick()
+    })
+  },
   methods: {
     onClick() {
       this.isShowModal = !this.isShowModal;
@@ -78,6 +86,7 @@ export default {
 
 <style scoped>
   .error {
-    color: red;
+    background-color: red !important
   }
 </style>
+
