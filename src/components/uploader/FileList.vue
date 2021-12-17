@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import FileIcon from './FileIcon.vue'
 
 export default {
@@ -52,24 +53,31 @@ export default {
     },
     async downloadBlob(blob) {
       if(!blob) return;
-      // If the blob has a dataUrl, just download it
-      if(blob.dataUrl) {
-        // Download the file
-        const link = document.createElement('a');
-        link.href = blob.dataUrl;
-        link.setAttribute('download', blob.name);
-        document.body.appendChild(link);
-        link.click()
 
+      // If the blob dont have data url and it has been provided a download base url
+      if(!blob.dataUrl && this.$props.downloadBaseUrl) {
+        let request = {
+          method: 'get',
+          url: `${this.$props.downloadBaseUrl}${blob.name}` 
+        }
+        const d = await axios.request(request);
+        if(d && d.data && d.data.content) blob.dataUrl = d.data.content;
+      }
+
+      // If no blob.dataUrl is provided, emit downloadBlob
+      if(!blob.dataUrl) {
+        this.$emit('downloadBlob', blob);
         return;
       }
-      // If no base URL has been provided
-      if(this.$props.downloadBaseUrl) {
-        console.log('== Downloading from url ==')
-      } else {
-        // If no downloadBaseUrl has been provided
-        this.$emit('downloadBlob', blob);
-      }
+
+      // Download the blob
+      const link = document.createElement('a');
+      link.href = blob.dataUrl;
+      link.setAttribute('download', blob.name);
+      document.body.appendChild(link);
+      link.click()
+
+      return;
     }
   }
 }

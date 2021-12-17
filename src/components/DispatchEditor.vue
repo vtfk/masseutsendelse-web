@@ -109,7 +109,7 @@
             />
           </div>
           <h3 style="margin-bottom: 0.2rem">Vedlegg</h3>
-          <upload-field v-model="dispatch.attachments" @downloadBlob="(e) => downloadBlob(e)" style="width: 100%" />
+          <upload-field v-model="dispatch.attachments" style="width: 100%" :downloadBaseUrl="`${$config.MASSEUTSENDELSEAPI_BASEURL}api/blobs/${dispatch._id}/`" />
           <div v-if="mode === 'new'" class="centeredColumn" style="margin-top: 1rem">
             <VTFKButton
               class="mt-1"
@@ -526,16 +526,6 @@
             this.dispatch.owners = ownerCentric;
           }
 
-          // /*
-          //   Oppdater hovedmatrikkel objekt med innhentet eierinformasjon
-          // */
-          // matrikkelEnheter.forEach((enhet) => {
-          //   enhet.eierforhold.forEach((eierforhold) => {
-          //     let match = matrikkelEiere.find((eier) => MatrikkelProxyClient.getItemValue(eier.id) == eierforhold.eierId)
-          //     eierforhold.eier = match;
-          //   })
-          // })
-
           // Hent ut juridiske eiere
           let juridiskeEiere = matrikkelEiere.filter((e) => e._type.toLowerCase().includes('juridisk'));
 
@@ -608,25 +598,6 @@
         this.$set(this.dispatch, 'excludedOwners', this.dispatch.excludedOwners);
         // Flip the checkboxes so they will have to be checked again
         this.isDispatchApproved = false;
-      },
-      async downloadBlob(blob) {
-        if(this.mode === 'edit') {
-          console.log('== Downloading blob from dispatch editor ==');
-          console.log(blob);
-          const options = {
-            dispatchId: this.dispatch._id,
-            blobId: blob.name
-          }
-          const blobContent = await this.$store.dispatch('downloadBlob', options)
-          console.log('== Blob content ==');
-          console.log(blobContent);
-          // Download the file
-          const link = document.createElement('a');
-          link.href = blobContent.content;
-          link.setAttribute('download', blob.name);
-          document.body.appendChild(link);
-          link.click()
-        }
       },
       async readFile(file) {
         // Always return a Promise
