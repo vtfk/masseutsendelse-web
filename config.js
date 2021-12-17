@@ -7,5 +7,5 @@ export default {
     EXCLUDED_OWNER_IDS: process.env.VUE_APP_EXCLUDED_OWNER_IDS ? process.env.VUE_APP_EXCLUDED_OWNER_IDS.split(',') : undefined,
     MOCK_MATRIKKEL_API: process.env.VUE_APP_MOCK_MATRIKKEL_API || false,
     MOCK_MASSEUTSENDELSE_API: process.env.VUE_APP_MOCK_MASSEUTSENDELSE_API || false,
-    MOCK_ENABLED: process.env.VUE_APP_MOCK_MATRIKKEL_API === 'true' || process.env.VUE_APP_MOCK_MASSEUTSENDELSE_API === 'true'
+    MOCK_ENABLED: process.env.VUE_APP_MOCK_MATRIKKEL_API === 'true' || process.env.VUE_APP_MOCK_MASSEUTSENDELSE_API === 'true',
 }

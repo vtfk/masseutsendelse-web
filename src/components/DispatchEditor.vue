@@ -46,7 +46,7 @@
       <div v-if="isMatrikkelApproved || mode === 'edit'" class="card shadow centeredColumn" style="margin-top: 1rem;">
         <div style="width: 60%">
           <h1>Masseutsendelse</h1>
-          <DispatchStatusSelect v-if="mode === 'edit'" v-model="dispatch.status" :disabled="isLocked"/>
+          <DispatchStatusSelect class="centeredColumn" v-if="mode === 'edit'" v-model="dispatch.status" :disabled="isLocked"/>
           <!-- En input for prosjekt navn, en for prosjekt nr -->
           <VTextField 
             v-model="dispatch.title"
