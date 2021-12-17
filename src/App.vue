@@ -12,6 +12,7 @@
       </main>
       <!-- Modals -->
       <ErrorModal v-if="$store.state.modalError" :error="$store.state.modalError" @close="$store.commit('resetModalError')" />
+      <GuideModal v-if="$store.state.isShowGuideModal" />
       <VTFKPDFPreviewModal :open="$store.state.previewPDFBase64 !== undefined" :base64="$store.state.previewPDFBase64" title='Lukk modal' :passedProps="{ onDismiss: () => { $store.commit('setPreviewPDF', undefined) }}"/>
       <v-dialog
         v-if="$store.state.loading"
@@ -32,6 +33,7 @@
 <script>
 // Project components
 import Header from './components/Header.vue'
+import GuideModal from './components/GuideModal.vue';
 
 // VTFK Component
 import { PDFPreviewModal } from '@vtfk/components';
@@ -41,6 +43,7 @@ export default {
   name: 'App',
   components: {
     Header,
+    GuideModal,
     'VTFKPDFPreviewModal': PDFPreviewModal,
     Loading
   }

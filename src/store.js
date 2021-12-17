@@ -21,6 +21,7 @@ const store = new Vuex.Store({
   state: {
     modalError: undefined,
     previewPDFBase64: undefined,
+    isShowGuideModal: false,
     dispatches: undefined,
     templates: undefined,
     loading: undefined,
@@ -51,6 +52,12 @@ const store = new Vuex.Store({
     },
     resetModalError (state) {
       state.modalError = undefined;
+    },
+    setGuideModal (state) {
+      state.isShowGuideModal = true;
+    },
+    resetGuideModal (state) {
+      state.isShowGuideModal = false;
     },
     setDispatches (state, dispatches) {
       state.dispatches = dispatches;
