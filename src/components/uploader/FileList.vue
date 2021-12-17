@@ -60,8 +60,8 @@ export default {
           method: 'get',
           url: `${this.$props.downloadBaseUrl}${blob.name}` 
         }
-        const d = await axios.request(request);
-        if(d && d.data && d.data.content) blob.dataUrl = d.data.content;
+        const response = await axios.request(request);
+        if(response && response.data && response.data.data) blob.dataUrl = response.data.data;
       }
 
       // If no blob.dataUrl is provided, emit downloadBlob

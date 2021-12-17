@@ -649,7 +649,7 @@
         var postObject = Object.assign(this.dispatch)
 
         // Remove template if not specified
-        if(!this.dispatch.template._id) delete postObject.template;
+        if(!this.dispatch.template || !this.dispatch.template._id) delete postObject.template;
 
         this.$emit('beforeSave');
         this.isLoading = true
