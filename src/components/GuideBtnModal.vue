@@ -33,7 +33,7 @@
             1.	Kartet viser polygonet som har blitt lastet opp av brukeren som opprettet prosjektet. <br>
             2.	I tabellen «Eiere /Mottakere» vil du kunne se hvem som har en eiendom som befinner seg. innenfor polygonet. <br>
               &ensp;a.	Legg også merke til at helt til høyre i tabellen vil du se et minus tegn eller et pluss tegn. <br>
-               &ensp;&emsp;Ved å trykke på denne knappen kan du velge hvem som skal motta eller ikke motta et varsel. <br>
+              &ensp;&emsp;Ved å trykke på denne knappen kan du velge hvem som skal motta eller ikke motta et varsel. <br>
               &ensp;b.	Tabellen under vil vise hvilke organisasjoner eller eiere som ikke vil motta et varsel. <br>
             3.	Masseutsendelse <br>
               &ensp;a.	Her har du mulighet til å endre status på prosjektet. <br> 
