@@ -28,8 +28,7 @@
       <div v-else class="centeredColumn" style="margin-top: 1rem;">
         <!-- Cards som viser stats om informasjonen -->
         <StatCards :items="statItems"/>
-        <!-- Matrikkel table -->
-        <!-- <MatrikkelTable :items="dispatch.matrikkelEnheter" item-key="bruksnavn" /> -->
+        <!-- Matrikkel eiere -->
         <h2>Eiere / Mottakere</h2>
         <MatrikkelOwnerTable :items="dispatch.owners" item-key="id" @excludeOwner="(e) => excludeOwner(e)" />
         <div v-if="dispatch.excludedOwners" style="width: 100%;">
@@ -110,7 +109,7 @@
             />
           </div>
           <h3 style="margin-bottom: 0.2rem">Vedlegg</h3>
-          <upload-field v-model="dispatch.attachments" style="width: 100%" />
+          <upload-field v-model="dispatch.attachments" style="width: 100%" :downloadBaseUrl="`${$config.MASSEUTSENDELSEAPI_BASEURL}api/blobs/${dispatch._id}/`" />
           <div v-if="mode === 'new'" class="centeredColumn" style="margin-top: 1rem">
             <VTFKButton
               class="mt-1"
@@ -162,7 +161,6 @@
   import Map from '../components/Map.vue'
   import StatCards from '../components/StatCards.vue'
   import Loading from './Loading.vue'
-  // import MatrikkelTable from '../components/MatrikkelTable.vue';
   import MatrikkelOwnerTable from '../components/MatrikkelOwnerTable.vue';
   import DispatchStatusSelect from '../components/DispatchStatusSelect.vue';
   import SchemaFields from '../components/SchemaFields.vue';
@@ -173,6 +171,9 @@
   import merge from 'lodash.merge'
   import pick from 'lodash.pick';
   import PolyParser from '../lib/polyparser/polyparser';
+  // TODO: Avinstaller file-saver
+  // Config
+  import config from '../../config';
 
   // Custom error class
   import AppError from '../lib/vtfk-errors/AppError';
@@ -181,7 +182,6 @@
     name: 'dispatchEditor',
     components: {
       'VTFKButton': Button,
-      // 'VTFKCheckbox': Checkbox,
       UploadField,
       Map,
       StatCards,
@@ -516,18 +516,15 @@
           /*
             Generer ett datasett hvor eiere er først med alle eierforhold under
           */
-          const ownerCentric = MatrikkelProxyClient.getMatrikkelEnheterOwnerCentric(matrikkelEnheter, matrikkelEiere);
-          this.dispatch.owners = ownerCentric;
+          let ownerCentric = MatrikkelProxyClient.getMatrikkelEnheterOwnerCentric(matrikkelEnheter, matrikkelEiere);
 
-          // /*
-          //   Oppdater hovedmatrikkel objekt med innhentet eierinformasjon
-          // */
-          // matrikkelEnheter.forEach((enhet) => {
-          //   enhet.eierforhold.forEach((eierforhold) => {
-          //     let match = matrikkelEiere.find((eier) => MatrikkelProxyClient.getItemValue(eier.id) == eierforhold.eierId)
-          //     eierforhold.eier = match;
-          //   })
-          // })
+          // Remove any pre-removed users
+          if(config.EXCLUDED_OWNER_IDS && Array.isArray(config.EXCLUDED_OWNER_IDS)) {
+            this.dispatch.excludedOwners = ownerCentric.filter((o) => config.EXCLUDED_OWNER_IDS.includes(o.nummer));
+            this.dispatch.owners = ownerCentric.filter((o) => !config.EXCLUDED_OWNER_IDS.includes(o.nummer));
+          } else {
+            this.dispatch.owners = ownerCentric;
+          }
 
           // Hent ut juridiske eiere
           let juridiskeEiere = matrikkelEiere.filter((e) => e._type.toLowerCase().includes('juridisk'));
@@ -593,7 +590,6 @@
         this.isDispatchApproved = false;
       },
       includeOwner(owner) {
-
         // Add the exlcuded owner
         this.dispatch.owners.push(owner);
         this.$set(this.dispatch, 'owners', this.dispatch.owners);
@@ -659,7 +655,7 @@
         this.isLoading = true
         try {
           if(this.mode === 'new') {
-            await this.$store.dispatch('postDispatches', postObject)
+            await this.$store.dispatch('postDispatches', postObject);
           } else if (this.mode === 'edit') {
             await this.$store.dispatch('editDispatches', postObject);
           } else {

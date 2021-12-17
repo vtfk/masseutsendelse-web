@@ -3,7 +3,7 @@
     <table v-if="$props.files" style="width: 100%; border-collapse: collapse;">
       <tbody>
         <tr v-for="(file, i) in $props.files" :key="i" class="tableRow">
-          <td style="width: 3rem; padding-top: 0.3rem; padding-left: 0.5rem;">
+          <td style="width: 3rem; padding-top: 0.3rem; padding-left: 0.5rem; cursor: pointer" @click="downloadBlob(file)">
             <file-icon :filename="file.name" />
           </td>
           <td style="padding-left: 0.5rem; text-align: left;">
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import FileIcon from './FileIcon.vue'
 
 export default {
@@ -31,6 +32,9 @@ export default {
     files: {
       type: Array,
       default: () => []
+    },
+    downloadBaseUrl: {
+      type: String
     }
   },
   methods: {
@@ -38,15 +42,42 @@ export default {
       if(!file) return;
       if(!confirm(`Er du helt sikker på at du ønsker å fjerne filen ${file.name}?`)) return;
 
+      // Filter out the file
       let tmpFiles = this.$props.value || this.$props.files;
-      console.log('Before')
       tmpFiles = tmpFiles.filter((f) => f.name !== file.name);
-      console.log('after');
 
       // Emit what file that should be removed
       this.$emit('removeFiles', file);
       // Update v-model
       this.$emit('input', tmpFiles);
+    },
+    async downloadBlob(blob) {
+      if(!blob) return;
+
+      // If the blob dont have data url and it has been provided a download base url
+      if(!blob.dataUrl && this.$props.downloadBaseUrl) {
+        let request = {
+          method: 'get',
+          url: `${this.$props.downloadBaseUrl}${blob.name}` 
+        }
+        const d = await axios.request(request);
+        if(d && d.data && d.data.content) blob.dataUrl = d.data.content;
+      }
+
+      // If no blob.dataUrl is provided, emit downloadBlob
+      if(!blob.dataUrl) {
+        this.$emit('downloadBlob', blob);
+        return;
+      }
+
+      // Download the blob
+      const link = document.createElement('a');
+      link.href = blob.dataUrl;
+      link.setAttribute('download', blob.name);
+      document.body.appendChild(link);
+      link.click()
+
+      return;
     }
   }
 }

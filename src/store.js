@@ -157,6 +157,7 @@ const store = new Vuex.Store({
           method: 'post',
           data: template
         }
+        
         // Set the loading modal
         context.commit('setLoadingModal', {
           title: 'Lagrer',
@@ -242,6 +243,28 @@ const store = new Vuex.Store({
         // Clear the loading modal
         context.commit('resetLoadingModal');
       } catch (err) {
+        context.commit('setModalError', err);
+        return Promise.reject(err);
+      }
+    },
+    async downloadBlob(context, options) {
+      try {
+        if(!options) throw new AppError('Options ikke satt', 'Du kan ikke laste ned en fil uten å sende med innstillinger');
+        if(!options.dispatchId) throw new AppError('options.dispatchId', 'Du kan ikke laste ned en fil uten å sende med dispatchId');
+        if(!options.blobId) throw new AppError('options.dispatchId', 'Du kan ikke laste ned en fil uten å sende med blodId');
+
+        let url = options.url || `${config.MASSEUTSENDELSEAPI_BASEURL}api/blobs/${options.dispatchId}/${options.blobId}/?code=${config.MASSEUTSENDELSEAPI_APICODE}`;
+        
+        const request = {
+          method: 'get',
+          url: url,
+        }
+
+        const response = await axios.request(request);
+        console.log(response);
+        return response.data;
+        
+      } catch(err) {
         context.commit('setModalError', err);
         return Promise.reject(err);
       }

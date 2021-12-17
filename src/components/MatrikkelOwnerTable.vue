@@ -14,7 +14,7 @@
       {{item.ownerships.length}}
     </template>
     <template v-slot:[`item.postadresse`]="{ item }">
-      {{getPostAddress(item.postadresse)}}
+      {{getPostAddress(item)}}
     </template>
     <template v-slot:[`item.actions`]="{ item }">
       <v-btn 
@@ -119,10 +119,19 @@
     methods: {
       getPostAddress(person) {
         let address = '';
-        if(person.adresselinje) address += person.adresselinje + ' ';
-        if(person.adresselinje1) address += person.adresselinje1 + ' ';
-        if(person.adresselinje2) address += person.adresselinje2 + ' ';
-        if(person.adresselinje3) address += person.adresselinje3 + ' ';
+
+        if(person.dsf !== undefined) {
+          address += `${person.dsf.ADR} ${person.dsf.POSTN} ${person.dsf.POSTS}`
+        } else if(person.brreg && person.brreg.postadresse) {
+          address += `${person.brreg.postadresse.adresse} ${person.brreg.postadresse.postnummer} ${person.brreg.postadresse.poststed}`
+        } else {
+          if(person.postadresse.adresselinje) address += person.postadresse.adresselinje + ' ';
+          if(person.postadresse.adresselinje1) address += person.postadresse.adresselinje1 + ' ';
+          if(person.postadresse.adresselinje2) address += person.postadresse.adresselinje2 + ' ';
+          if(person.postadresse.adresselinje3) address += person.postadresse.adresselinje3 + ' ';
+          address += '(Matrikkel)'
+        }
+
         return address.trim();
       },
       excludeOwner(owner) {

@@ -13,7 +13,13 @@
       </div>
     </div>
     <!-- File list -->
-    <file-list v-if="availableFiles.length > 0 && $props.showList" :files="availableFiles" style="margin-top: -1rem; padding-top: 1.5rem" @removeFiles="(e) => removeFiles(e)" />
+    <file-list v-if="availableFiles.length > 0 && $props.showList"
+      :files="availableFiles"
+      :downloadBaseUrl="$props.downloadBaseUrl"
+      style="margin-top: -1rem; padding-top: 1.5rem"
+      @removeFiles="(e) => removeFiles(e)"
+      @downloadBlob="(e) => $emit('downloadBlob', e)"
+    />
   </div>
 </template>
 
@@ -44,6 +50,15 @@ async function readFile(file) {
   });
 }
 
+async function readFileAsDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();                  // Create the reader
+    reader.onloadend = () => resolve(reader.result);  // onLoaded event for the reader
+    reader.onerror = (e) => reject(e);                // onError event for the reader
+    reader.readAsDataURL(file);                       // Start the reader
+  });
+}
+
 export default {
   name: 'UploadField',
   components: {
@@ -68,6 +83,9 @@ export default {
     showList: {
       type: Boolean,
       default: true
+    },
+    downloadBaseUrl: {
+      type: String
     }
   },
   data() {
@@ -108,15 +126,16 @@ export default {
       if(!Array.isArray(files)) files = [files];
 
       let tmpFiles = [];
-      if(this.$props.value) JSON.parse(JSON.stringify(this.$props.value));
-      else if(this.$props.files) JSON.parse(JSON.stringify(this.$props.files));
+      // Make a copy of the existing files if any
+      if(this.$props.value) tmpFiles = JSON.parse(JSON.stringify(this.$props.value));
+      else if(this.$props.files) tmpFiles = JSON.parse(JSON.stringify(this.$props.files));
 
       let foundError = false;
       for(const file of files) {
         // Check if the file is already added to the array
-        this.availableFiles.forEach(existingFile => {
+        tmpFiles.forEach(existingFile => {
           if(existingFile.name == file.name) {
-            alert("The file is already added");
+            alert(`The file ${file.name} is already added`);
             foundError = true;
           }
         })
@@ -124,6 +143,7 @@ export default {
 
         // Read the file
         let fileData = await readFile(file);
+        let fileDataUrl = await readFileAsDataURL(file);
 
         var fileObject = {
           name: file.name,
@@ -132,7 +152,7 @@ export default {
           lastModified: file.lastModified,
           lastModifiedDate: file.lastModifiedDate,
           data: fileData,
-          base64: Buffer.from(fileData, 'utf8').toString('base64')
+          dataUrl: fileDataUrl,
         }
         tmpFiles.push(fileObject);
       }
@@ -159,9 +179,6 @@ export default {
       if(!e) { return; }
       if(!e.dataTransfer) { return;}
       if(!e.dataTransfer.files) { return;}
-
-      console.log('Data transfer files');
-      console.log(e.dataTransfer.files);
 
       this.AddFiles(e.dataTransfer.files);
     },
