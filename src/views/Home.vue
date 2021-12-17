@@ -9,7 +9,7 @@
       </p>
       <div style="display: flex; flex-direction: row; padding-top: 1rem; gap: 1rem;">
         <div>
-          <GuideBtnModal />
+          <VTFKButton :passedProps="{ onClick: () => { this.$store.commit('setGuideModal'); }}">Se mer</VTFKButton>
         </div>
         <router-link to="/utsendelser" style="text-decoration: none; color: inherit;">
           <VTFKButton>Alle utsendelser</VTFKButton>
@@ -28,14 +28,12 @@
   import { Button } from '@vtfk/components'
 
   // Prosjektkomponenter
-  import GuideBtnModal from '../components/GuideBtnModal.vue'
   import DispatchEditor from '../components/DispatchEditor.vue';
 
   export default {
     name: 'HomeView',
     components: {
     'VTFKButton': Button,
-    GuideBtnModal,
     DispatchEditor
   },
   data() {

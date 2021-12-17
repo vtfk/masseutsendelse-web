@@ -15,7 +15,7 @@
       <div class="header-part swansDown user-image"><VTFKInitialsBadge firstName="Noen" lastName="André"/></div>
       <div class="header-part">
         <VTFKIconDropdownNav>
-          <VTFKIconDropdownNavItem title='Hjelp' :onClick="showGuide"/>
+          <VTFKIconDropdownNavItem title='Hjelp' :onClick=" () => { this.$store.commit('setGuideModal'); }"/>
           <VTFKIconDropdownNavItem title='Utsendelser' :onClick="() => { route('/utsendelser') }" />
           <VTFKIconDropdownNavItem title='Maler' :onClick="() => { route('/maler') }" />
           <VTFKIconDropdownNavItem title="Logg ut" href="https://www.vtfk.no" />
@@ -47,9 +47,6 @@ export default {
 
       this.$router.push(route);
     },
-    showGuide() {
-      this.$root.$emit('GuideBtnModal')
-    }
   }
 }
 </script>
