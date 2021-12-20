@@ -59,7 +59,7 @@ export default class MatrikkelProxyClient {
     return response;
   }
 
-  async getMatrikkelEnheter(polygon, matrikkelContext) {
+  async getMatrikkelEnheterFromPolygon(polygon, matrikkelContext) {
     if(!polygon) { throw new ('Polygon cannot be empty'); }
     
     // Construct the request
@@ -71,6 +71,7 @@ export default class MatrikkelProxyClient {
         'Content-Type': 'application/json'
       },
       data: {
+        koordinatsystemKodeId: 10,
         polygon: polygon,
       }
     }
@@ -153,24 +154,26 @@ export default class MatrikkelProxyClient {
 
     // Loop through units as they contains the owner information
     for(let unit of matrikkelUnits) {
-      unit.eierforhold.forEach((ownership) => {
+      if(unit.eierforhold) {
+        unit.eierforhold.forEach((ownership) => {
 
-        // Retreive the owner for the ownership
-        const owner = matrikkelOwners.find((o) => o.id.value === ownership.eierId);
-        if(!owner) throw new AppError('Kunne ikke finne eier til eierskap', `Eier med id ${ownership.eierforhold} kunne ikke finnes for ${unit.bruksnavn}`)
-
-        // Add the owner to the returnedOwners object if not already exists
-        if(!returnedOwners[ownership.eierId]) {
-          returnedOwners[ownership.eierId] = {...owner, ownerships: [] }
-          if(owner.id.value) returnedOwners[ownership.eierId].id = owner.id.value;
-        }
-
-        // Push the ownership to the owner
-        returnedOwners[ownership.eierId].ownerships.push({
-          ...ownership,
-          unit: removeKeys(unit, ['eierforhold'])
+          // Retreive the owner for the ownership
+          const owner = matrikkelOwners.find((o) => o.id.value === ownership.eierId);
+          if(!owner) throw new AppError('Kunne ikke finne eier til eierskap', `Eier med id ${ownership.eierforhold} kunne ikke finnes for ${unit.bruksnavn}`)
+  
+          // Add the owner to the returnedOwners object if not already exists
+          if(!returnedOwners[ownership.eierId]) {
+            returnedOwners[ownership.eierId] = {...owner, ownerships: [] }
+            if(owner.id.value) returnedOwners[ownership.eierId].id = owner.id.value;
+          }
+  
+          // Push the ownership to the owner
+          returnedOwners[ownership.eierId].ownerships.push({
+            ...ownership,
+            unit: removeKeys(unit, ['eierforhold'])
+          })
         })
-      })
+      }
     }
 
     // Convert from object to array
