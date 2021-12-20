@@ -7,7 +7,7 @@
         <p class="typography paragraph">
           Tekst om siden
         </p>
-        <span class="error">Det er viktig at polygonet benytter koordinatsystem EUREF89 UTM Sone 32</span>
+        <span class="error-text">Det er viktig at polygonet benytter koordinatsystem EUREF89 UTM Sone 32</span>
         <!-- Bruk av siden -->
         <div style="margin-top: 2rem;" class="header-part typography heading-two">Bruk av siden</div>
         <p>
@@ -37,14 +37,14 @@
             3.	Masseutsendelse <br>
               &ensp;a.	Her har du mulighet til å endre status på prosjektet. <br> 
               &ensp;b.	Du har mulighet til å endre Prosjektnavn, Prosjektnummer, Arkivnummer og velge en mal som varselet skal benytte. <br>
-              <span class="error">&ensp;c.	NB! Å velge en mal er ikke påkrevd. <br></span>
+              <span class="error-text">&ensp;c.	NB! Å velge en mal er ikke påkrevd. <br></span>
             4.	Vedlegg <br>
               &ensp;a.	Om det finnes vedlegg som tilhører prosjektet vil du vinne disse i en liste under opplastningsfeltet. <br>
               &ensp;b.	Ønsker du å laste opp nye filer kan du enkelt trykke på opplastningsfeltet og velge den filen du ønsker å laste opp eller dra inn en fil og slippe denne over opplastningsfeltet. <br>
               &ensp;c.	Ønsker du å slette en fil fra prosjektet kan du trykke på søppelkassen som befinner seg på høyre side av listen. <br>
               &ensp;d.	Ønsker du å laste ned en fil kan du trykke på filikonet på venstre side. <br>
           <br>
-         <span class="error"> NB! Legg merke til at du ikke kan redigere et prosjekt som har status "Godkjent" eller "Fullført" </span>
+         <span class="error-text"> NB! Legg merke til at du ikke kan redigere et prosjekt som har status "Godkjent" eller "Fullført" </span>
         </p>
       </div>
     </VTFKModal>
@@ -71,7 +71,7 @@ export default {
 </script>
 
 <style scoped>
-  .error {
-    color: red;
-  }
+ .error-text{
+   color: red
+ }
 </style>
