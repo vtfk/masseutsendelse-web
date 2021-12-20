@@ -268,7 +268,6 @@ const store = new Vuex.Store({
         }
 
         const response = await axios.request(request);
-        console.log(response);
         return response.data;
         
       } catch(err) {

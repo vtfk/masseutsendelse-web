@@ -108,7 +108,7 @@ class PolyParser {
     let extension = file.name.substring(file.name.lastIndexOf('.') + 1);
 
     // Attempt to read the file
-    const fileData = file.data;
+    let fileData = file.data;
     if(!fileData || fileData.length === 0) { throw new AppError('The file is empty', 'We were able to read the file, but it was empty'); }
 
     // Attempt to parse the file

@@ -7,7 +7,7 @@
     <!-- Fil opplasting -->
     <div v-else-if="mode === 'new' && !uploadedFile">
       <h2>Last opp polygonet</h2>
-      <UploadField v-on:uploaded="(files) => parseFiles(files)"/>
+      <UploadField v-on:uploaded="(files) => parseFiles(files)" :convertDataToDataUrl="false"/>
     </div>
     <div v-else-if="isParsingFile" class="centeredColumn">
       <Loading title="Filen behandles" message="Dette kan ta noen sekunder" />
@@ -649,7 +649,7 @@
         var postObject = Object.assign(this.dispatch)
 
         // Remove template if not specified
-        if(!this.dispatch.template._id) delete postObject.template;
+        if(!this.dispatch.template || !this.dispatch.template._id) delete postObject.template;
 
         this.$emit('beforeSave');
         this.isLoading = true

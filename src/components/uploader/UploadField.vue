@@ -31,31 +31,21 @@ import FileList from './FileList.vue';
 /*
   Function
 */
-async function readFile(file) {
-  // Always return a Promise
-  return new Promise((resolve, reject) => {
-    let content = '';
-    const reader = new FileReader();
-    // Wait till complete
-    reader.onloadend = function(e) {
-      content = e.target.result;
-      // const result = content.split(/\r\n|\n/);
-      resolve(content);
-    };
-    // Make sure to handle error states
-    reader.onerror = function(e) {
-      reject(e);
-    };
-    reader.readAsText(file);
-  });
-}
-
 async function readFileAsDataURL(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();                  // Create the reader
     reader.onloadend = () => resolve(reader.result);  // onLoaded event for the reader
     reader.onerror = (e) => reject(e);                // onError event for the reader
     reader.readAsDataURL(file);                       // Start the reader
+  });
+}
+
+async function readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();                  // Create the reader
+    reader.onloadend = () => resolve(reader.result);  // onLoaded event for the reader
+    reader.onerror = (e) => reject(e);                // onError event for the reader
+    reader.readAsText(file);                       // Start the reader
   });
 }
 
@@ -86,6 +76,10 @@ export default {
     },
     downloadBaseUrl: {
       type: String
+    },
+    convertDataToDataUrl: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -142,8 +136,9 @@ export default {
         if(foundError) { return; }
 
         // Read the file
-        let fileData = await readFile(file);
-        let fileDataUrl = await readFileAsDataURL(file);
+        let data = '';
+        if(this.$props.convertDataToDataUrl) data = await readFileAsDataURL(file);
+        else data = await readFileAsText(file);
 
         var fileObject = {
           name: file.name,
@@ -151,8 +146,7 @@ export default {
           size: file.size,
           lastModified: file.lastModified,
           lastModifiedDate: file.lastModifiedDate,
-          data: fileData,
-          dataUrl: fileDataUrl,
+          data: data,
         }
         tmpFiles.push(fileObject);
       }
