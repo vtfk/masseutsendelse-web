@@ -26,7 +26,7 @@
           <span style="color: red"><strong>* </strong></span>Type
         </template>
       </v-select>
-      <v-text-field v-if="type === 'multistring'" type="number" label="Antall linjer" hint="Hvor mange linjer med tekst ønsker du?"/>
+      <v-text-field v-if="type === 'multistring'" v-model="placeholder.lines" type="number" label="Antall linjer" hint="Hvor mange linjer med tekst ønsker du?"/>
     </v-card-text>
     <v-card-actions style="gap: 0.5rem;">
       <VTFKButton size="small" :passedProps="{ onClick: () => { onInsert()}}">Legg til</VTFKButton>
