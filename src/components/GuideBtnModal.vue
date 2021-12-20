@@ -85,8 +85,6 @@ export default {
 </script>
 
 <style scoped>
-  .error {
-    background-color: red !important
-  }
+  
 </style>
 
