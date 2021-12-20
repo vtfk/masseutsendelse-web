@@ -110,8 +110,6 @@ class PolyParser {
     // Attempt to read the file
     let fileData = file.data;
     if(!fileData || fileData.length === 0) { throw new AppError('The file is empty', 'We were able to read the file, but it was empty'); }
-    // If the file is in dataUrl format
-
 
     // Attempt to parse the file
     let parsedData = undefined;
