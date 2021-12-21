@@ -10,10 +10,11 @@
           <v-spacer/>
           <v-text-field
             v-model="search"
+            persistent-hint
             label="Søk i tabell"
+            placeholder="Søk i tabell"
             append-icon="mdi-magnify"
             single-line
-            hide-details
             style="margin-right: 1rem"
           ></v-text-field>
         </v-card-title>
@@ -25,6 +26,7 @@
           class="elevation-1"
           style="margin: 2rem;"
           :search="search"
+          :custom-filter="customSearch"
           :loading="!$store.state.dispatches"
           loading-text="Laster data fra databasen "
         >
@@ -80,7 +82,10 @@
               </template>
               Se Kart
             </v-tooltip>
-        </template>
+          </template>
+          <v-alert type="error" class="tableNoResult" rounded="xl" slot="no-results" :value="true" color="#EB8380">
+            Vi klarte ikke å finne noe i tabellen som matcher "{{ search }}". 
+          </v-alert>
         </v-data-table>
       </v-card>
     </div>
@@ -131,6 +136,7 @@
       width="50%"
       rounded="xl"
       transition="slide-y-transition"
+      class="v-alert-class"
     >
       Statusen er lagret.
     </v-alert>
@@ -219,6 +225,25 @@ import AppError from '../lib/vtfk-errors/AppError';
           return dateString;
         }
       },
+      customSearch (value, search, item) {
+        let preFormatItem = JSON.stringify(item)
+        let formatedItem = JSON.parse(preFormatItem) 
+        let formatStatus = this.translateStatus(formatedItem.status)
+        let formatDate = this.formatDateString(formatedItem.createdTimestamp)
+      
+        formatedItem.createdTimestamp = formatDate
+        formatedItem.status = formatStatus
+      
+        const formatedItemsKeys = Object.keys(formatedItem)
+        const isMatch = formatedItemsKeys.some(key => formatedItem[key].toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1 )
+
+        return (
+          value != null &&
+          search != null &&
+          typeof value === 'string' &&
+          (value.toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1 || isMatch)
+        )
+      },
       async loadDataBase() {
         try {
           await this.$store.dispatch('getDispatches');
@@ -270,7 +295,7 @@ import AppError from '../lib/vtfk-errors/AppError';
   justify-content: center;
   align-items: center;
 }
-.v-alert {
+.v-alert-class {
   position: fixed;
   left: 50%;
   bottom: 1rem;
@@ -282,10 +307,13 @@ import AppError from '../lib/vtfk-errors/AppError';
   box-shadow: 0px 1px 5px 1px #888888;   
 }
 .card {
-    width: 100%;
-    border-radius: 20px;
-    background-color: white;
-    min-height: 250px;
-    padding: 1rem 1rem;
+  width: 100%;
+  border-radius: 20px;
+  background-color: white;
+  min-height: 250px;
+  padding: 1rem 1rem;
+}
+.tableNoResult {
+  margin-top:1rem;
 }
 </style>
