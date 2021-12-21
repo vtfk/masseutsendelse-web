@@ -69,14 +69,16 @@ const store = new Vuex.Store({
   actions: {
     async getPDFPreview(context, req) {
       try {
+        // Merge data
+        let data = merge({attachments: req.attachments}, req.template.data)
+        data = merge(data, req.template.documentData)
         // Define the data to send
         let requestData = {
           preview: true,
+          attachments: req.attachments,
           template: req.template.template,
           documentDefinitionId: req.template.documentDefinitionId,
-          data: {
-            ...merge(req.template.data, req.template.documentData),
-          }
+          data: data
         }
 
         context.commit('setLoadingModal', {

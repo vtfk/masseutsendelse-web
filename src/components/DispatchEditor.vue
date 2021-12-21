@@ -23,7 +23,7 @@
         <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
       </div>
       <div v-else-if="isContactingMatrikkel" class="shadow" style="margin-top: 1rem; padding: 1rem 1rem; border-radius: 20px; background-color: #CFEBF2;">
-        <Loading title="Kontaker matrikkelen" message="Henter enheter innenfor polygon"/>
+        <Loading title="Kontaker matrikkelen" :message="matrikkelLoadingMessage" :submessage="matrikkelLoadingSubmessage"/>
       </div>
       <div v-else class="centeredColumn" style="margin-top: 1rem;">
         <!-- Cards som viser stats om informasjonen -->
@@ -171,7 +171,7 @@
   import merge from 'lodash.merge'
   import pick from 'lodash.pick';
   import PolyParser from '../lib/polyparser/polyparser';
-  // TODO: Avinstaller file-saver
+ 
   // Config
   import config from '../../config';
 
@@ -243,6 +243,8 @@
             polygons: [],
           }
         },
+        // The initial state of the dispatch (Used for not deactivating the save button when approving)
+        initialDispatchStatus: undefined,
         // The file provided by the fileuploader
         uploadedFile: undefined,
         // The genereated statistics from the MatrikkelAPI
@@ -253,6 +255,8 @@
         selectedTemplate: undefined,
         // The generated schema after picking a template
         selectedTemplateSchema: undefined,
+        matrikkelLoadingMessage: '',
+        matrikkelLoadingSubmessage: '',
         /*
           Boolean state
         */
@@ -290,6 +294,7 @@
       },
       isReadOnly() {
         if(this.isLocked) return true;
+        if(this.initialDispatchStatus === 'notapproved') return false;
         if(this.dispatch && (this.dispatch.status === 'approved')) { return true; }
         return false;
       },
@@ -389,54 +394,34 @@
         this.statItems = [];
         this.error = undefined;
       },
-      async getDataFromMatrikkelAPI(polygon) {
+      async getDataFromMatrikkelAPI() {
         try {
-          /*
-            Input validatering
-          */
-          if(!polygon) {
-            polygon = [
-              {
-                  x: 9.061226825863429,
-                  y: 59.417888839303345,
-                  z: 0
-              },
-              {
-                  x: 9.06059789499838,
-                  y: 59.41877340387384,
-                  z: 0
-              },
-              {
-                  x: 9.062418554835972,
-                  y: 59.41876773278693,
-                  z: 0
-              },
-              {
-                  x: 9.062615483212653,
-                  y: 59.418047496800966,
-                  z: 0
-              },
-              {
-                  x: 9.061226825863429,
-                  y: 59.417888839303345,
-                  z: 0
-              }
-            ]
-          }
-
           /*
             Initialiser
           */
           this.isContactingMatrikkel = true;
           let matrikkelClient = new MatrikkelProxyClient();
-
+          let totalVerticesCount = 0;
+          this.dispatch.polygons.polygons.forEach((p) => totalVerticesCount += p.vertices.length)
           /*
             Hent MatrikkelEnhetIDer som finnes innenfor polygonet
           */
-          let matrikkelEnhetIds = await matrikkelClient.getMatrikkelEnheter(polygon, { query: { flatten: true, metadata: false } });
+          this.matrikkelLoadingMessage = 'Innhenter alle enhets-ider innenfor polygonene'
+          this.matrikkelLoadingSubmessage = `Spør om ${this.dispatch.polygons.polygons.length} polygoner med ${totalVerticesCount} vertiser`
+          let matrikkelEnhetIds = [];
+          for (const polygon of this.dispatch.polygons.polygons) {
+            console.log('Getting real polygon');
+            let ids = await matrikkelClient.getMatrikkelEnheterFromPolygon(polygon.vertices, { query: { flatten: true, metadata: false } });
+            // Add any ids that don't already exists
+            for(const id of ids) {
+              if(!matrikkelEnhetIds.includes(id)) matrikkelEnhetIds.push(id);
+            }
+            console.log(ids);
+          }
           if(!matrikkelEnhetIds && matrikkelEnhetIds.length) {
             throw new AppError('Ingen MatrikkelIDer funnet', 'Vi klarte ikke å finne noen matrikkelinformasjon innenfor dette polygonet');
           }
+          console.log('Found in total ' + matrikkelEnhetIds.length + ' matrikkelEnhetIds');
 
           /*
             Hent MatrikkelData på hver av IDene
@@ -452,6 +437,8 @@
           })
 
           // Hent ut data for alle matrikkel enhetene
+          this.matrikkelLoadingMessage = `Innhenter informasjon om ${matrikkelEnhetIds.length} Matrikkelenheter`;
+          this.matrikkelLoadingSubmessage = ``
           let matrikkelEnheter = await matrikkelClient.getStoreItems(matrikkelEnhetRequestItems);
 
           // Håndter feil
@@ -474,14 +461,24 @@
             Hent ut alle eierforhold innad for MatrikkelEnhetene
           */
           let matrikkelEierforhold = []
+          let matrikkelEnheterUtenEiere = [];
           matrikkelEnheter.forEach((enhet) => {
-            if(!Array.isArray(enhet.eierforhold)) {
-              enhet.eierforhold = [enhet.eierforhold];
+            // If the eierforhold is empty
+            if(!enhet.eierforhold) {
+              //TODO: Hør med SMM hvordan dette skal håndteres
+              matrikkelEnheterUtenEiere.push(enhet); 
+              return;
             }
-            enhet.eierforhold.forEach((eierforhold) => {
-              matrikkelEierforhold.push(eierforhold)
-            })
+            // Convert the eierforhold to array if it is just an object
+            if(!Array.isArray(enhet.eierforhold)) enhet.eierforhold = [enhet.eierforhold];
+            if(enhet.eierforhold.length > 0) {
+              enhet.eierforhold.forEach((eierforhold) => {
+                matrikkelEierforhold.push(eierforhold)
+              })
+            }
           })
+          console.log('== Eierforhold ==');
+          console.log(matrikkelEierforhold);
 
           /*
             Hent ut alle eier-informasjon for hver av eierforholdene
@@ -505,6 +502,7 @@
           })
 
           // Hent ut alle eiere fra Matrikkel API
+          this.matrikkelLoadingMessage = `Innhenter informasjon om ${unikeEierIDer.length} eiere av ${matrikkelEnhetIds.length} matrikkelenheter`
           let matrikkelEiere = await matrikkelClient.getStoreItems(matrikkelEierRequestItems);
 
           if(!matrikkelEiere || matrikkelEiere.length === 0) {
@@ -743,12 +741,13 @@
         }
 
         // Request the PDF preview
-        this.$store.dispatch('getPDFPreview', { template: this.dispatch.template, preview: true })
+        this.$store.dispatch('getPDFPreview', { ...this.dispatch, preview: true })
       }
     },
     created() {
       if(this.$props.dispatchObject) {
         this.$set(this, 'dispatch', this.$props.dispatchObject)
+        this.initialDispatchStatus = this.$props.dispatchObject.status;
       }
       this.onTemplateDataChanged();
 

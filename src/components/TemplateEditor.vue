@@ -208,9 +208,9 @@ export default {
         Sjablong.validateTemplate(markdown);
         // 
         let templateRequest = {
-        ...this.activeTemplate,
-        template: Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64')
-      }
+          ...this.activeTemplate,
+          template: Buffer.from(this.$refs.editor.editor.getMarkdown()).toString('base64')
+        }
         
         // Make the request
         this.$store.dispatch('getPDFPreview', { template: templateRequest, preview: true });
