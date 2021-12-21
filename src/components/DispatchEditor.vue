@@ -738,7 +738,7 @@
         }
 
         // Request the PDF preview
-        this.$store.dispatch('getPDFPreview', { template: this.dispatch.template, preview: true })
+        this.$store.dispatch('getPDFPreview', { ...this.dispatch, preview: true })
       }
     },
     created() {

@@ -248,7 +248,7 @@ import AppError from '../lib/vtfk-errors/AppError';
           return;
         }
 
-        this.$store.dispatch('getPDFPreview', { template: item.template, preview: true })
+        this.$store.dispatch('getPDFPreview', { ...item, preview: true })
       },
       hide_alert: function () {
         window.setInterval(() => {
