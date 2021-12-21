@@ -69,12 +69,9 @@ const store = new Vuex.Store({
   actions: {
     async getPDFPreview(context, req) {
       try {
-        console.log('== Previewing ==');
-        
         // Merge data
         let data = merge({attachments: req.attachments}, req.template.data)
         data = merge(data, req.template.documentData)
-        console.log(data);
         // Define the data to send
         let requestData = {
           preview: true,
