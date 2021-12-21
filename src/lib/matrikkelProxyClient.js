@@ -8,7 +8,8 @@ import { removeKeys } from '@vtfk/utilities';
 
 export default class MatrikkelProxyClient {
   constructor(APIBaseURL, APIKey, ClientId) {
-    this.apiBaseUrl = APIBaseURL || config.MATRIKKELPROXYAPI_BASE_URL;
+    // this.apiBaseUrl = APIBaseURL || config.MATRIKKELPROXYAPI_BASE_URL;
+    this.apiBaseUrl = APIBaseURL || config.MASSEUTSENDELSEAPI_BASE_URL || config.MATRIKKELPROXYAPI_BASE_URL;
     this.apiKey = APIKey || config.MATRIKKELPROXYAPI_APIKEY;
     this.clientId = ClientId || config.MATRIKKELPROXYAPI_CLIENTID;
 
@@ -25,6 +26,19 @@ export default class MatrikkelProxyClient {
   async makeRequest(request, options, matrikkelContext) {
     // Input validation
     if(!request) { throw new Error('request cannot be empty'); }
+    if(!request.url) { throw new Error('request.url cannot be empty'); }
+    
+    // If MatrikkelProxyClient is specified use that as the base URL insted
+    if(config.MASSEUTSENDELSEAPI_BASEURL) {
+      request.url = config.MASSEUTSENDELSEAPI_BASEURL + 'api/matrikkel/' + encodeURIComponent(request.url);
+    } else {
+      request.url = this.apiBaseUrl + request.url;
+    }
+
+    // Make sure that headers are setup on the request
+    if(!request.headers) request.headers = {};
+    request.headers['Content-Type'] = 'application/json';
+    if(this.apiKey) request.headers['X-API-KEY'] = this.apiKey;
 
     // Apply query options to the request if specified
     if(options && options.query) {
@@ -65,11 +79,7 @@ export default class MatrikkelProxyClient {
     // Construct the request
     let request = {
       method: 'post',
-      url: this.apiBaseUrl + 'api/v1/matrikkelenheter',
-      headers: {
-        'X-API-KEY': this.apiKey,
-        'Content-Type': 'application/json'
-      },
+      url: 'api/v1/matrikkelenheter',
       data: {
         koordinatsystemKodeId: 10,
         polygon: polygon,
@@ -90,7 +100,7 @@ export default class MatrikkelProxyClient {
     // Construct the request
     let request = {
       method: 'post',
-      url: this.apiBaseUrl + 'api/v1/store',
+      url: 'api/v1/store',
       headers: {
         'X-API-KEY': this.apiKey,
         'Content-Type': 'application/json'
