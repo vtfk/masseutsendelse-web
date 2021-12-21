@@ -243,6 +243,8 @@
             polygons: [],
           }
         },
+        // The initial state of the dispatch (Used for not deactivating the save button when approving)
+        initialDispatchStatus: undefined,
         // The file provided by the fileuploader
         uploadedFile: undefined,
         // The genereated statistics from the MatrikkelAPI
@@ -292,6 +294,7 @@
       },
       isReadOnly() {
         if(this.isLocked) return true;
+        if(this.initialDispatchStatus === 'notapproved') return false;
         if(this.dispatch && (this.dispatch.status === 'approved')) { return true; }
         return false;
       },
@@ -744,6 +747,7 @@
     created() {
       if(this.$props.dispatchObject) {
         this.$set(this, 'dispatch', this.$props.dispatchObject)
+        this.initialDispatchStatus = this.$props.dispatchObject.status;
       }
       this.onTemplateDataChanged();
 
