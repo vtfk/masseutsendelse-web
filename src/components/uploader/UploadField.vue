@@ -124,16 +124,10 @@ export default {
       if(this.$props.value) tmpFiles = JSON.parse(JSON.stringify(this.$props.value));
       else if(this.$props.files) tmpFiles = JSON.parse(JSON.stringify(this.$props.files));
 
-      let foundError = false;
       for(const file of files) {
-        // Check if the file is already added to the array
-        tmpFiles.forEach(existingFile => {
-          if(existingFile.name == file.name) {
-            alert(`The file ${file.name} is already added`);
-            foundError = true;
-          }
-        })
-        if(foundError) { return; }
+        // Check if the file already exists, if so should it be overwritten?
+        const existingIndex = tmpFiles.findIndex((i) => i.name === file.name);
+        if(existingIndex > -1 && !confirm(`The file ${file.name} already exist, do you want to overwrite?`)) continue;
 
         // Read the file
         let data = '';
@@ -148,7 +142,9 @@ export default {
           lastModifiedDate: file.lastModifiedDate,
           data: data,
         }
-        tmpFiles.push(fileObject);
+        
+        if(existingIndex > -1) tmpFiles[existingIndex] = fileObject;
+        else tmpFiles.push(fileObject);
       }
       
       // Reset dragged over
