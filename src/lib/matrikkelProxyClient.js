@@ -9,7 +9,7 @@ import { removeKeys } from '@vtfk/utilities';
 export default class MatrikkelProxyClient {
   constructor(APIBaseURL, APIKey, ClientId) {
     // this.apiBaseUrl = APIBaseURL || config.MATRIKKELPROXYAPI_BASE_URL;
-    this.apiBaseUrl = APIBaseURL || config.MASSEUTSENDELSEAPI_BASE_URL || config.MATRIKKELPROXYAPI_BASE_URL;
+    this.apiBaseUrl = APIBaseURL || config.MASSEUTSENDELSEAPI_BASE_URL;
     this.apiKey = APIKey || config.MATRIKKELPROXYAPI_APIKEY;
     this.clientId = ClientId || config.MATRIKKELPROXYAPI_CLIENTID;
 
