@@ -11,8 +11,8 @@
     </div>
     </router-link>
     <div style="display: flex; gap: 0.75rem; align-items: center;">
-      <div class="header-part typography paragraph">Noen André</div>
-      <div class="header-part swansDown user-image"><VTFKInitialsBadge firstName="Noen" lastName="André"/></div>
+      <div class="header-part typography paragraph">{{$authenticatedUser().name}}</div>
+      <div class="header-part swansDown user-image"><VTFKInitialsBadge :firstName="firstName" :lastName="lastName"/></div>
       <div class="header-part">
         <VTFKIconDropdownNav>
           <VTFKIconDropdownNavItem title='Hjelp' :onClick=" () => { this.$store.commit('setGuideModal'); }"/>
@@ -39,6 +39,17 @@ export default {
   },
   data() {
     return {
+    }
+  },
+  computed: {
+    firstName() {
+      if(!this.$authenticatedUser() || !this.$authenticatedUser().name.includes(' ')) return undefined;
+      return this.$authenticatedUser().name.split(' ')[0];
+    },
+    lastName() {
+      if(!this.firstName) return undefined;
+      const parts = this.$authenticatedUser().name.split(' ');
+      return parts[parts.length - 1];
     }
   },
   methods: {

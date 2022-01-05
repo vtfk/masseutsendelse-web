@@ -11,6 +11,8 @@
 | VUE_APP_EXCLUDED_OWNER_IDS | Commase pparated list of person/organization numbers that should be automatically excluded |
 | VUE_APP_MOCK_MATRIKKEL_API (Development) | Should the MatrikkelProxyAPI be mocked? (true/false) |
 | VUE_APP_MOCK_MASSEUTSENDELSE_API (Development) | Should the MasseutsendelseAPI be mocked? (true/false) |
+| VUE_APP_AZUREAD_CLIENTID | The Azure Appregistration clientId |
+| VUE_APP_AZUREAD_AUTHORITYURL | https://login.microsoftonline.com/**TenantID** |
 
 ### Install all project dependencies
 ```
