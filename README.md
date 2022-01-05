@@ -14,6 +14,7 @@
 | VUE_APP_AZUREAD_CLIENTID | The Azure Appregistration clientId |
 | VUE_APP_AZUREAD_AUTHORITYURL | https://login.microsoftonline.com/**TenantID** |
 
+## Project installation and setup
 ### Install all project dependencies
 ```
 npm install
