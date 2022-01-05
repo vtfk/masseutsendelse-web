@@ -1,7 +1,7 @@
 <template>
   <div id="app" data-app>
     <v-app>
-      <header>
+      <header v-if="this.$authenticatedUser()">
         <div class="container">
           <Header />
         </div>
@@ -46,6 +46,13 @@ export default {
     GuideModal,
     'VTFKPDFPreviewModal': PDFPreviewModal,
     Loading
+  },
+  computed: {
+    authenticatedUser() {
+      const users = this.$msal.getAllAccounts();
+      if(users.length === 0) return undefined;
+      else return users[0];
+    },
   }
 }
 
