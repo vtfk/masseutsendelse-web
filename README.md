@@ -1,6 +1,7 @@
 # masseutsendelse-web
 
 ## Environment variables
+These will have to be defined in your build environment (example: GitHub Actions) as it is a static web app.
 | Enviromnent variable | Description |
 |---|---|
 | VUE_APP_MATRIKKELPROXYAPI_BASE_URL | The base url of the MatrikkelProxyAPI |
