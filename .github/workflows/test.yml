@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - main
+      - test
   workflow_dispatch:
     branches:
       - main
+      - test
 jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
