@@ -32,11 +32,12 @@ async function prepareEnvironment() {
       storeAuthStateInCookie: false,
     },
   }
+  /*
+    Authentication / Authorization
+    This is in no way a idéal way to handle this, but was necessary due to timecontstraints.
+  */
   Vue.prototype.$msalConfig = msalConfig;
   Vue.prototype.$msal = new msal.PublicClientApplication(Vue.prototype.$msalConfig);
-  Vue.prototype.$loginToken = undefined;
-  let loginToken = localStorage.getItem('loginToken');
-  if(loginToken) Vue.prototype.$loginToken = JSON.parse(loginToken);
 
   Vue.prototype.$accessToken = undefined;
   let accessToken = localStorage.getItem('accessToken');
@@ -46,6 +47,58 @@ async function prepareEnvironment() {
     const accounts = Vue.prototype.$msal.getAllAccounts();
     if(!accounts || accounts.length === 0) return undefined;
     return accounts[0];
+  }
+
+  Vue.prototype.$isAuthenticationRequired = () => {
+    if(!Vue.prototype.$authenticatedUser()) return true;
+    if(!Vue.prototype.$accessToken) return true;
+    if(!Vue.prototype.$accessToken.expiresOn || Date.parse(Vue.prototype.$accessToken.expiresOn) < Date.now()) return true;
+    return false;
+  }
+
+  Vue.prototype.$acquireTokenRedirect = async () => {
+    // Check if re-authentication is necessary or not first
+    if(!Vue.prototype.$isAuthenticationRequired()) return Vue.prototype.$accessToken;
+
+    // Define the request
+    const currentAccounts = Vue.prototype.$msal.getAllAccounts();
+    const request = {
+      scopes: ['ffd9d6ce-d313-4d5d-a758-0affa6dadd0a/.default'],
+      account: currentAccounts && currentAccounts[0] ? currentAccounts[0] : undefined
+    }
+
+    // Attempt to acquire token silently, if that fails attempt with a popup
+    try {
+      const token = await Vue.prototype.$msal.acquireTokenSilent(request);
+      Vue.prototype.$accessToken = token;
+      localStorage.setItem('accessToken', JSON.stringify(token));
+      return;
+    } catch {
+      return Vue.prototype.$msal.acquireTokenRedirect(request)
+    }
+  }
+
+  Vue.prototype.$acquireTokenPopup = async () => {
+    // Check if re-authentication is necessary or not first
+    if(!Vue.prototype.$isAuthenticationRequired()) return Vue.prototype.$accessToken;
+
+    // Define the request
+    const currentAccounts = Vue.prototype.$msal.getAllAccounts();
+    const request = {
+      scopes: ['ffd9d6ce-d313-4d5d-a758-0affa6dadd0a/.default'],
+      account: currentAccounts && currentAccounts[0] ? currentAccounts[0] : undefined
+    }
+
+    // Attempt to acquire token silently, if that fails attempt with a popup
+    try {
+      const token = await Vue.prototype.$msal.acquireTokenSilent(request);
+      Vue.prototype.$accessToken = token;
+      localStorage.setItem('accessToken', JSON.stringify(token));
+    } catch {
+      const token = await Vue.prototype.$msal.acquireTokenPopup(request);
+      Vue.prototype.$accessToken = token;
+      localStorage.setItem('accessToken', JSON.stringify(token));
+    }
   }
 }
 

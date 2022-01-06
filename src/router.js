@@ -59,8 +59,7 @@ router.beforeEach(async (to, from, next) => {
   if(to.hash && to.hash.startsWith('#code=')) return next();
 
   // Check if re-authentication is necessary
-  // if(!Vue.prototype.$authenticatedUser() || !Vue.prototype.$loginToken || !Vue.prototype.$loginToken.expiresOn || Date.parse(Vue.prototype.$loginToken.expiresOn) < Date.now()) {
-  if(!Vue.prototype.$authenticatedUser()) {
+  if(Vue.prototype.$isAuthenticationRequired()) {
     console.log('Must re-authenticate');
     next('/login');
   }

@@ -15,6 +15,17 @@ console.log('== Configuration ==');
 console.log(config);
 
 /*
+  Functions
+*/
+async function handleAuthentication() {
+  // Just return if re-authentication is not necessary
+  if(!Vue.prototype.$isAuthenticationRequired()) return;
+
+  await Vue.prototype.$acquireTokenPopup();
+  return;
+}
+
+/*
   Vuex store implementation
 */
 const store = new Vuex.Store({
@@ -103,6 +114,9 @@ const store = new Vuex.Store({
     },
     async getDispatches(context) {
       try {
+        // Handle authentication
+        await handleAuthentication();
+
         // Define the request
         const request = {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'dispatches',
@@ -127,6 +141,9 @@ const store = new Vuex.Store({
     },
     async getDispatchesById(context, id) {
       try {
+        // Handle authentication
+        await handleAuthentication();
+
         //Define the request
         const request= {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'dispatches/' + id + '?code=1pcYSPPawrq0FGkzGTwsaLkgmmy3fvRej9ujdDfwXZ17/9bDvFZspQ==',
@@ -142,11 +159,16 @@ const store = new Vuex.Store({
         //Return the data
         return response.data
       } catch(err) {
+        console.log('Error opening dispatchById');
+        console.log(err);
         return Promise.reject(err)
       }
     },
     async getTemplates(context) {
       try {
+        // Handle authentication
+        await handleAuthentication();
+
         // Define the request
         const request = {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
@@ -169,6 +191,9 @@ const store = new Vuex.Store({
     },
     async postTemplate(context, template) {
       try {
+        // Handle authentication
+        await handleAuthentication();
+
         // Define the request
         const request = {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
@@ -197,6 +222,9 @@ const store = new Vuex.Store({
     },
     async putTemplate(context, template) {
       try {
+        // Handle authentication
+        await handleAuthentication();
+
         // Define the request
         const request = {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'templates/' + template._id + '?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
@@ -224,6 +252,9 @@ const store = new Vuex.Store({
     },
     async postDispatches(context, data) {
       try {
+        // Handle authentication
+        await handleAuthentication();
+
         // Define the request
         const request = {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'dispatches?code=zxjm63HhIg6ZqUOE8xdHN8NnJmYh9ocBeFMXVxeBjYVFHEjI9amBFw==',
@@ -252,6 +283,9 @@ const store = new Vuex.Store({
     },
     async editDispatches(context, data) {
       try {
+        // Handle authentication
+        await handleAuthentication();
+
         //Define the request 
         const request = {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'dispatches/'+ data._id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
@@ -278,12 +312,17 @@ const store = new Vuex.Store({
     },
     async downloadBlob(context, options) {
       try {
+        // Input validation
         if(!options) throw new AppError('Options ikke satt', 'Du kan ikke laste ned en fil uten å sende med innstillinger');
         if(!options.dispatchId) throw new AppError('options.dispatchId', 'Du kan ikke laste ned en fil uten å sende med dispatchId');
         if(!options.blobId) throw new AppError('options.dispatchId', 'Du kan ikke laste ned en fil uten å sende med blodId');
-
+        
+        // Define the URL to download
         let url = options.url || `${config.MASSEUTSENDELSEAPI_BASEURL}blobs/${options.dispatchId}/${options.blobId}/?code=${config.MASSEUTSENDELSEAPI_APICODE}`;
         
+        // Handle authentication
+        await handleAuthentication();
+
         const request = {
           method: 'get',
           url: url,
