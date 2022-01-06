@@ -3,7 +3,7 @@
         <h2 v-if="$props.title" style="margin-bottom: 0.5rem;">{{$props.title}}</h2>
         <p v-if="$props.message" style="margin-top: 0;">{{$props.message}}</p>
         <p v-if="$props.submessage" style="margin-top: 0;">{{$props.submessage}}</p>
-        <VTFKSpinner size="large"/>
+        <VTFKSpinner :size="$props.spinnerSize"/>
     </div>
 </template>
 
@@ -25,6 +25,10 @@ export default {
         },
         submessage: {
             type: String
+        },
+        spinnerSize: {
+            type: String,
+            default: 'large'
         }
     }
 }
