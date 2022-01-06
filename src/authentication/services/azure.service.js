@@ -63,7 +63,6 @@ export async function login (options) {
 
   // Create the instance
   const client = createInstance(options);
-
   console.log('== Login by redirection ==');
   try {
     return await client.ssoSilent(options);

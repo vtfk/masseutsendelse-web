@@ -23,7 +23,7 @@ async function prepareEnvironment() {
   const msalConfig = {
     auth: {
       clientId: config.AZUREAD_CLIENTID,
-      authority: config.AZUREAD_AUTHORITYURL,
+      authority: 'https://login.microsoftonline.com/08f3813c-9f29-482f-9aec-16ef7cbf477a/' || config.AZUREAD_AUTHORITYURL,
       redirectUri: "/login",
       navigateToLoginRequestUrl: false
     },
@@ -34,9 +34,14 @@ async function prepareEnvironment() {
   }
   Vue.prototype.$msalConfig = msalConfig;
   Vue.prototype.$msal = new msal.PublicClientApplication(Vue.prototype.$msalConfig);
+  Vue.prototype.$loginToken = undefined;
+  let loginToken = localStorage.getItem('loginToken');
+  if(loginToken) Vue.prototype.$loginToken = JSON.parse(loginToken);
+
   Vue.prototype.$accessToken = undefined;
-  let existingToken = localStorage.getItem('accessToken');
-  if(existingToken) Vue.prototype.$accessToken = JSON.parse(existingToken);
+  let accessToken = localStorage.getItem('accessToken');
+  if(accessToken) Vue.prototype.$accessToken = JSON.parse(accessToken);
+
   Vue.prototype.$authenticatedUser = () => {
     const accounts = Vue.prototype.$msal.getAllAccounts();
     if(!accounts || accounts.length === 0) return undefined;
