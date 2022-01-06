@@ -23,7 +23,7 @@ async function prepareEnvironment() {
   const msalConfig = {
     auth: {
       clientId: config.AZUREAD_CLIENTID,
-      authority: 'https://login.microsoftonline.com/08f3813c-9f29-482f-9aec-16ef7cbf477a/' || config.AZUREAD_AUTHORITYURL,
+      authority: config.AZUREAD_AUTHORITYURL,
       redirectUri: "/login",
       navigateToLoginRequestUrl: false
     },
