@@ -105,7 +105,7 @@ const store = new Vuex.Store({
       try {
         // Define the request
         const request = {
-          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/dispatches',
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'dispatches',
           method: 'GET',
         }
         // Reset the data
@@ -126,7 +126,7 @@ const store = new Vuex.Store({
       try {
         //Define the request
         const request= {
-          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/dispatches/' + id + '?code=1pcYSPPawrq0FGkzGTwsaLkgmmy3fvRej9ujdDfwXZ17/9bDvFZspQ==',
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'dispatches/' + id + '?code=1pcYSPPawrq0FGkzGTwsaLkgmmy3fvRej9ujdDfwXZ17/9bDvFZspQ==',
           method: 'GET',
           data: id,
         }
@@ -143,7 +143,7 @@ const store = new Vuex.Store({
       try {
         // Define the request
         const request = {
-          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
           method: 'get'
         }
         // Reset the data
@@ -162,7 +162,7 @@ const store = new Vuex.Store({
       try {
         // Define the request
         const request = {
-          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
           method: 'post',
           data: template
         }
@@ -187,7 +187,7 @@ const store = new Vuex.Store({
       try {
         // Define the request
         const request = {
-          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/templates/' + template._id + '?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'templates/' + template._id + '?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
           method: 'put',
           data: template
         }
@@ -211,7 +211,7 @@ const store = new Vuex.Store({
       try {
         // Define the request
         const request = {
-          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/dispatches?code=zxjm63HhIg6ZqUOE8xdHN8NnJmYh9ocBeFMXVxeBjYVFHEjI9amBFw==',
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'dispatches?code=zxjm63HhIg6ZqUOE8xdHN8NnJmYh9ocBeFMXVxeBjYVFHEjI9amBFw==',
           method: 'post',
           data: data
         }
@@ -236,8 +236,7 @@ const store = new Vuex.Store({
       try {
         //Define the request 
         const request = {
-          // url:'http://localhost:7071/api/dispatches/' + data._id, 
-          url: config.MASSEUTSENDELSEAPI_BASEURL + 'api/dispatches/'+ data._id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'dispatches/'+ data._id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
           method: 'put',
           data: data
         }
@@ -262,7 +261,7 @@ const store = new Vuex.Store({
         if(!options.dispatchId) throw new AppError('options.dispatchId', 'Du kan ikke laste ned en fil uten å sende med dispatchId');
         if(!options.blobId) throw new AppError('options.dispatchId', 'Du kan ikke laste ned en fil uten å sende med blodId');
 
-        let url = options.url || `${config.MASSEUTSENDELSEAPI_BASEURL}api/blobs/${options.dispatchId}/${options.blobId}/?code=${config.MASSEUTSENDELSEAPI_APICODE}`;
+        let url = options.url || `${config.MASSEUTSENDELSEAPI_BASEURL}blobs/${options.dispatchId}/${options.blobId}/?code=${config.MASSEUTSENDELSEAPI_APICODE}`;
         
         const request = {
           method: 'get',
