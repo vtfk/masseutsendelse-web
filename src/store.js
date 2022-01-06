@@ -90,7 +90,7 @@ const store = new Vuex.Store({
         const request = {
           url: 'https://api.vtfk.dev/pdf/v1/generatev2',
           method: 'post',
-          data: requestData
+          data: requestData,
         }
         // Make the request
         const response = await axios.request(request);
@@ -107,6 +107,9 @@ const store = new Vuex.Store({
         const request = {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'dispatches',
           method: 'GET',
+          headers: {
+            authorization: `Bearer ${Vue.prototype.$accessToken.accessToken}`
+          }
         }
         // Reset the data
         context.commit('setDispatches', undefined);
@@ -129,6 +132,9 @@ const store = new Vuex.Store({
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'dispatches/' + id + '?code=1pcYSPPawrq0FGkzGTwsaLkgmmy3fvRej9ujdDfwXZ17/9bDvFZspQ==',
           method: 'GET',
           data: id,
+          headers: {
+            authorization: `Bearer ${Vue.prototype.$accessToken.accessToken}`
+          }
         }
         //Make the request
         const response = await axios.request(request)
@@ -144,7 +150,10 @@ const store = new Vuex.Store({
         // Define the request
         const request = {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
-          method: 'get'
+          method: 'get',
+          headers: {
+            authorization: `Bearer ${Vue.prototype.$accessToken.accessToken}`
+          }
         }
         // Reset the data
         context.commit('setTemplates', undefined);
@@ -164,7 +173,10 @@ const store = new Vuex.Store({
         const request = {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'templates?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
           method: 'post',
-          data: template
+          data: template,
+          headers: {
+            authorization: `Bearer ${Vue.prototype.$accessToken.accessToken}`
+          }
         }
         
         // Set the loading modal
@@ -189,7 +201,10 @@ const store = new Vuex.Store({
         const request = {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'templates/' + template._id + '?code=DKvd3StKyeztdebOCoDl2bosOg3X2whqFynsG/3T7zHQZp2E6HgHfg==',
           method: 'put',
-          data: template
+          data: template,
+          headers: {
+            authorization: `Bearer ${Vue.prototype.$accessToken.accessToken}`
+          }
         }
         // Set the loading modal
         context.commit('setLoadingModal', {
@@ -213,7 +228,10 @@ const store = new Vuex.Store({
         const request = {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'dispatches?code=zxjm63HhIg6ZqUOE8xdHN8NnJmYh9ocBeFMXVxeBjYVFHEjI9amBFw==',
           method: 'post',
-          data: data
+          data: data,
+          headers: {
+            authorization: `Bearer ${Vue.prototype.$accessToken.accessToken}`
+          }
         }
         // Set the loading modal
         context.commit('setLoadingModal', {
@@ -238,7 +256,10 @@ const store = new Vuex.Store({
         const request = {
           url: config.MASSEUTSENDELSEAPI_BASEURL + 'dispatches/'+ data._id +'?code=SejmUBQQsdqaduLS0mIBR3MFluZTGdyvxCVkZJibQ6J/bMPaAE4ZqA==',
           method: 'put',
-          data: data
+          data: data,
+          headers: {
+            authorization: `Bearer ${Vue.prototype.$accessToken.accessToken}`
+          }
         }
         // Set the loading modal
         context.commit('setLoadingModal', {
@@ -266,6 +287,9 @@ const store = new Vuex.Store({
         const request = {
           method: 'get',
           url: url,
+          headers: {
+            authorization: `Bearer ${Vue.prototype.$accessToken.accessToken}`
+          }
         }
 
         const response = await axios.request(request);

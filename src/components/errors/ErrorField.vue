@@ -4,17 +4,17 @@
       <!-- <h1>En feil har oppstått</h1> -->
       <h1 style="margin-bottom: 0.75rem;">
         <span v-if="statusCode">{{statusCode}} - </span>
-        {{$props.error.title || $props.defaultTitle}}
+        {{title || $props.defaultTitle}}
       </h1>
-      <h3 v-if="$props.error.message">{{$props.error.message}}</h3>
-      <div v-if="$props.error.errors" style="margin-top: 0.75rem;">
+      <h3 v-if="message">{{message}}</h3>
+      <div v-if="errors" style="margin-top: 0.75rem;">
         <ul>
-          <li v-for="(err, i) in $props.error.errors" :key="i">{{err}}</li>
+          <li v-for="(err, i) in errors" :key="i">{{err}}</li>
         </ul>
       </div>
-      <div v-if="isShowStack && $props.error.stack" class="stackField">
+      <div v-if="isShowStack && stack" class="stackField">
         <h3>Detaljer</h3>
-        {{ $props.error.stack }}
+        {{ stack }}
       </div>
       <div style="display: flex; justify-content: start; gap: 1rem; margin-top: 1rem;">
         <VTFKButton v-if="$props.showResetButton" style="margin-top: 1rem;" size="small" :passedProps="{onClick: () => { $emit('resetClicked') }}">Start på nytt</VTFKButton>
@@ -44,8 +44,8 @@
     },
     props: {
       error: {
-        type: [ Object, Error, AppError],
-        reqruire: true
+        type: [ Error, Object, AppError],
+        require: true
       },
       defaultTitle: {
         type: String,
@@ -66,6 +66,29 @@
         if(this.$props.error.statusCode) return this.$props.error.statusCode;
         if(this.$props.error.status) return this.$props.error.status;
         return '';
+      },
+      title() {
+        if(!this.$props.error) return '';
+        if(this.$props.error.response && this.$props.error.response.data && this.$props.error.response.data.title) return this.$props.error.response.data.title;
+        return '';
+      },
+      message() {
+        if(!this.$props.error) return '';
+        if(this.$props.error.response && this.$props.error.response.data && this.$props.error.response.data.message) return this.$props.error.response.data.message;
+        return this.$props.error.message;
+      },
+      errors() {
+        if(!this.$props.error) return '';
+        if(this.$props.error.response && this.$props.error.response.data && this.$props.error.response.data.errors) {
+          if(!Array.isArray(this.$props.error.response.data.errors)) return [this.$props.error.response.data.errors];
+          return this.$props.error.response.data.errors;
+        }
+        return undefined;
+      },
+      stack() {
+        if(!this.$props.error) return '';
+        if(this.$props.error.response && this.$props.error.response.data && this.$props.error.response.data.stack) return this.$props.error.response.data.stack;
+        return this.$props.error.stack;
       }
     }
   }

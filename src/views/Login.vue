@@ -13,8 +13,9 @@ export default {
     if(response) {
       console.log('== Attempt to handle redirection ==');
       console.log(response);
-      this.$loginToken = response;
-      localStorage.setItem('loginToken', JSON.stringify(response));
+      this.$accessToken = response;
+      localStorage.setItem('accessToken', JSON.stringify(response));
+      
       this.$router.push('/');
       return;
     }
