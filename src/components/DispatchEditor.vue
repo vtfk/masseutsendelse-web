@@ -44,7 +44,7 @@
       </div>
       <!-- Prosjekt informasjon -->
       <div v-if="isMatrikkelApproved || mode === 'edit'" class="card shadow centeredColumn" style="margin-top: 1rem;">
-        <div style="width: 60%">
+        <div style="width: 60%" class="centeredColumn">
           <h1>Masseutsendelse</h1>
           <DispatchStatusSelect class="centeredColumn" v-if="mode === 'edit'" v-model="dispatch.status" :disabled="isLocked"/>
           <!-- En input for prosjekt navn, en for prosjekt nr -->

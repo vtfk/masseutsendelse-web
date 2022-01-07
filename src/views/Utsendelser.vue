@@ -183,7 +183,7 @@ import AppError from '../lib/vtfk-errors/AppError';
           {text: 'Dato', value: 'createdTimestamp'},
           {text: 'Status', value: 'status'},
           {text: 'Oppretshaver', value: 'createdBy'},
-          {text: 'Behandlet av', value: 'modifiedBy'},
+          {text: 'Behandlet av', value: 'approvedBy'},
           {text: 'Handlinger', value: 'handlinger', sortable:false}
         ],
         select: {status_valg: '', status_value: ''},
