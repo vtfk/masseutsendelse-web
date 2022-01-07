@@ -77,7 +77,7 @@ export default class MatrikkelProxyClient {
     // Construct the request
     let request = {
       method: 'post',
-      url: 'api/v1/matrikkelenheter',
+      url: 'matrikkelenheter',
       data: {
         koordinatsystemKodeId: 10,
         polygon: polygon,
@@ -98,7 +98,7 @@ export default class MatrikkelProxyClient {
     // Construct the request
     let request = {
       method: 'post',
-      url: 'api/v1/store',
+      url: 'store',
       headers: {
         'X-API-KEY': this.apiKey,
         'Content-Type': 'application/json'
