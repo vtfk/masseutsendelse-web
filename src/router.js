@@ -8,6 +8,7 @@ Vue.use(VueRouter);
 */
 import HomeView from './views/Home'
 import LoginView from './views/Login'
+import LogoutView from './views/Logout';
 import UtsendelserView from './views/Utsendelser'
 import TemplateView from './views/Templates'
 import DevelopmentView from './views/Development'
@@ -23,6 +24,10 @@ let routes = [
   {
     path: '/login',
     component: LoginView
+  },
+  {
+    path: '/logout',
+    component: LogoutView
   },
   {
     path: '/utsendelser',
@@ -55,12 +60,18 @@ let router = new VueRouter({
 */
 router.beforeEach(async (to, from, next) => {
   // If logging in, just proceed
-  if(to && to.path === '/login') return next();
+  if(to && (to.path === '/login' || to.path === '/logout')) return next();
   if(to.hash && to.hash.startsWith('#code=')) return next();
 
   // Check if re-authentication is necessary
   if(Vue.prototype.$isAuthenticationRequired()) {
     console.log('Must re-authenticate');
+    console.log('Authenticated user');
+    console.log(Vue.prototype.$authenticatedUser());
+    console.log('Accesstoken');
+    console.log(Vue.prototype.$accessToken);
+    
+
     next('/login');
   }
   

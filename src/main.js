@@ -25,7 +25,8 @@ async function prepareEnvironment() {
       clientId: config.AZUREAD_CLIENTID,
       authority: config.AZUREAD_AUTHORITYURL,
       redirectUri: "/login",
-      navigateToLoginRequestUrl: false
+      postLogoutRedirectUri: '/logout',
+      navigateToLoginRequestUrl: false,
     },
     cache: {
       cacheLocation: "localStorage",

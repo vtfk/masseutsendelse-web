@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import Loading from '../components/Loading.vue';
 
 export default {
@@ -18,14 +19,16 @@ export default {
     // Attempt to handle the redirection of applicable
     let response = await this.$msal.handleRedirectPromise();
     if(response) {
-      this.$accessToken = response;
+      this.$accessToken = JSON.parse(JSON.stringify(response));
+      Vue.prototype.$accessToken = JSON.parse(JSON.stringify(response));
       localStorage.setItem('accessToken', JSON.stringify(response));
-      this.$router.push('/');
+      this.$router.push('/')
       return;
     }
 
     // Start a new authentication if necessary
     if(this.$isAuthenticationRequired()) return this.$acquireTokenRedirect();
+    console.log('Redirecting from login to /')
     this.$router.push('/');
   }
 }

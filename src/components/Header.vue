@@ -18,7 +18,7 @@
           <VTFKIconDropdownNavItem title='Hjelp' :onClick=" () => { this.$store.commit('setGuideModal'); }"/>
           <VTFKIconDropdownNavItem title='Utsendelser' :onClick="() => { route('/utsendelser') }" />
           <VTFKIconDropdownNavItem title='Maler' :onClick="() => { route('/maler') }" />
-          <VTFKIconDropdownNavItem title="Logg ut" href="https://www.vtfk.no" />
+          <VTFKIconDropdownNavItem title="Logg ut" :onClick="() => { route('/logout') }" />
         </VTFKIconDropdownNav>
       </div>
       </div>
