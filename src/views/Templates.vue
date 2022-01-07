@@ -61,9 +61,6 @@
 </template>
 
 <script>
-// Importer dependencies
-import AppError from '../lib/vtfk-errors/AppError';
-
 // Importer VTFK komponenter
 import { Button } from '@vtfk/components';
 
@@ -110,7 +107,7 @@ export default {
       try {
         await this.$store.dispatch('getTemplates');
       } catch (err) {
-        this.error = new AppError('Kunne ikke hente hente inn maler', err);
+        this.error = err;
       }
     },
     openTemplateEditor(template) {

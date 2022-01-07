@@ -28,7 +28,6 @@ export default {
 
     // Start a new authentication if necessary
     if(this.$isAuthenticationRequired()) return this.$acquireTokenRedirect();
-    console.log('Redirecting from login to /')
     this.$router.push('/');
   }
 }

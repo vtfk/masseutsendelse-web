@@ -712,7 +712,7 @@
         try {
           this.templates = await this.$store.dispatch('getTemplates');
         } catch (err) {
-          this.error = new AppError('Kunne ikke hente hente inn maler', err);
+          this.error = err;
           return;
         }
 
