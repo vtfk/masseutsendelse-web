@@ -2,16 +2,14 @@
   Import dependencies
 */
 import config from '../../config';
-import axios from "axios";
 import AppError from './vtfk-errors/AppError';
 import { removeKeys } from '@vtfk/utilities';
+import store from '../store';
 
 export default class MatrikkelProxyClient {
-  constructor(APIBaseURL, APIKey, ClientId) {
-    // this.apiBaseUrl = APIBaseURL || config.MATRIKKELPROXYAPI_BASE_URL;
-    this.apiBaseUrl = APIBaseURL || config.MASSEUTSENDELSEAPI_BASE_URL;
-    this.apiKey = APIKey || config.MATRIKKELPROXYAPI_APIKEY;
-    this.clientId = ClientId || config.MATRIKKELPROXYAPI_CLIENTID;
+  constructor(APIBaseURL, ClientId) {
+    this.apiBaseUrl = APIBaseURL || config.MASSEUTSENDELSEAPI_BASEURL;
+    this.clientId = ClientId || config.MATRIKKELPROXY_CLIENTID;
 
     // Create a matrikkelContext that can be used if none is provided to the functions
     this.matrikkelContext = {
@@ -19,7 +17,7 @@ export default class MatrikkelProxyClient {
     }
 
     if(!this.apiBaseUrl) { throw new Error('APIBaseURL cannot be empty'); }
-    if(!this.apiKey) { throw new Error('APIKey cannot be empty'); }
+    // if(!this.apiKey) { throw new Error('APIKey cannot be empty'); }
     if(!this.clientId) { throw new Error('Client ID cannot be empty'); }
   }
 
@@ -28,9 +26,9 @@ export default class MatrikkelProxyClient {
     if(!request) { throw new Error('request cannot be empty'); }
     if(!request.url) { throw new Error('request.url cannot be empty'); }
     
-    // If MatrikkelProxyClient is specified use that as the base URL insted
+    // If MatrikkelProxyClient is specified use that as the base URL instead
     if(config.MASSEUTSENDELSEAPI_BASEURL) {
-      request.url = config.MASSEUTSENDELSEAPI_BASEURL + 'api/matrikkel/' + encodeURIComponent(request.url);
+      request.url = config.MASSEUTSENDELSEAPI_BASEURL + 'matrikkel/' + encodeURIComponent(request.url);
     } else {
       request.url = this.apiBaseUrl + request.url;
     }
@@ -67,8 +65,8 @@ export default class MatrikkelProxyClient {
     }
 
     // Make the request
-    let response =  await axios.request(request);
-
+    const response = await store.dispatch('makeMatrikkelRequest', request);
+    
     // Return the full response
     return response;
   }

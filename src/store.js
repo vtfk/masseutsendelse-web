@@ -338,6 +338,26 @@ const store = new Vuex.Store({
         context.commit('setModalError', err);
         return Promise.reject(err);
       }
+    },
+    async makeMatrikkelRequest(context, request) {
+      try {
+        // Input validation
+        if(!request) throw new AppError('Request is empty', 'Cannot make an empty matrikkelRequest');
+        
+        // Handle authentication
+        await handleAuthentication();
+
+        // Set the authorization header
+        request.headers.authorization = `Bearer ${Vue.prototype.$accessToken.accessToken}`;
+        
+        // Make request
+        const response = await axios.request(request);
+
+        // Return the response
+        return response;
+      } catch (err) {
+        return Promise.reject(err);
+      }
     }
   }
 })

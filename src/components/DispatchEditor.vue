@@ -410,18 +410,15 @@
           this.matrikkelLoadingSubmessage = `Spør om ${this.dispatch.polygons.polygons.length} polygoner med ${totalVerticesCount} vertiser`
           let matrikkelEnhetIds = [];
           for (const polygon of this.dispatch.polygons.polygons) {
-            console.log('Getting real polygon');
             let ids = await matrikkelClient.getMatrikkelEnheterFromPolygon(polygon.vertices, { query: { flatten: true, metadata: false } });
             // Add any ids that don't already exists
             for(const id of ids) {
               if(!matrikkelEnhetIds.includes(id)) matrikkelEnhetIds.push(id);
             }
-            console.log(ids);
           }
           if(!matrikkelEnhetIds && matrikkelEnhetIds.length) {
             throw new AppError('Ingen MatrikkelIDer funnet', 'Vi klarte ikke å finne noen matrikkelinformasjon innenfor dette polygonet');
           }
-          console.log('Found in total ' + matrikkelEnhetIds.length + ' matrikkelEnhetIds');
 
           /*
             Hent MatrikkelData på hver av IDene
@@ -477,8 +474,6 @@
               })
             }
           })
-          console.log('== Eierforhold ==');
-          console.log(matrikkelEierforhold);
 
           /*
             Hent ut alle eier-informasjon for hver av eierforholdene

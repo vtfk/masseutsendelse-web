@@ -57,7 +57,7 @@
             </v-tooltip>
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn icon v-bind="attrs" v-on="on">
+                <v-btn :disabled="!item.template" icon v-bind="attrs" v-on="on">
                   <v-icon
                     medium
                     style="padding-right:0.2rem;"
