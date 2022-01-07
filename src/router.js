@@ -66,12 +66,6 @@ router.beforeEach(async (to, from, next) => {
   // Check if re-authentication is necessary
   if(Vue.prototype.$isAuthenticationRequired()) {
     console.log('Must re-authenticate');
-    console.log('Authenticated user');
-    console.log(Vue.prototype.$authenticatedUser());
-    console.log('Accesstoken');
-    console.log(Vue.prototype.$accessToken);
-    
-
     next('/login');
   }
   
