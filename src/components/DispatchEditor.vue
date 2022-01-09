@@ -87,18 +87,21 @@
               <span class="required"><strong>* </strong></span>Arkivnummer
             </template>
           </VTextField>
-          <VSelect
-            label="Velg mal"
-            placeholder="Velg mal"
-            :disabled="isReadOnly"
-            :value="dispatch.template"
-            :items="this.templates"
-            item-text="name"
-            item-value="_id"
-            return-object
-            @change="(e) => onTemplateChanged(e)" 
-            style="max-width: 750px; width: 100%;"
-          />
+          <div style="display: flex; align-items: center; gap: 1rem; width: 100%;">
+            <VSelect
+              label="Velg mal"
+              placeholder="Velg mal"
+              :disabled="isReadOnly"
+              :value="dispatch.template"
+              :items="this.templates"
+              item-text="name"
+              item-value="_id"
+              return-object
+              @change="(e) => onTemplateChanged(e)" 
+              style="max-width: 750px; width: 100%;"
+            />
+            <VTFKButton v-if="dispatch.template && dispatch.template._id" :passedProps="{onClick: () => {onRemoveTemplate()}}" size="small" style="min-width: 200px;">Fjern mal</VTFKButton>
+          </div>
           <div v-if="selectedTemplateSchema && selectedTemplateSchema.properties && Object.keys(selectedTemplateSchema.properties).length > 0" style="max-width: 750px; width: 100%;">
             <h2>Flettefelter</h2>
             <SchemaFields
@@ -110,7 +113,7 @@
           </div>
           <h3 style="margin-bottom: 0.2rem">Vedlegg</h3>
           <upload-field v-model="dispatch.attachments" :disabled="isReadOnly" style="width: 100%" :downloadBaseUrl="`${$config.MASSEUTSENDELSEAPI_BASEURL}blobs/${dispatch._id}/`" />
-          <div v-if="mode === 'new'" class="centeredColumn" style="margin-top: 1rem">
+          <div class="centeredColumn" style="margin-top: 1rem">
             <VTFKButton
               class="mt-1"
               :disabled="!isRequiredTemplateDataFilledIn"
@@ -700,6 +703,13 @@
       },
       onTemplateDataChanged() {
         this.determineIfTemplateIsOk();
+      },
+      onRemoveTemplate() {
+        if(!confirm('Er du helt sikker på at du vil fjerne malen?')) return;
+
+        this.selectedTemplate = undefined;
+        this.selectedTemplateSchema = undefined;
+        this.dispatch.template = {};
       },
       async loadTemplates() {
         this.isLoadingTemplates = true;
