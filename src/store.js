@@ -11,8 +11,10 @@ import merge from 'lodash.merge';
 // Configure vue to use Vuex
 Vue.use(Vuex)
 
-console.log('== Configuration ==');
-console.log(config);
+if(process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+  console.log('== Configuration ==');
+  console.log(config);
+}
 
 /*
   Functions
@@ -39,14 +41,7 @@ const store = new Vuex.Store({
   },
   mutations: {
     setModalError (state, error) {
-      let err = error;
-      // Unpack the error object
-      Object.getOwnPropertyNames(err).forEach((key) => {
-        err[key] = error[key];
-      })
-
-      if(error.response && error.response.data) err = err.response.data;
-      state.modalError = err;
+      state.modalError = error;
     },
     setLoadingModal (state, loading) {
       if(!loading) return;

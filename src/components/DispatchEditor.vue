@@ -109,7 +109,7 @@
             />
           </div>
           <h3 style="margin-bottom: 0.2rem">Vedlegg</h3>
-          <upload-field v-model="dispatch.attachments" style="width: 100%" :downloadBaseUrl="`${$config.MASSEUTSENDELSEAPI_BASEURL}api/blobs/${dispatch._id}/`" />
+          <upload-field v-model="dispatch.attachments" :disabled="isReadOnly" style="width: 100%" :downloadBaseUrl="`${$config.MASSEUTSENDELSEAPI_BASEURL}blobs/${dispatch._id}/`" />
           <div v-if="mode === 'new'" class="centeredColumn" style="margin-top: 1rem">
             <VTFKButton
               class="mt-1"

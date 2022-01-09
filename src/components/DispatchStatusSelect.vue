@@ -7,8 +7,7 @@
       label="Sett status for prosjektet"
       :menu-props="{ bottom: true, offsetY: true }"
       :disabled="$props.disabled || $props.value === 'completed' || $props.value === 'inprogress'"
-      :hint="selectedItem.hint"
-      persistent-hint
+      hide-details
       hide-selected
       outlined
       rounded
@@ -27,8 +26,8 @@
         </v-chip>
       </template>
     </v-select>
-    <div v-if="selectedItem.value === 'approved'">
-      Det er ~<strong>X</strong> minutter til utsendelsen vil kjøres.
+    <div v-if="selectedItem && selectedItem.hint">
+      <strong>{{selectedItem.hint}}</strong>
     </div>
   </div>
 </template>
@@ -49,7 +48,7 @@ export default {
   data() {
     return {
       items: [
-        { text: 'Under Behandling', value: 'notapproved', color: '#E7827E', hint: 'Utsendelsen vil ikke skje før den er godkjent' },
+        { text: 'Under Behandling', value: 'notapproved', color: '#E7827E', hint: 'Utsendelsen vil ikke gjennomføres før den er godkjent' },
         { text: 'Godkjent', value: 'approved', color: '#D0C788', hint: 'Utsendelsen vil gjennomføres ved neste kjøring 00:00' }
       ]
     }
@@ -73,6 +72,8 @@ export default {
 </script>
 
 <style scoped>
-
-
+  .v-messages__message {
+    font-weight: 900;
+    color:firebrick;
+  }
 </style>

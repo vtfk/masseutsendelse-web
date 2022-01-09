@@ -64,32 +64,42 @@ export default {
       this.$emit('input', tmpFiles);
     },
     async downloadBlob(blob) {
-      if(!blob) return;
+      try {
+        if(!blob) return;
 
-      // If the blob dont have data url and it has been provided a download base url
-      if(!blob.dataUrl && this.$props.downloadBaseUrl) {
-        let request = {
-          method: 'get',
-          url: `${this.$props.downloadBaseUrl}${blob.name}` 
+        // If the blob dont have data url and it has been provided a download base url
+        if(!blob.dataUrl && this.$props.downloadBaseUrl) {
+          let request = {
+            method: 'get',
+            url: `${this.$props.downloadBaseUrl}${blob.name}` 
+          }
+          if(this.$accessToken && this.$accessToken.accessToken) {
+            request.headers = {
+              authorization: `Bearer ${this.$accessToken.accessToken}`
+            }
+          }
+
+          const response = await axios.request(request);
+          if(response && response.data && response.data.data) blob.dataUrl = response.data.data;
         }
-        const response = await axios.request(request);
-        if(response && response.data && response.data.data) blob.dataUrl = response.data.data;
-      }
 
-      // If no blob.dataUrl is provided, emit downloadBlob
-      if(!blob.dataUrl) {
-        this.$emit('downloadBlob', blob);
+        // If no blob.dataUrl is provided, emit downloadBlob
+        if(!blob.dataUrl) {
+          this.$emit('downloadBlob', blob);
+          return;
+        }
+
+        // Download the blob
+        const link = document.createElement('a');
+        link.href = blob.dataUrl;
+        link.setAttribute('download', blob.name);
+        document.body.appendChild(link);
+        link.click()
+
         return;
+      } catch (err) {
+        this.$store.commit('setModalError', err);
       }
-
-      // Download the blob
-      const link = document.createElement('a');
-      link.href = blob.dataUrl;
-      link.setAttribute('download', blob.name);
-      document.body.appendChild(link);
-      link.click()
-
-      return;
     }
   }
 }
@@ -97,7 +107,6 @@ export default {
 
 <style>
   .wrapper {
-    
     background-color: #BACDD4;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
