@@ -33,25 +33,6 @@ proj4.defs([
 /*
   Support functions
 */
-// async function readFile(file) {
-//   // Always return a Promise
-//   return new Promise((resolve, reject) => {
-//     let content = '';
-//     const reader = new FileReader();
-//     // Wait till complete
-//     reader.onloadend = function(e) {
-//       content = e.target.result;
-//       // const result = content.split(/\r\n|\n/);
-//       resolve(content);
-//     };
-//     // Make sure to handle error states
-//     reader.onerror = function(e) {
-//       reject(e);
-//     };
-//     reader.readAsText(file);
-//   });
-// }
-
 function copy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }

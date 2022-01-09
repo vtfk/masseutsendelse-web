@@ -235,7 +235,7 @@
             ESPG: '',
             coordinatesystem: '',
             filename: '',
-            areal: null,
+            area: null,
             extremes: {
               north: undefined,
               west: undefined,

@@ -9,8 +9,8 @@
       <v-btn @click="loginAzure()">Login azure (popup)</v-btn>
       <v-btn @click="authenticateMasseutsendelse()">Login Azure (redirection)</v-btn>
     </div>
-    <div v-if="true">
-      Logged in as: 
+    <div v-if="$authenticatedUser()">
+      Logged in as: {{ $authenticatedUser().name }}
     </div>
   </div>
 </template>
@@ -21,15 +21,6 @@
 */
 import Uploader from '../components/uploader/UploadField.vue'
 const Auth = require('../authentication');
-// import * as msal from "@azure/msal-browser";
-
-// const config = {
-//   auth: {
-//     clientId: 'ffd9d6ce-d313-4d5d-a758-0affa6dadd0a',
-//     authority: "https://login.microsoftonline.com/08f3813c-9f29-482f-9aec-16ef7cbf477a",
-//   }
-// }
-// const instance = new msal.PublicClientApplication(config);
 
 export default {
   name: 'DevelopmentView',
