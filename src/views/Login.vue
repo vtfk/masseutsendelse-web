@@ -15,7 +15,22 @@ export default {
   components: {
     Loading
   },
+  data() {
+    return {
+      rerouteInterval: undefined,
+      rerouteIntervalms: 5000
+    }
+  },
+  methods: {
+    rerouteIfAuthUnecessary() {
+      if(!this.$isAuthenticationRequired()) this.$router.push('/');
+    }
+  },
   async created() {
+    // Create an interval that checks if authentication is necessary or not, if not it will redirect to the main page
+    // The reason for this is to handle an issue where redirection don't work as it should when the token has expired
+    this.rerouteInterval = setInterval(() => { this.rerouteIfAuthUnecessary() }, this.rerouteIntervalms);
+
     // Attempt to handle the redirection of applicable
     let response = await this.$msal.handleRedirectPromise();
     if(response) {
@@ -29,6 +44,9 @@ export default {
     // Start a new authentication if necessary
     if(this.$isAuthenticationRequired()) return this.$acquireTokenRedirect();
     this.$router.push('/');
+  },
+  async beforeDestroy() {
+    clearInterval(this.rerouteInterval);
   }
 }
 </script>

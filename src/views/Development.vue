@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       files: [],
-      isDisabled: false
+      isDisabled: false,
     }
   },
   methods: {
@@ -66,16 +66,10 @@ export default {
       await masseutsendelseAuth.loginRedirection();
     }
   },
-  async mounted() {
-    const config = {
-      auth: {
-        clientId: 'ffd9d6ce-d313-4d5d-a758-0affa6dadd0a',
-        authority: "https://login.microsoftonline.com/08f3813c-9f29-482f-9aec-16ef7cbf477a",
-      }
-    }
-    const masseutsendelseAuth = new Auth('azure', config);
-    await masseutsendelseAuth.handleRedirection();
-  }
+  async created() {
+  },
+  async beforeDestroy() {
+  },
 }
 </script>
 
