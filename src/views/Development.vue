@@ -2,7 +2,8 @@
   <div style="margin-left: 4rem; margin-right: 4rem">
     <h1 style="margin-bottom: 0.2rem;">Development</h1>
     <p>This route is only accessible while in development-mode</p>
-    <uploader v-model="files" />
+    <uploader v-model="files" :disabled="isDisabled" />
+    <v-checkbox v-model="isDisabled" label="Uploader disabled" />
     <h1>Login</h1>
     <div style="display: flex; gap: 1rem;">
       <v-btn @click="loginAzure()">Login azure (popup)</v-btn>
@@ -37,7 +38,8 @@ export default {
   },
   data() {
     return {
-      files: []
+      files: [],
+      isDisabled: false
     }
   },
   methods: {

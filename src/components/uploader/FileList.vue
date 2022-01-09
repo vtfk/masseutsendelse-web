@@ -10,7 +10,7 @@
             {{file.name}}
           </td>
           <td style="width: 75px">
-            <button class="iconBtn" icon @click="removeFile(file)"><v-icon>mdi-delete</v-icon></button>
+            <button :class="btnClasses" icon @click="removeFile(file)" :disabled="$props.disabled"><v-icon>mdi-delete</v-icon></button>
           </td>
         </tr>
       </tbody>
@@ -35,6 +35,18 @@ export default {
     },
     downloadBaseUrl: {
       type: String
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    btnClasses() {
+      let classes = {}
+      classes['iconBtn'] = true;
+      if(this.$props.disabled) classes['disabled'] = true;
+      return classes;
     }
   },
   methods: {
@@ -123,4 +135,7 @@ export default {
     border-bottom-right-radius: 10px;
   }
 
+  :disabled {
+    cursor: not-allowed;
+  }
 </style>
