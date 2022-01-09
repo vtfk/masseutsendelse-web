@@ -87,7 +87,7 @@
               <span class="required"><strong>* </strong></span>Arkivnummer
             </template>
           </VTextField>
-          <div style="display: flex; align-items: center; gap: 1rem; width: 100%;">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; width: 100%;">
             <VSelect
               label="Velg mal"
               placeholder="Velg mal"
@@ -413,7 +413,8 @@
           this.matrikkelLoadingSubmessage = `Spør om ${this.dispatch.polygons.polygons.length} polygoner med ${totalVerticesCount} vertiser`
           let matrikkelEnhetIds = [];
           for (const polygon of this.dispatch.polygons.polygons) {
-            let ids = await matrikkelClient.getMatrikkelEnheterFromPolygon(polygon.vertices, { query: { flatten: true, metadata: false } });
+            console.log(polygon);
+            let ids = await matrikkelClient.getMatrikkelEnheterFromPolygon(polygon.vertices, polygon.EPSG, { query: { flatten: true, metadata: false } });
             // Add any ids that don't already exists
             for(const id of ids) {
               if(!matrikkelEnhetIds.includes(id)) matrikkelEnhetIds.push(id);
