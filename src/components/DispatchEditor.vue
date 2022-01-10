@@ -100,7 +100,7 @@
               @change="(e) => onTemplateChanged(e)" 
               style="max-width: 750px; width: 100%;"
             />
-            <VTFKButton v-if="dispatch.template && dispatch.template._id" :passedProps="{onClick: () => {onRemoveTemplate()}}" size="small" style="min-width: 200px;">Fjern mal</VTFKButton>
+            <VTFKButton v-if="dispatch.template && dispatch.template._id" :disabled="isReadOnly" :passedProps="{onClick: () => {onRemoveTemplate()}}" size="small" style="min-width: 200px;">Fjern mal</VTFKButton>
           </div>
           <div v-if="selectedTemplateSchema && selectedTemplateSchema.properties && Object.keys(selectedTemplateSchema.properties).length > 0" style="max-width: 750px; width: 100%;">
             <h2>Flettefelter</h2>
@@ -413,7 +413,6 @@
           this.matrikkelLoadingSubmessage = `Spør om ${this.dispatch.polygons.polygons.length} polygoner med ${totalVerticesCount} vertiser`
           let matrikkelEnhetIds = [];
           for (const polygon of this.dispatch.polygons.polygons) {
-            console.log(polygon);
             let ids = await matrikkelClient.getMatrikkelEnheterFromPolygon(polygon.vertices, polygon.EPSG, { query: { flatten: true, metadata: false } });
             // Add any ids that don't already exists
             for(const id of ids) {
