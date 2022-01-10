@@ -515,10 +515,66 @@
           */
           let ownerCentric = MatrikkelProxyClient.getMatrikkelEnheterOwnerCentric(matrikkelEnheter, matrikkelEiere);
 
-          // Remove any pre-removed users
-          if(config.EXCLUDED_OWNER_IDS && Array.isArray(config.EXCLUDED_OWNER_IDS)) {
-            this.dispatch.excludedOwners = ownerCentric.filter((o) => config.EXCLUDED_OWNER_IDS.includes(o.nummer));
-            this.dispatch.owners = ownerCentric.filter((o) => !config.EXCLUDED_OWNER_IDS.includes(o.nummer));
+
+          /*
+            Exclude owner that should not be contacted
+          */
+          let excludedOwners = [];
+          
+          // Exculde owners
+          for(let owner of ownerCentric) {
+            let excludedReason = undefined;
+            // Manually handle (Adresse sperre)
+            if(owner.dsf) {
+              const spesCode = parseInt(owner.dsf['SPES-KD'])
+              const statCode = parseInt(owner.dsf['STAT-KD'])
+              if(statCode) {
+                if(statCode === 3) excludedReason = 'Utvandret';
+                if(statCode === 4) excludedReason = 'Forsvunnet';
+                if(statCode === 5) excludedReason = 'Død';
+              }
+              if(spesCode && (spesCode === 4 || spesCode === 6 || spesCode === 7)) {
+                excludedReason = 'Må håndteres manuelt';
+                owner.hardExluded = true;
+              }
+            }
+
+            // Handle manually
+            if(owner.manuallyHandle === true || owner.handleManually === true) {
+              excludedReason = 'Må håndteres manuelt';
+              owner.hardExluded = true;
+            }
+
+            // Utvandret
+            if(owner.utvandret) {
+              excludedReason = 'Utvandret';
+            }
+
+            // Forsvunnet
+            if(owner.forsvunnet) {
+              excludedReason = 'Forsvunnet';
+            }
+
+            // Dead owners
+            if((owner.dead === true) || (owner && owner.name && owner.name.includes('DØDSBO'))) {
+              excludedReason = 'Død';
+            }
+
+            // Pre-excluded person or org numbers
+            if(config.EXCLUDED_OWNER_IDS && Array.isArray(config.EXCLUDED_OWNER_IDS) && config.EXCLUDED_OWNER_IDS.includes(owner.nummer)) {
+              excludedReason = 'Forhåndsekskludert';
+            }
+
+            if(excludedReason) {
+              owner.exclusionReason = excludedReason;
+              excludedOwners.push(owner);
+            }
+          }
+
+          if(excludedOwners.length !== 0) {
+            let excludedIds = excludedOwners.map((o) => o.nummer);
+            this.dispatch.excludedOwners = excludedOwners;
+            this.dispatch.owners = ownerCentric.filter((o) => !excludedIds.includes(o.nummer));
           } else {
             this.dispatch.owners = ownerCentric;
           }
@@ -542,11 +598,11 @@
           this.statItems.push({ text: 'Unike eiere', value: matrikkelEiere.length })
           this.statItems.push({ text: 'Juridiske eiere', value: juridiskeEiere.length })
           this.statItems.push({ text: 'Private eiere', value: matrikkelEiere.length - juridiskeEiere.length })
-          if(this.dispatch.stats.area > 1000) {
-            this.statItems.push({ text: 'Areal', value: Math.round(this.dispatch.stats.area / 1000), postvalue: ' KM²'})
-          } else {
-            this.statItems.push({ text: 'Areal', value: Math.round(this.dispatch.stats.area), postvalue: ' M²'})
-          }
+          // if(this.dispatch.stats.area > 1000) {
+          //   this.statItems.push({ text: 'Areal', value: Math.round(this.dispatch.stats.area / 1000), postvalue: ' KM²'})
+          // } else {
+          //   this.statItems.push({ text: 'Areal', value: Math.round(this.dispatch.stats.area), postvalue: ' M²'})
+          // }
 
           matrikkelEnheter.forEach((enhet) => {
             // Hent ut generell informasjon om matrikkel enheten som skal lagres i databasen

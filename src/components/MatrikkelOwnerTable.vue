@@ -1,5 +1,5 @@
 <template>
-  <VDataTable class="shadow" width="100%" style="width: 100%;" :headers="tableHeader" :items="$props.items" item-key="id" :items-per-page="20" :show-expand="true">
+  <VDataTable class="shadow" width="100%" style="width: 100%;" :headers="ownerTableHeaders" :items="$props.items" item-key="id" :items-per-page="20" :show-expand="true">
     <template v-slot:[`item._type`]="{ item }">
       <div v-if="item._type">
         <div v-if="item._type.toLowerCase().includes('juridisk')">
@@ -34,6 +34,10 @@
     </template>
     <template v-slot:expanded-item="{ headers, item }">
       <td :colspan="headers.length" style="padding: 1rem 1rem;">
+        <div style="text-algin: left; justify-self: start;">
+          <span v-if="item._type.toLowerCase().includes('juridisk')">Organisasjonsnummer: {{item.nummer}}</span>
+          <span v-else>Personnummer: {{item.nummer}}</span>
+        </div>
         <h2>Eierforhold</h2>
         <VDataTable :headers="ownershipHeaders" :items="item.ownerships" item-key="id" :hide-default-footer="true">
           <template v-slot:[`item.adresse`]="{ item }">
@@ -114,6 +118,57 @@
             value: 'andel'
           }
         ]
+      }
+    },
+    computed: {
+      ownerTableHeaders() {
+        if(this.$props.type === 'included') {
+          return [
+            {
+              text: 'Navn',
+              value: 'navn'
+            },
+            {
+              text: 'Type',
+              value: '_type'
+            },
+            {
+              text: 'Antall eierskap',
+              value: 'ownershipCount'
+            },
+            {
+              text: 'Postadresse',
+              value: 'postadresse'
+            },
+            {
+              text: 'Handlinger',
+              value: 'actions'
+            }
+          ]
+        } else {
+          return [
+            {
+              text: 'Navn',
+              value: 'navn'
+            },
+            {
+              text: 'Type',
+              value: '_type'
+            },
+            {
+              text: 'Antall eierskap',
+              value: 'ownershipCount'
+            },
+            {
+              text: 'Ekskluderingsgrunn',
+              value: 'exclusionReason'
+            },
+            {
+              text: 'Handlinger',
+              value: 'actions'
+            }
+          ]
+        }
       }
     },
     methods: {
