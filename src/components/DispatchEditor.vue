@@ -87,7 +87,7 @@
               <span class="required"><strong>* </strong></span>Arkivnummer
             </template>
           </VTextField>
-          <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; width: 100%;">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; width: 90%;">
             <VSelect
               label="Velg mal"
               placeholder="Velg mal"
