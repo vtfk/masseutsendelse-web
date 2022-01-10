@@ -29,6 +29,8 @@ jobs:
           VUE_APP_AZUREAD_CLIENTID: ${{ secrets.VUE_APP_AZUREAD_CLIENTID }}
           VUE_APP_AZUREAD_AUTHORITYURL: ${{ secrets.VUE_APP_AZUREAD_AUTHORITYURL }}
           VUE_APP_EXCLUDED_OWNER_IDS: ${{ secrets.VUE_APP_EXCLUDED_OWNER_IDS }}
+          VUE_APP_SENTRY_DSN: ${{ secrets.VUE_APP_SENTRY_DSN }}
+          VUE_APP_SENTRY_TRACINGORIGINS: ${{ secrets.VUE_APP_SENTRY_TRACINGORIGINS }}
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_MANGO_MUSHROOM_052037403 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)

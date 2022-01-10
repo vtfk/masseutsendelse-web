@@ -7,6 +7,7 @@ import axios from 'axios';
 import AppError from './lib/vtfk-errors/AppError';
 import config from '../config';
 import merge from 'lodash.merge';
+import * as Sentry from '@sentry/vue';
 
 // Configure vue to use Vuex
 Vue.use(Vuex)
@@ -103,6 +104,7 @@ const store = new Vuex.Store({
         context.commit('setPreviewPDF', response.data.base64);
         context.commit('resetLoadingModal');
       } catch (err) {
+        Sentry.captureException(err);
         context.commit('resetLoadingModal');
         context.commit('setModalError', err);
       }
@@ -131,6 +133,7 @@ const store = new Vuex.Store({
         context.commit('setDispatches', response.data);
         return response.data;
       } catch (err) {
+        Sentry.captureException(err);
         return Promise.reject(err)
       }
     },
@@ -154,6 +157,7 @@ const store = new Vuex.Store({
         //Return the data
         return response.data
       } catch(err) {
+        Sentry.captureException(err);
         console.log('Error opening dispatchById');
         console.log(err);
         return Promise.reject(err)
@@ -181,6 +185,7 @@ const store = new Vuex.Store({
         context.commit('setTemplates', response.data);
         return response.data;
       } catch (err) {
+        Sentry.captureException(err);
         return Promise.reject(err);
       }
     },
@@ -211,6 +216,7 @@ const store = new Vuex.Store({
         // Clear the loading modal
         context.commit('resetLoadingModal');
       } catch (err) {
+        Sentry.captureException(err);
         context.commit('resetLoadingModal');
         return Promise.reject(err);
       }
@@ -241,6 +247,7 @@ const store = new Vuex.Store({
         // Clear the loading modal
         context.commit('resetLoadingModal');
       } catch (err) {
+        Sentry.captureException(err);
         context.commit('resetLoadingModal');
         return Promise.reject(err);
       }
@@ -271,6 +278,7 @@ const store = new Vuex.Store({
         context.dispatch('getDispatches');
         return Promise.resolve();
       } catch (err) {
+        Sentry.captureException(err);
         context.commit('resetLoadingModal');
         context.commit('setModalError', err);
         return Promise.reject(err);
@@ -301,6 +309,7 @@ const store = new Vuex.Store({
         // Clear the loading modal
         context.commit('resetLoadingModal');
       } catch (err) {
+        Sentry.captureException(err);
         context.commit('setModalError', err);
         return Promise.reject(err);
       }
@@ -331,6 +340,7 @@ const store = new Vuex.Store({
         
       } catch(err) {
         context.commit('setModalError', err);
+        Sentry.captureException(err);
         return Promise.reject(err);
       }
     },
@@ -351,6 +361,7 @@ const store = new Vuex.Store({
         // Return the response
         return response;
       } catch (err) {
+        Sentry.captureException(err);
         return Promise.reject(err);
       }
     }

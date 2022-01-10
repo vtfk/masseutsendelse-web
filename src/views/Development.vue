@@ -12,6 +12,9 @@
     <div v-if="$authenticatedUser()">
       Logged in as: {{ $authenticatedUser().name }}
     </div>
+    <div style="margin-top: 2rem">
+      <v-btn @click="captureError()">Capture error in sentry</v-btn>
+    </div>
   </div>
 </template>
 
@@ -20,6 +23,7 @@
   Import components
 */
 import Uploader from '../components/uploader/UploadField.vue'
+import * as Sentry from '@sentry/vue';
 const Auth = require('../authentication');
 
 export default {
@@ -34,6 +38,10 @@ export default {
     }
   },
   methods: {
+    captureError() {
+      const err = new Error('Dette er en test feil');
+      Sentry.captureException(err);
+    },
     async loginAzure() {
       const config = {
         auth: {
