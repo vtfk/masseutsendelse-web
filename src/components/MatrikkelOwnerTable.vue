@@ -16,6 +16,10 @@
     <template v-slot:[`item.postadresse`]="{ item }">
       {{getPostAddress(item)}}
     </template>
+    <template v-slot:[`item.exclusionReason`]="{ item }">
+      <v-text-field v-if="!item.isHardExcluded" v-model="item.exclusionReason" />
+      <div v-else>{{item.exclusionReason}}</div>
+    </template>
     <template v-slot:[`item.actions`]="{ item }">
       <v-btn 
         v-if="$props.type === 'included'"
@@ -26,6 +30,7 @@
       </v-btn>
       <v-btn 
         v-if="$props.type === 'excluded'"
+        :disabled="item.isHardExcluded"
         icon
         @click="includeOwner(item);"
       >

@@ -529,35 +529,47 @@
               const spesCode = parseInt(owner.dsf['SPES-KD'])
               const statCode = parseInt(owner.dsf['STAT-KD'])
               if(statCode) {
-                if(statCode === 3) excludedReason = 'Utvandret';
-                if(statCode === 4) excludedReason = 'Forsvunnet';
-                if(statCode === 5) excludedReason = 'Død';
+                if(statCode === 3) {
+                  excludedReason = 'Utvandret';
+                  owner.isHardExcluded = true;
+                }
+                if(statCode === 4) {
+                  excludedReason = 'Forsvunnet';
+                  owner.isHardExcluded = true;
+                }
+                if(statCode === 5) {
+                  excludedReason = 'Død';
+                  owner.isHardExcluded = true;
+                }
               }
               if(spesCode && (spesCode === 4 || spesCode === 6 || spesCode === 7)) {
                 excludedReason = 'Må håndteres manuelt';
-                owner.hardExluded = true;
+                owner.isHardExcluded = true;
               }
             }
 
             // Handle manually
             if(owner.manuallyHandle === true || owner.handleManually === true) {
               excludedReason = 'Må håndteres manuelt';
-              owner.hardExluded = true;
+              owner.isHardExcluded = true;
             }
 
             // Utvandret
             if(owner.utvandret) {
               excludedReason = 'Utvandret';
+              owner.isHardExcluded = true;
             }
 
             // Forsvunnet
             if(owner.forsvunnet) {
               excludedReason = 'Forsvunnet';
+              owner.isHardExcluded = true;
             }
 
             // Dead owners
             if((owner.dead === true) || (owner && owner.name && owner.name.includes('DØDSBO'))) {
               excludedReason = 'Død';
+              owner.isHardExcluded = true;
             }
 
             // Pre-excluded person or org numbers
