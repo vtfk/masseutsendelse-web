@@ -39,7 +39,7 @@
         </div>
         <div v-if="dispatch.matrikkelUnitsWithoutOwners" style="width: 100%;">
           <h2>Matrikkelenheter uten eierforhold</h2>
-          <v-data-table :headers="missingOwnersTableHeaders" :items="dispatch.matrikkelUnitsWithoutOwners" item-key="id.value" class="shadow" />
+          <v-data-table :headers="missingOwnersTableHeaders" :items="dispatch.matrikkelUnitsWithoutOwners" :items-per-page="5" item-key="id.value" class="shadow" />
         </div>
         <div v-if="mode === 'new'" class="centeredColumn">
           <!-- Angreknapp -->

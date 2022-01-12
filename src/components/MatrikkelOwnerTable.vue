@@ -1,5 +1,5 @@
 <template>
-  <VDataTable class="shadow" width="100%" style="width: 100%;" :headers="ownerTableHeaders" :items="$props.items" item-key="id" :items-per-page="20" :show-expand="true">
+  <VDataTable class="shadow" width="100%" style="width: 100%;" :headers="ownerTableHeaders" :items="$props.items" item-key="id" :items-per-page="10" :show-expand="true">
     <template v-slot:[`item._type`]="{ item }">
       <div v-if="item._type">
         <div v-if="item._type.toLowerCase().includes('juridisk')">
