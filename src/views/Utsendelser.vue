@@ -74,7 +74,7 @@
                 <v-btn icon v-bind="attrs" v-on="on">
                   <v-icon
                     medium
-                    @click="openMap(item)"
+                    @click="onOpenMap(item)"
                   >
                     mdi-map-search 
                   </v-icon>
@@ -92,10 +92,10 @@
     <!-- MODALER/DIALOGER -->
       <!-- Edit dialog -->
       <v-dialog
-        v-if="editedItem"
+        v-if="isEditingItem && editedItem"
         :value="true"
         width="80%"
-        @click:outside="editedItem = undefined"
+        @click:outside="isEditingItem = false; editedItem = undefined"
       >
         <v-card>
           <v-card-title>
@@ -108,8 +108,8 @@
       </v-dialog>
       <!-- Map dialog -->
       <v-dialog
-        v-if="dialogMap"
-        v-model="dialogMap"
+        v-if="isShowMap && editedItem"
+        v-model="isShowMap"
         width="60%"
       >
         <v-card>
@@ -122,7 +122,7 @@
           <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
             <VTFKButton 
               type='secondary' size='small' style="padding-bottom: 1rem;"
-              :passedProps="{ onClick: () => [dialogMap = false] }"
+              :passedProps="{ onClick: () => [isShowMap = false] }"
               >Lukk
             </VTFKButton>
           </v-card-actions>
@@ -167,7 +167,8 @@ import DispatchEditor from '../components/DispatchEditor.vue';
         editedItem: undefined,
         search: '',
         dialogEdit: false,
-        dialogMap:false,
+        isEditingItem: false,
+        isShowMap:false,
         loading:false,
         alert_success: false,
         headers: [
@@ -254,16 +255,17 @@ import DispatchEditor from '../components/DispatchEditor.vue';
         try {
           let dispatchEdit = await this.$store.dispatch('getDispatchesById', item._id)
           this.editedItem = dispatchEdit;
-          this.dialogEdit = true;
+          this.isEditingItem = true;
           this.$store.commit('resetLoadingModal');
         } catch (err) {
           this.$store.commit('resetLoadingModal');
+          this.isEditingItem = false;
           this.error = err;
         }
       },
-      openMap(item){
-        this.$set(this, 'editedItem', item)
-        this.dialogMap = true
+      onOpenMap(item){
+        this.editedItem = item;
+        this.isShowMap = true
       },
       async previewPDF(item) {
         // Input validation
