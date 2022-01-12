@@ -674,25 +674,25 @@
           //   this.statItems.push({ text: 'Areal', value: Math.round(this.dispatch.stats.area), postvalue: ' M²'})
           // }
 
-          retreivedMatrikkelUnits.forEach((enhet) => {
-            // Hent ut generell informasjon om matrikkel enheten som skal lagres i databasen
-            let matrikkelUnit = {
-              id: enhet.id,
-              type: enhet.type,
-              bruksnavn: enhet.bruksnavn,
-              bruksnummer: enhet.bruksnummer,
-              gardsnummer: enhet.gardsnummer,
-              festenummer: enhet.festenummer,
-              kommuneId: enhet.kommuneId,
-              utgatt: enhet.utgatt,
-              antallEiere: 1
-            }
-            // Kalkuler antall eiere
-            if(enhet.eierforhold && Array.isArray(enhet.eierforhold)) {
-              matrikkelUnit.antallEiere = enhet.eierforhold.length;
-            }
-            this.dispatch.stats.units.push(matrikkelUnit);
-          })
+          // retreivedMatrikkelUnits.forEach((enhet) => {
+          //   // Hent ut generell informasjon om matrikkel enheten som skal lagres i databasen
+          //   let matrikkelUnit = {
+          //     id: enhet.id,
+          //     type: enhet.type,
+          //     bruksnavn: enhet.bruksnavn,
+          //     bruksnummer: enhet.bruksnummer,
+          //     gardsnummer: enhet.gardsnummer,
+          //     festenummer: enhet.festenummer,
+          //     kommuneId: enhet.kommuneId,
+          //     utgatt: enhet.utgatt,
+          //     antallEiere: 1
+          //   }
+          //   // Kalkuler antall eiere
+          //   if(enhet.eierforhold && Array.isArray(enhet.eierforhold)) {
+          //     matrikkelUnit.antallEiere = enhet.eierforhold.length;
+          //   }
+          //   this.dispatch.stats.units.push(matrikkelUnit);
+          // })
 
           if(!this.dispatch.matrikkelEnheter) this.dispatch.matrikkelEnheter = [];
           if(!this.dispatch.excludedOwners) this.dispatch.excludedOwners = [];
