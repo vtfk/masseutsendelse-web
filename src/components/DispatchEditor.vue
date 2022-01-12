@@ -442,8 +442,6 @@
           if(!matrikkelEnhetIds || matrikkelEnhetIds.length === 0) {
             throw new AppError('Ingen MatrikkelIDer funnet', 'Vi klarte ikke å finne noen matrikkelinformasjon innenfor dette polygonet');
           }
-          console.log('MatrikkelEnhetIds');
-          console.log(matrikkelEnhetIds);
 
           /*
             Create batches of the id's and retreive data for each batch
@@ -468,7 +466,6 @@
             //   batchIndex++;
             //   continue;
             // }
-            console.log(`Jobber på batch #${batchIndex}`);
             this.matrikkelLoadingMessage = `Utfører jobb ${batchIndex + 1} av ${batches.length}`
 
             // Lag ett request for å kontakte store-service for informasjon om IDene
@@ -486,7 +483,6 @@
             let matrikkelEnheter = await matrikkelClient.getStoreItems(matrikkelEnhetRequestItems);
 
             // Håndter feil
-            console.log('Handeling errors');
             if(!matrikkelEnheter || batch.length === 0) {
               throw new AppError('Ingen MatrikkelEnheter funnet', 'Vi klarte ikke å finne noen matrikkelinformasjon for de ' + matrikkelEnhetIds.length + ' idene');
             } else if (batch.length > matrikkelEnheter.length) {
@@ -501,7 +497,6 @@
             else if(matrikkelEnheter.length > batch.length) {
               throw new AppError('For mange matrikkelenheter er returnert', 'Vi fant ' + matrikkelEnheter.length + ' IDer, men skulle kun hatt ' + batch.length + '.');
             }
-            console.log('done');
 
             /*
               Hent ut alle eierforhold innad for MatrikkelEnhetene
@@ -523,7 +518,6 @@
               enhet.eierforhold.forEach((ownership) => {
                 if(!ownership.eierId) {
                   this.ownershipsWithoutOwnerId.push(ownership);
-                  console.log(ownership);
                   ownershipIdsToRemove.push(ownership.id);
                 }
               })
@@ -563,7 +557,6 @@
             })
 
             // Hent ut alle eiere fra Matrikkel API
-            console.log('Retreiving matrikkel enheter');
             this.matrikkelLoadingSubmessage = `Innhenter informasjon om ${unikeEierIDer.length} eiere av ${batch.length} matrikkelenheter`;
             this.matrikkelLoadingSubSubMessage = 'Dette steget tar tid. Matrikkelen, Brønnøysund og Folkeregisteret kontaktes for hver eier'
             let matrikkelEiere = await matrikkelClient.getStoreItems(matrikkelEierRequestItems);
