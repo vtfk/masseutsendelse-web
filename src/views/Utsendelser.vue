@@ -117,7 +117,7 @@
             Kart
           </v-card-title>
           <v-card-text>
-            <Map :polygons="selectedDispatch.polygons" height="60vh" />
+            <Map :polygons="editedItem.polygons" height="60vh" />
           </v-card-text>
           <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
             <VTFKButton 
@@ -151,7 +151,6 @@ import { Button } from '@vtfk/components'
 import Loading from '../components/Loading.vue';
 import Map from '../components/Map.vue';
 import DispatchEditor from '../components/DispatchEditor.vue';
-import AppError from '../lib/vtfk-errors/AppError';
 
   export default {
     name: 'UtsendelserView',
@@ -170,7 +169,6 @@ import AppError from '../lib/vtfk-errors/AppError';
         dialogEdit: false,
         dialogMap:false,
         loading:false,
-        selectedDispatch: undefined,
         alert_success: false,
         headers: [
           {
@@ -252,18 +250,19 @@ import AppError from '../lib/vtfk-errors/AppError';
         }
       },
       async editItem1 (item) {
-        this.$set(this, 'selectedDispatch', item)
+        this.$store.commit('setLoadingModal',{title: 'Laster utsendelsen'});
         try {
           let dispatchEdit = await this.$store.dispatch('getDispatchesById', item._id)
-          this.editItem = dispatchEdit;
           this.editedItem = dispatchEdit;
-          this.dialogEdit = true
-        }catch {
-          new AppError('Kunne ikke åpne utsendelsen', 'Klarte ikke å avgjøre hvordan utsendelsen skulle åpnes')
+          this.dialogEdit = true;
+          this.$store.commit('resetLoadingModal');
+        } catch (err) {
+          this.$store.commit('resetLoadingModal');
+          this.error = err;
         }
       },
       openMap(item){
-        this.$set(this, 'selectedDispatch', item)
+        this.$set(this, 'editedItem', item)
         this.dialogMap = true
       },
       async previewPDF(item) {

@@ -172,6 +172,7 @@ export default class MatrikkelProxyClient {
    */
   static getMatrikkelEnheterOwnerCentric(matrikkelUnits, matrikkelOwners) {
     if(!matrikkelUnits) throw new AppError('MatrikkelEnheter missing', 'No MatrikkelEnheter is provided');
+    if(!matrikkelOwners) throw new AppError('matrikkelOwners missing', 'No matrikkelOwners is provided');
 
     // Object to store
     let returnedOwners = {};

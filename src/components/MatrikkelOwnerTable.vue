@@ -107,16 +107,16 @@
         ],
         ownershipHeaders: [
           {
-            text: 'Dato fra',
+            text: 'Bruksnavn',
+            value: 'unit.bruksnavn'
+          },
+          {
+            text: 'Fra dato',
             value: 'datoFra'
           },
           {
             text: 'Type',
             value: '_type'
-          },
-          {
-            text: 'Bruksnavn',
-            value: 'unit.bruksnavn'
           },
           {
             text: 'Andel',

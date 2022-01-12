@@ -38,21 +38,21 @@ const store = new Vuex.Store({
     isShowGuideModal: false,
     dispatches: undefined,
     templates: undefined,
-    loading: undefined,
+    loadingModal: undefined,
   },
   mutations: {
     setModalError (state, error) {
       state.modalError = error;
     },
-    setLoadingModal (state, loading) {
-      if(!loading) return;
-      if(!loading.title) loading.title = 'Laster';
-      if(!loading.message) loading.message = 'Dette kan ta noen sekunder'
+    setLoadingModal (state, loadingModal) {
+      if(!loadingModal) return;
+      if(!loadingModal.title) loadingModal.title = 'Laster';
+      if(!loadingModal.message) loadingModal.message = 'Dette kan ta noen sekunder'
       
-      Vue.set(state, 'loading', loading);
+      Vue.set(state, 'loadingModal', loadingModal);
     },
     resetLoadingModal (state) {
-      state.loading = false;
+      state.loadingModal = false;
     },
     setPreviewPDF(state, pdfBase64) {
       state.previewPDFBase64 = pdfBase64
@@ -354,7 +354,8 @@ const store = new Vuex.Store({
 
         // Set the authorization header
         request.headers.authorization = `Bearer ${Vue.prototype.$accessToken.accessToken}`;
-        
+        console.log('== Making matrikkel request ==');
+        console.log(request);
         // Make request
         const response = await axios.request(request);
 
