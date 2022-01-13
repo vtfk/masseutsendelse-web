@@ -82,7 +82,6 @@ const store = new Vuex.Store({
         // Define the data to send
         let requestData = {
           preview: true,
-          attachments: req.attachments,
           template: req.template.template,
           documentDefinitionId: req.template.documentDefinitionId,
           data: data

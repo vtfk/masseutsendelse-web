@@ -27,18 +27,18 @@
       </div>
       <div v-else class="centeredColumn" style="margin-top: 1rem; width: 100%; max-width: 1200px;">
         <!-- Cards som viser stats om informasjonen -->
-        <StatCards :items="statItems"/>
+        <StatCards v-if="statsCards" :items="statsCards"/>
         <!-- Matrikkel eiere -->
         <div style="width: 100%;">
-          <h2>Eiere / Mottakere</h2>
+          <h2 style="margin-bottom: 0.5rem">Eiere / Mottakere</h2>
           <MatrikkelOwnerTable :items="dispatch.owners" item-key="id" @excludeOwner="(e) => excludeOwner(e)" />
         </div>
         <div v-if="dispatch.excludedOwners" style="width: 100%;">
-          <h2>Ekskluderte mottakere</h2>
+          <h2 style="margin-bottom: 0.5rem">Ekskluderte mottakere</h2>
           <MatrikkelOwnerTable type="excluded" :items="dispatch.excludedOwners" item-key="id" @includeOwner="(e) => includeOwner(e)" />
         </div>
         <div v-if="dispatch.matrikkelUnitsWithoutOwners" style="width: 100%;">
-          <h2>Matrikkelenheter uten eierforhold</h2>
+          <h2 style="margin-bottom: 0.5rem">Matrikkelenheter uten eierforhold</h2>
           <v-data-table :headers="missingOwnersTableHeaders" :items="dispatch.matrikkelUnitsWithoutOwners" :items-per-page="5" item-key="id.value" class="shadow" />
         </div>
         <div v-if="mode === 'new'" class="centeredColumn">
@@ -274,8 +274,6 @@
         initialDispatchStatus: undefined,
         // The file provided by the fileuploader
         uploadedFile: undefined,
-        // The genereated statistics from the MatrikkelAPI
-        statItems: [],
         // The templates received from the API
         templates: [],
         // The selected template in the template picker
@@ -330,6 +328,17 @@
         if(this.mode === 'new' && (!this.isDispatchApproved || !this.isMatrikkelApproved)) return false;
         return true;
       },
+      statsCards() {
+        if(!this.dispatch.stats) return undefined;
+        
+        let cards = [];
+        if(this.dispatch.stats.affectedCount) cards.push({ text: 'Enheter', value: this.dispatch.stats.affectedCount });
+        if(this.dispatch.stats.totalOwners ) cards.push({ text: 'Alle eiere', value: this.dispatch.stats.totalOwners });
+        if(this.dispatch.stats.businessOwners) cards.push({ text: 'Juridiske eiere', value: this.dispatch.stats.businessOwners });
+        if(this.dispatch.stats.privateOwners) cards.push({ text: 'Private eiere', value: this.dispatch.stats.privateOwners });
+
+        return cards;
+      }
     },
     methods: {
       reInitialState() {
@@ -372,8 +381,6 @@
               },
               // The file provided by the fileuploader
               uploadedFile: undefined,
-              // The genereated statistics from the MatrikkelAPI
-              statItems: [],
               // The templates received from the API
               // Templates will not reload if you press the "Angre" or "Start på nytt" button, 
               // therefore we will not reset the templates array.
@@ -414,7 +421,6 @@
 
         // Data
         this.uploadedFile = undefined;
-        this.statItems = [];
         this.error = undefined;
       },
       async getDataFromMatrikkelAPI() {
@@ -661,39 +667,6 @@
           this.dispatch.stats.totalOwners = retreivedOwners.length;
           // this.dispatch.stats.area = this.dispatch.polygons.area;
 
-          /*
-            Legg til stat cards
-          */
-          this.statItems.push({ text: 'Enheter', value: this.dispatch.stats.affectedCount })
-          this.statItems.push({ text: 'Unike eiere', value: retreivedOwners.length })
-          this.statItems.push({ text: 'Juridiske eiere', value: juridiskeEiere.length })
-          this.statItems.push({ text: 'Private eiere', value: this.dispatch.stats.privateOwners })
-          // if(this.dispatch.stats.area > 1000) {
-          //   this.statItems.push({ text: 'Areal', value: Math.round(this.dispatch.stats.area / 1000), postvalue: ' KM²'})
-          // } else {
-          //   this.statItems.push({ text: 'Areal', value: Math.round(this.dispatch.stats.area), postvalue: ' M²'})
-          // }
-
-          // retreivedMatrikkelUnits.forEach((enhet) => {
-          //   // Hent ut generell informasjon om matrikkel enheten som skal lagres i databasen
-          //   let matrikkelUnit = {
-          //     id: enhet.id,
-          //     type: enhet.type,
-          //     bruksnavn: enhet.bruksnavn,
-          //     bruksnummer: enhet.bruksnummer,
-          //     gardsnummer: enhet.gardsnummer,
-          //     festenummer: enhet.festenummer,
-          //     kommuneId: enhet.kommuneId,
-          //     utgatt: enhet.utgatt,
-          //     antallEiere: 1
-          //   }
-          //   // Kalkuler antall eiere
-          //   if(enhet.eierforhold && Array.isArray(enhet.eierforhold)) {
-          //     matrikkelUnit.antallEiere = enhet.eierforhold.length;
-          //   }
-          //   this.dispatch.stats.units.push(matrikkelUnit);
-          // })
-
           if(!this.dispatch.matrikkelEnheter) this.dispatch.matrikkelEnheter = [];
           if(!this.dispatch.excludedOwners) this.dispatch.excludedOwners = [];
           this.dispatch.owners.push(...ownerCentric);
@@ -734,7 +707,6 @@
           // Wait till complete
           reader.onloadend = function(e) {
             content = e.target.result;
-            // const result = content.split(/\r\n|\n/);
             resolve(content);
           };
           // Make sure to handle error states
