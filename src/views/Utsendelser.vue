@@ -183,7 +183,7 @@ import DispatchEditor from '../components/DispatchEditor.vue';
           {text: 'Status', value: 'status'},
           {text: 'Oppretshaver', value: 'createdBy'},
           {text: 'Behandlet av', value: 'approvedBy'},
-          {text: 'Handlinger', value: 'handlinger', sortable:false}
+          {text: 'Handlinger', value: 'handlinger', sortable:false, width: '140px'}
         ],
         select: {status_valg: '', status_value: ''},
         items: [

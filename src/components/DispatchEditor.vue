@@ -860,16 +860,6 @@
       this.onTemplateDataChanged();
 
       this.loadTemplates();
-    },
-    watch: {
-      // This will trigger any time something on the dispatch object has changed
-      dispatch: {
-        handler: function() {
-          // Check if all necessary template data is filled in
-          this.determineIfTemplateIsOk();
-        },
-        deep: true
-      }
     }
   }
 </script>
