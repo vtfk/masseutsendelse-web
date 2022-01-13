@@ -95,7 +95,7 @@ const store = new Vuex.Store({
 
         // Define the requiest
         const request = {
-          url: 'https://api.vtfk.dev/pdf/v1/generatev2',
+          url: config.VTFK_PDFGENERATOR_ENDPOINT,
           method: 'post',
           data: requestData,
         }
