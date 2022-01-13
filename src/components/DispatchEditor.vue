@@ -54,6 +54,12 @@
           <h1>Masseutsendelse</h1>
           <DispatchStatusSelect class="centeredColumn" v-if="mode === 'edit'" v-model="dispatch.status" :disabled="isLocked"/>
           <!-- En input for prosjekt navn, en for prosjekt nr -->
+          <v-btn v-if="dispatch.archiveUrl" @click="openUrl(dispatch.archiveUrl)" style="justify-self: flex-start; align-self: start;">
+            <v-icon right dark>
+              mdi-file-cabinet
+            </v-icon>
+            Åpne arkiv
+          </v-btn>
           <VTextField 
             v-model="dispatch.title"
             :disabled="isReadOnly"
@@ -422,6 +428,10 @@
         // Data
         this.uploadedFile = undefined;
         this.error = undefined;
+      },
+      openUrl(url) {
+        if(!url) return;
+        window.open(url, '_blank');
       },
       async getDataFromMatrikkelAPI() {
         try {

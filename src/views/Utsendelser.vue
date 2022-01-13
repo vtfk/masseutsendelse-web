@@ -82,6 +82,19 @@
               </template>
               Se Kart
             </v-tooltip>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon :disabled="!item.archiveUrl" v-bind="attrs" v-on="on">
+                  <v-icon
+                    medium
+                    @click="onOpenArchiveUrl(item.archiveUrl)"
+                  >
+                    mdi-file-cabinet
+                  </v-icon>
+                </v-btn>
+              </template>
+              Se arkiv
+            </v-tooltip>
           </template>
           <v-alert type="error" class="tableNoResult" rounded="xl" slot="no-results" :value="true" color="#EB8380">
             Vi klarte ikke å finne noe i tabellen som matcher "{{ search }}". 
@@ -183,7 +196,7 @@ import DispatchEditor from '../components/DispatchEditor.vue';
           {text: 'Status', value: 'status'},
           {text: 'Oppretshaver', value: 'createdBy'},
           {text: 'Behandlet av', value: 'approvedBy'},
-          {text: 'Handlinger', value: 'handlinger', sortable:false, width: '140px'}
+          {text: 'Handlinger', value: 'handlinger', sortable:false, width: '180px'}
         ],
         select: {status_valg: '', status_value: ''},
         items: [
@@ -266,6 +279,10 @@ import DispatchEditor from '../components/DispatchEditor.vue';
       onOpenMap(item){
         this.editedItem = item;
         this.isShowMap = true
+      },
+      onOpenArchiveUrl(url) {
+        if(!url) return;
+        window.open(url, '_blank');
       },
       async previewPDF(item) {
         // Input validation
