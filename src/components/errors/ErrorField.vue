@@ -83,7 +83,7 @@
           if(!Array.isArray(this.$props.error.response.data.errors)) return [this.$props.error.response.data.errors];
           return this.$props.error.response.data.errors;
         }
-        return undefined;
+        return this.$props.error.errors;
       },
       stack() {
         if(!this.$props.error) return '';

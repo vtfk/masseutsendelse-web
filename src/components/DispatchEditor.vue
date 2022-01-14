@@ -128,7 +128,7 @@
           <div class="centeredColumn" style="margin-top: 1rem">
             <VTFKButton
               class="mt-1"
-              :disabled="!isRequiredTemplateDataFilledIn"
+              :disabled="!dispatch.template || dispatch.template.template == undefined || !isRequiredTemplateDataFilledIn"
               :passedProps="{onClick: () => { previewPDF() }}">Se forhåndsvisning
             </VTFKButton>
           </div>
