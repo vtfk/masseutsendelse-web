@@ -238,23 +238,21 @@ import DispatchEditor from '../components/DispatchEditor.vue';
         }
       },
       customSearch (value, search, item) {
-        let preFormatItem = JSON.stringify(item)
-        let formatedItem = JSON.parse(preFormatItem) 
-        let formatStatus = this.translateStatus(formatedItem.status)
-        let formatDate = this.formatDateString(formatedItem.createdTimestamp)
-      
-        formatedItem.createdTimestamp = formatDate
-        formatedItem.status = formatStatus
-      
-        const formatedItemsKeys = Object.keys(formatedItem)
-        const isMatch = formatedItemsKeys.some(key => formatedItem[key].toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1 )
+        // Make a copy of the item to not modify the original
+        let formatedItem = JSON.parse(JSON.stringify(item)) 
+        
+        // Transform some fields to what they will be displayed as to the user
+        formatedItem.status = this.translateStatus(formatedItem.status)
+        formatedItem.createdTimestamp = this.formatDateString(formatedItem.createdTimestamp)
+        formatedItem.modifiedTimestamp = this.formatDateString(formatedItem.modifiedTimestamp)
+        formatedItem.approvedTimestamp = this.formatDateString(formatedItem.approvedTimestamp)
 
-        return (
-          value != null &&
-          search != null &&
-          typeof value === 'string' &&
-          (value.toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1 || isMatch)
-        )
+        // Attempt to find data that matches the search-test
+        for(const key of Object.keys(formatedItem)) {
+          if(!key || !formatedItem[key]) continue;
+          if(formatedItem[key].toString().toUpperCase().includes(search.toUpperCase())) return true;
+        }
+        return false;
       },
       async loadDataBase() {
         try {

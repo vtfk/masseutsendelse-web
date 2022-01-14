@@ -86,6 +86,17 @@
               <span class="required"><strong>* </strong></span>Prosjektnummer
             </template>
           </VTextField>
+          <VTextField
+            v-model="dispatch.caseworker"
+            label="Navn på saksbehandler"
+            :disabled="isReadOnly"
+            hint="Navn på saksbehandleren som vises i headeren på brevet"
+            style="max-width: 750px; width: 100%;"
+          >
+            <template #label>
+              <span class="required"><strong>* </strong></span>Saksbehandler
+            </template>
+          </VTextField>
           <VTextField 
             v-model="dispatch.archivenumber"
             :disabled="isReadOnly"
@@ -330,6 +341,7 @@
       },
       isReadyToSave() {
         if(this.isReadOnly) return false;
+        if(!this.dispatch.caseworker) return false;
         if(!this.isRequiredTemplateDataFilledIn || !this.dispatch.title || !this.dispatch.projectnumber || !this.dispatch.archivenumber) return false;
         if(this.mode === 'new' && (!this.isDispatchApproved || !this.isMatrikkelApproved)) return false;
         return true;
@@ -824,6 +836,11 @@
         this.selectedTemplateSchema = undefined;
         this.dispatch.template = {};
       },
+      onUpdateCaseworker(e) {
+        console.log('Updating caseworker');
+        console.log(e);
+        this.dispatch.caseworker = e;
+      },
       async loadTemplates() {
         this.isLoadingTemplates = true;
 
@@ -859,7 +876,7 @@
         }
 
         // Request the PDF preview
-        this.$store.dispatch('getPDFPreview', { ...this.dispatch, preview: true })
+        this.$store.dispatch('getPDFPreview', { ...this.dispatch, 'our-caseworker': this.dispatch.caseworker, preview: true })
       }
     },
     created() {
