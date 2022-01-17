@@ -89,6 +89,13 @@ export default {
     convertDataToDataUrl: {
       type: Boolean,
       default: true
+    },
+    allowedExtensions: {
+      type: Array
+    },
+    maxFilenameLength: {
+      type: Number,
+      default: 50
     }
   },
   data() {
@@ -142,10 +149,25 @@ export default {
       if(this.$props.value) tmpFiles = JSON.parse(JSON.stringify(this.$props.value));
       else if(this.$props.files) tmpFiles = JSON.parse(JSON.stringify(this.$props.files));
 
+      let uploadedCounter = 0;
       for(const file of files) {
         // Check if the file already exists, if so should it be overwritten?
         const existingIndex = tmpFiles.findIndex((i) => i.name === file.name);
         if(existingIndex > -1 && !confirm(`The file ${file.name} already exist, do you want to overwrite?`)) continue;
+
+        if(file.name.length > this.$props.maxFilenameLength) {
+          alert(`Filename cannot be longer than ${this.$props.maxFilenameLength} characters`);
+          continue;
+        }
+
+        // Check if the filetype is an allowed filextension
+        if(this.$props.allowedExtensions && Array.isArray(this.$props.allowedExtensions)) {
+          const lowerCaseAllowedExtensions = this.$props.allowedExtensions.map((ext) => ext.toLowerCase())
+          if(!file.name.includes('.') || !lowerCaseAllowedExtensions.includes(file.name.substring(file.name.lastIndexOf('.') + 1).toLowerCase())) {
+            alert(`${file.name} is not an allowed filetype`);
+            continue;
+          }
+        }
 
         // Read the file
         let data = '';
@@ -163,10 +185,13 @@ export default {
         
         if(existingIndex > -1) tmpFiles[existingIndex] = fileObject;
         else tmpFiles.push(fileObject);
+        uploadedCounter++;
       }
       
       // Reset dragged over
       this.isDropAreaDraggedOver = false;
+      // If no files was uploaded, don't emit that it was
+      if(uploadedCounter === 0) return;
       // Emit the uploaded filedata to the parent
       this.$emit('uploaded', tmpFiles);
       // Update the v-model

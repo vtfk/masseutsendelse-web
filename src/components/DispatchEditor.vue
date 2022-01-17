@@ -7,7 +7,7 @@
     <!-- Fil opplasting -->
     <div v-else-if="mode === 'new' && (!dispatch.polygons || !dispatch.polygons.polygons || dispatch.polygons.polygons.length === 0)">
       <h2>Last opp polygonet</h2>
-      <UploadField v-on:uploaded="(files) => parseFiles(files)" :convertDataToDataUrl="false"/>
+      <UploadField v-on:uploaded="(files) => parseFiles(files)" :convertDataToDataUrl="false" :allowedExtensions="['dxf', 'kml']"/>
     </div>
     <div v-else-if="isParsingFile" class="centeredColumn">
       <Loading title="Filen behandles" message="Dette kan ta noen sekunder" />
@@ -90,7 +90,7 @@
             v-model="dispatch.archivenumber"
             :disabled="isReadOnly"
             placeholder="Angi et nummer"
-            hint="Angi et nummer"
+            hint="Angi et saksnummer som allerede eksiterer i P360"
             label="Arkivnummer"
             :required="true"
             style="max-width: 750px; width: 100%;"
@@ -124,7 +124,7 @@
             />
           </div>
           <h3 style="margin-bottom: 0.2rem">Vedlegg</h3>
-          <upload-field v-model="dispatch.attachments" :disabled="isReadOnly" style="width: 100%" :downloadBaseUrl="`${$config.MASSEUTSENDELSEAPI_BASEURL}blobs/${dispatch._id}/`" />
+          <upload-field v-model="dispatch.attachments" :disabled="isReadOnly" style="width: 100%" :downloadBaseUrl="`${$config.MASSEUTSENDELSEAPI_BASEURL}blobs/${dispatch._id}/`" :allowedExtensions="['pdf', 'xlsx', 'xls', 'rtf', 'msg', 'ppt', 'pptx', 'docx', 'doc', 'png', 'jpg', 'jpeg']" />
           <div class="centeredColumn" style="margin-top: 1rem">
             <VTFKButton
               class="mt-1"
@@ -728,6 +728,7 @@
       },
       async parseFiles(files) {
         try {
+          if(!files || !Array.isArray(files) || files.length === 0) return;
           this.uploadedFile = files;
           this.isParsingFile = true;
           let polygons = await PolyParser.parse(files[0], { inverseXY: true });
