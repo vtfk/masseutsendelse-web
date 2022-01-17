@@ -99,6 +99,16 @@
               <span class="required"><strong>* </strong></span>Arkivnummer
             </template>
           </VTextField>
+          <VTextField
+            :value="templateParagraph"
+            label="Paragraf"
+            placeholder="Hvis utsendelsen skal untas offentligheten legg inn paragrafen"
+            hint="Hvis utsendelsen skal untas offentligheten legg inn paragrafen"
+            :disabled="isReadOnly"
+            @input="(e) => updateParagraph(e)"
+            style="max-width: 750px; width: 100%;"
+          >
+          </VTextField>
           <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; width: 100%; max-width: 750px;">
             <VSelect
               label="Velg mal"
@@ -344,6 +354,10 @@
         if(this.dispatch.stats.privateOwners) cards.push({ text: 'Private eiere', value: this.dispatch.stats.privateOwners });
 
         return cards;
+      },
+      templateParagraph() {
+        // Not the pretties solution, but just had to get it done
+        return this.dispatch.template?.data?.info?.paragraph || undefined
       }
     },
     methods: {
@@ -412,6 +426,11 @@
               // Is the dispatch approved to be sent inn?
               isDispatchApproved: false,
         }
+      },
+      updateParagraph(text) {
+        if(!this.dispatch.template.data) this.dispatch.template.data = {};
+        if(!this.dispatch.template.data.info) this.dispatch.template.data.info = {};
+        this.dispatch.template.data.info.paragraph = text;
       },
       reset(force = false) {
         // Validation
@@ -787,9 +806,9 @@
         let templateData = Sjablong.createObjectFromSchema(this.selectedTemplateSchema, false);
 
         // If the template already have data, attempt to overwrite the templateData with them
-        if(this.dispatch.template && this.dispatch.template.data) {
+        if(this.dispatch.template?.data) {
           // Get all the properties that exists in the schema
-          const matchingKeys = pick(this.dispatch.template.data, Object.keys(templateData));
+          const matchingKeys = pick(this.dispatch.template.data, [...Object.keys(templateData), 'info']);
           // Overwrite templatedata with the matching information in the matching keys
           templateData = merge(templateData, matchingKeys);
         }
