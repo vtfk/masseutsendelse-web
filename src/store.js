@@ -80,8 +80,9 @@ const store = new Vuex.Store({
         let data = merge({attachments: req.attachments}, req.template.data)
         data = merge(data, req.template.documentData)
         data.info = {
-          'your-reference': req.archivenumber,
-          'our-caseworker': req.caseworker
+          'sector': req.createdByDepartment,
+          'our-reference': req.archivenumber,
+          'our-caseworker': req.createdBy
         }
 
         // Define the data to send
