@@ -855,7 +855,7 @@
         }
 
         // Attempt to match template with the dispatch, if applicable
-        if(this.dispatch.template) {
+        if(this.dispatch.template?.template) {
           let sameTemplate = this.$store.state.templates.find((t) => t._id === this.dispatch.template._id)
           if(sameTemplate) this.onTemplateChanged(sameTemplate);
           else this.onTemplateChanged(this.dispatch.template);
