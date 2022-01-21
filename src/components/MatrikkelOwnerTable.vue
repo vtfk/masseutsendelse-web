@@ -24,13 +24,14 @@
       <v-btn 
         v-if="$props.type === 'included'"
         icon
+        :disabled="$props.disableinputs"
         @click="excludeOwner(item)"
       >
         <v-icon>mdi-minus-circle-outline</v-icon>
       </v-btn>
       <v-btn 
         v-if="$props.type === 'excluded'"
-        :disabled="item.isHardExcluded"
+        :disabled="$props.disableinputs || item.isHardExcluded"
         icon
         @click="includeOwner(item);"
       >
@@ -75,6 +76,10 @@
       },
       items: {
         type: Array
+      },
+      disableinputs: {
+        type: Boolean,
+        default: false
       },
       'item-key': {
         type: [String, Number],
