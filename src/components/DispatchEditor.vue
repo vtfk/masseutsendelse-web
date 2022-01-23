@@ -114,7 +114,7 @@
               label="Velg mal"
               placeholder="Velg mal"
               :disabled="isReadOnly"
-              :value="dispatch.template"
+              :value="getMatchingTemplate()"
               :items="this.templates"
               item-text="name"
               item-value="_id"
@@ -793,7 +793,8 @@
           }
           if(this.$route.path && this.$route.path.toLowerCase() !== '/utsendelser') this.$router.push('Utsendelser');
         } catch(err) {
-          this.error = err;
+          console.log('Error while saving dispatch');
+          console.log(err);
         }
         this.isLoading = false
         this.$emit('saved');
@@ -837,6 +838,15 @@
       },
       onTemplateDataChanged() {
         this.determineIfTemplateIsOk();
+      },
+      getMatchingTemplate() {
+        if(!this.dispatch.template?._id) return undefined;
+        if(!this.templates) return undefined;
+
+        let match = this.templates.find((t) => t._id === this.dispatch.template._id);
+
+        if(match) return match;
+        return undefined;
       },
       onRemoveTemplate() {
         if(!confirm('Er du helt sikker på at du vil fjerne malen?')) return;

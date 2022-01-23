@@ -79,7 +79,7 @@ const store = new Vuex.Store({
         // Merge data
         let data = merge({attachments: req.attachments}, req.template.data)
         data = merge(data, req.template.documentData)
-        console.log(Vue.prototype.$accessToken);
+
         data = merge(data, {
           info: {
             'sector': req.createdByDepartment || Vue.prototype.$accessToken?.idTokenClaims?.department,
@@ -362,8 +362,7 @@ const store = new Vuex.Store({
 
         // Set the authorization header
         request.headers.authorization = `Bearer ${Vue.prototype.$accessToken.accessToken}`;
-        console.log('== Making matrikkel request ==');
-        console.log(request);
+
         // Make request
         const response = await axios.request(request);
 
