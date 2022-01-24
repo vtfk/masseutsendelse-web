@@ -673,6 +673,16 @@
                 excludedReason = 'Forhåndsekskludert';
               }
 
+              if(owner.avviklet) {
+                excludedReason = 'Firma er avviklet'
+                owner.isHardExcluded = true;
+              }
+
+              if(owner._type?.toLowerCase().includes('juridisk') && !owner.brreg) {
+                excludedReason = 'Finnes ikke i Brønnøysund'
+                owner.isHardExcluded = true;
+              }
+
               if(excludedReason) {
                 owner.exclusionReason = excludedReason;
                 excludedOwners.push(owner);
