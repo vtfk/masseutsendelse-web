@@ -31,11 +31,11 @@
         <!-- Matrikkel eiere -->
         <div style="width: 100%;">
           <h2 style="margin-bottom: 0.5rem">Eiere / Mottakere</h2>
-          <MatrikkelOwnerTable :items="dispatch.owners" item-key="id" @excludeOwner="(e) => excludeOwner(e)" />
+          <MatrikkelOwnerTable :items="dispatch.owners" :disableinputs="isReadOnly" item-key="id" @excludeOwner="(e) => excludeOwner(e)" />
         </div>
         <div v-if="dispatch.excludedOwners" style="width: 100%;">
           <h2 style="margin-bottom: 0.5rem">Ekskluderte mottakere</h2>
-          <MatrikkelOwnerTable type="excluded" :items="dispatch.excludedOwners" item-key="id" @includeOwner="(e) => includeOwner(e)" />
+          <MatrikkelOwnerTable type="excluded" :items="dispatch.excludedOwners" :disableinputs="isReadOnly" item-key="id" @includeOwner="(e) => includeOwner(e)" />
         </div>
         <div v-if="dispatch.matrikkelUnitsWithoutOwners" style="width: 100%;">
           <h2 style="margin-bottom: 0.5rem">Matrikkelenheter uten eierforhold</h2>
@@ -114,7 +114,7 @@
               label="Velg mal"
               placeholder="Velg mal"
               :disabled="isReadOnly"
-              :value="dispatch.template"
+              :value="getMatchingTemplate()"
               :items="this.templates"
               item-text="name"
               item-value="_id"
@@ -379,6 +379,7 @@
                 matrikkelEnheter: undefined,
                 owners: [],
                 excludeOwners: [],
+                matrikkelUnitsWithoutOwners: [],
                 stats: {
                   affectedCount: null,
                   area: null,
@@ -792,7 +793,8 @@
           }
           if(this.$route.path && this.$route.path.toLowerCase() !== '/utsendelser') this.$router.push('Utsendelser');
         } catch(err) {
-          this.error = err;
+          console.log('Error while saving dispatch');
+          console.log(err);
         }
         this.isLoading = false
         this.$emit('saved');
@@ -836,6 +838,15 @@
       },
       onTemplateDataChanged() {
         this.determineIfTemplateIsOk();
+      },
+      getMatchingTemplate() {
+        if(!this.dispatch.template?._id) return undefined;
+        if(!this.templates) return undefined;
+
+        let match = this.templates.find((t) => t._id === this.dispatch.template._id);
+
+        if(match) return match;
+        return undefined;
       },
       onRemoveTemplate() {
         if(!confirm('Er du helt sikker på at du vil fjerne malen?')) return;

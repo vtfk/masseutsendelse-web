@@ -194,8 +194,8 @@ import DispatchEditor from '../components/DispatchEditor.vue';
           {text: 'Prosjekt Nr', value: 'projectnumber'},
           {text: 'Dato', value: 'createdTimestamp'},
           {text: 'Status', value: 'status'},
-          {text: 'Oppretshaver', value: 'createdBy'},
-          {text: 'Behandlet av', value: 'approvedBy'},
+          {text: 'Saksbehandler', value: 'createdBy'},
+          {text: 'Godkjent av', value: 'approvedBy'},
           {text: 'Handlinger', value: 'handlinger', sortable:false, width: '180px'}
         ],
         select: {status_valg: '', status_value: ''},
