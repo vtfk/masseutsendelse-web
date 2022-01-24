@@ -74,13 +74,26 @@
                 <v-btn icon v-bind="attrs" v-on="on">
                   <v-icon
                     medium
-                    @click="openMap(item)"
+                    @click="onOpenMap(item)"
                   >
                     mdi-map-search 
                   </v-icon>
                 </v-btn>
               </template>
               Se Kart
+            </v-tooltip>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon :disabled="!item.archiveUrl" v-bind="attrs" v-on="on">
+                  <v-icon
+                    medium
+                    @click="onOpenArchiveUrl(item.archiveUrl)"
+                  >
+                    mdi-file-cabinet
+                  </v-icon>
+                </v-btn>
+              </template>
+              Se arkiv
             </v-tooltip>
           </template>
           <v-alert type="error" class="tableNoResult" rounded="xl" slot="no-results" :value="true" color="#EB8380">
@@ -92,10 +105,10 @@
     <!-- MODALER/DIALOGER -->
       <!-- Edit dialog -->
       <v-dialog
-        v-if="editedItem"
+        v-if="isEditingItem && editedItem"
         :value="true"
         width="80%"
-        @click:outside="editedItem = undefined"
+        @click:outside="isEditingItem = false; editedItem = undefined"
       >
         <v-card>
           <v-card-title>
@@ -108,8 +121,8 @@
       </v-dialog>
       <!-- Map dialog -->
       <v-dialog
-        v-if="dialogMap"
-        v-model="dialogMap"
+        v-if="isShowMap && editedItem"
+        v-model="isShowMap"
         width="60%"
       >
         <v-card>
@@ -117,12 +130,12 @@
             Kart
           </v-card-title>
           <v-card-text>
-            <Map :polygons="selectedDispatch.polygons" height="60vh" />
+            <Map :polygons="editedItem.polygons" height="60vh" />
           </v-card-text>
           <v-card-actions style="display:flex; gap:1rem;" class="centerbtn">
             <VTFKButton 
               type='secondary' size='small' style="padding-bottom: 1rem;"
-              :passedProps="{ onClick: () => [dialogMap = false] }"
+              :passedProps="{ onClick: () => [isShowMap = false] }"
               >Lukk
             </VTFKButton>
           </v-card-actions>
@@ -151,7 +164,6 @@ import { Button } from '@vtfk/components'
 import Loading from '../components/Loading.vue';
 import Map from '../components/Map.vue';
 import DispatchEditor from '../components/DispatchEditor.vue';
-import AppError from '../lib/vtfk-errors/AppError';
 
   export default {
     name: 'UtsendelserView',
@@ -168,9 +180,9 @@ import AppError from '../lib/vtfk-errors/AppError';
         editedItem: undefined,
         search: '',
         dialogEdit: false,
-        dialogMap:false,
+        isEditingItem: false,
+        isShowMap:false,
         loading:false,
-        selectedDispatch: undefined,
         alert_success: false,
         headers: [
           {
@@ -183,8 +195,8 @@ import AppError from '../lib/vtfk-errors/AppError';
           {text: 'Dato', value: 'createdTimestamp'},
           {text: 'Status', value: 'status'},
           {text: 'Oppretshaver', value: 'createdBy'},
-          {text: 'Behandlet av', value: 'modifiedBy'},
-          {text: 'Handlinger', value: 'handlinger', sortable:false}
+          {text: 'Behandlet av', value: 'approvedBy'},
+          {text: 'Handlinger', value: 'handlinger', sortable:false, width: '180px'}
         ],
         select: {status_valg: '', status_value: ''},
         items: [
@@ -226,23 +238,21 @@ import AppError from '../lib/vtfk-errors/AppError';
         }
       },
       customSearch (value, search, item) {
-        let preFormatItem = JSON.stringify(item)
-        let formatedItem = JSON.parse(preFormatItem) 
-        let formatStatus = this.translateStatus(formatedItem.status)
-        let formatDate = this.formatDateString(formatedItem.createdTimestamp)
-      
-        formatedItem.createdTimestamp = formatDate
-        formatedItem.status = formatStatus
-      
-        const formatedItemsKeys = Object.keys(formatedItem)
-        const isMatch = formatedItemsKeys.some(key => formatedItem[key].toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1 )
+        // Make a copy of the item to not modify the original
+        let formatedItem = JSON.parse(JSON.stringify(item)) 
+        
+        // Transform some fields to what they will be displayed as to the user
+        formatedItem.status = this.translateStatus(formatedItem.status)
+        formatedItem.createdTimestamp = this.formatDateString(formatedItem.createdTimestamp)
+        formatedItem.modifiedTimestamp = this.formatDateString(formatedItem.modifiedTimestamp)
+        formatedItem.approvedTimestamp = this.formatDateString(formatedItem.approvedTimestamp)
 
-        return (
-          value != null &&
-          search != null &&
-          typeof value === 'string' &&
-          (value.toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1 || isMatch)
-        )
+        // Attempt to find data that matches the search-test
+        for(const key of Object.keys(formatedItem)) {
+          if(!key || !formatedItem[key]) continue;
+          if(formatedItem[key].toString().toUpperCase().includes(search.toUpperCase())) return true;
+        }
+        return false;
       },
       async loadDataBase() {
         try {
@@ -252,19 +262,25 @@ import AppError from '../lib/vtfk-errors/AppError';
         }
       },
       async editItem1 (item) {
-        this.$set(this, 'selectedDispatch', item)
+        this.$store.commit('setLoadingModal',{title: 'Laster utsendelsen'});
         try {
           let dispatchEdit = await this.$store.dispatch('getDispatchesById', item._id)
-          this.editItem = dispatchEdit;
           this.editedItem = dispatchEdit;
-          this.dialogEdit = true
-        }catch {
-          new AppError('Kunne ikke åpne utsendelsen', 'Klarte ikke å avgjøre hvordan utsendelsen skulle åpnes')
+          this.isEditingItem = true;
+          this.$store.commit('resetLoadingModal');
+        } catch (err) {
+          this.$store.commit('resetLoadingModal');
+          this.isEditingItem = false;
+          this.error = err;
         }
       },
-      openMap(item){
-        this.$set(this, 'selectedDispatch', item)
-        this.dialogMap = true
+      onOpenMap(item){
+        this.editedItem = item;
+        this.isShowMap = true
+      },
+      onOpenArchiveUrl(url) {
+        if(!url) return;
+        window.open(url, '_blank');
       },
       async previewPDF(item) {
         // Input validation

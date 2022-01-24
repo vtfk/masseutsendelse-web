@@ -33,25 +33,6 @@ proj4.defs([
 /*
   Support functions
 */
-// async function readFile(file) {
-//   // Always return a Promise
-//   return new Promise((resolve, reject) => {
-//     let content = '';
-//     const reader = new FileReader();
-//     // Wait till complete
-//     reader.onloadend = function(e) {
-//       content = e.target.result;
-//       // const result = content.split(/\r\n|\n/);
-//       resolve(content);
-//     };
-//     // Make sure to handle error states
-//     reader.onerror = function(e) {
-//       reject(e);
-//     };
-//     reader.readAsText(file);
-//   });
-// }
-
 function copy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
@@ -123,7 +104,6 @@ class PolyParser {
       default:
         throw new AppError('Could not parse', `We were unable to find a parser for filetype '${extension}'`);
     }
-
     // Make sure that we got valid data back
     if(!parsedData || !Array.isArray(parsedData) || parsedData.length === 0) throw new AppError('Unable to parse file', 'We attempted to parse the file but could not find any data');
 
@@ -133,7 +113,7 @@ class PolyParser {
 
     // Attempt to determine the EPSG code and data direction
     const EPSG = this.guessEPSGCodeAndOrder(parsedData[0].vertices[0]);
-    if(!EPSG.code) throw new AppError('Unsupported coordinate system', 'Could not determine the coordinate system based on the coordinates', [parsedData.polygons[0].vertices [0]]);
+    if(!EPSG || !EPSG.code) throw new AppError('Unsupported coordinate system', 'Could not determine the coordinate system based on the coordinates', [`First coordinate [${parsedData[0].vertices[0]}]`]);
     returnObj.EPSG = EPSG.code;
 
     parsedData.forEach((polygon) => {

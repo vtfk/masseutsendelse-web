@@ -7,12 +7,15 @@ import axios from 'axios';
 import AppError from './lib/vtfk-errors/AppError';
 import config from '../config';
 import merge from 'lodash.merge';
+import * as Sentry from '@sentry/vue';
 
 // Configure vue to use Vuex
 Vue.use(Vuex)
 
-console.log('== Configuration ==');
-console.log(config);
+if(process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+  console.log('== Configuration ==');
+  console.log(config);
+}
 
 /*
   Functions
@@ -35,28 +38,21 @@ const store = new Vuex.Store({
     isShowGuideModal: false,
     dispatches: undefined,
     templates: undefined,
-    loading: undefined,
+    loadingModal: undefined,
   },
   mutations: {
     setModalError (state, error) {
-      let err = error;
-      // Unpack the error object
-      Object.getOwnPropertyNames(err).forEach((key) => {
-        err[key] = error[key];
-      })
-
-      if(error.response && error.response.data) err = err.response.data;
-      state.modalError = err;
+      state.modalError = error;
     },
-    setLoadingModal (state, loading) {
-      if(!loading) return;
-      if(!loading.title) loading.title = 'Laster';
-      if(!loading.message) loading.message = 'Dette kan ta noen sekunder'
+    setLoadingModal (state, loadingModal) {
+      if(!loadingModal) return;
+      if(!loadingModal.title) loadingModal.title = 'Laster';
+      if(!loadingModal.message) loadingModal.message = 'Dette kan ta noen sekunder'
       
-      Vue.set(state, 'loading', loading);
+      Vue.set(state, 'loadingModal', loadingModal);
     },
     resetLoadingModal (state) {
-      state.loading = false;
+      state.loadingModal = false;
     },
     setPreviewPDF(state, pdfBase64) {
       state.previewPDFBase64 = pdfBase64
@@ -83,10 +79,17 @@ const store = new Vuex.Store({
         // Merge data
         let data = merge({attachments: req.attachments}, req.template.data)
         data = merge(data, req.template.documentData)
+        data = merge(data, {
+          info: {
+            'sector': req.createdByDepartment || Vue.prototype.$accessToken?.idTokenClaims?.department,
+            'our-reference': req.archivenumber,
+            'our-caseworker': req.createdBy || Vue.prototype.$accessToken?.name
+          }
+        })
+
         // Define the data to send
         let requestData = {
           preview: true,
-          attachments: req.attachments,
           template: req.template.template,
           documentDefinitionId: req.template.documentDefinitionId,
           data: data
@@ -99,7 +102,7 @@ const store = new Vuex.Store({
 
         // Define the requiest
         const request = {
-          url: 'https://api.vtfk.dev/pdf/v1/generatev2',
+          url: config.VTFK_PDFGENERATOR_ENDPOINT,
           method: 'post',
           data: requestData,
         }
@@ -108,6 +111,7 @@ const store = new Vuex.Store({
         context.commit('setPreviewPDF', response.data.base64);
         context.commit('resetLoadingModal');
       } catch (err) {
+        Sentry.captureException(err);
         context.commit('resetLoadingModal');
         context.commit('setModalError', err);
       }
@@ -136,6 +140,7 @@ const store = new Vuex.Store({
         context.commit('setDispatches', response.data);
         return response.data;
       } catch (err) {
+        Sentry.captureException(err);
         return Promise.reject(err)
       }
     },
@@ -159,6 +164,7 @@ const store = new Vuex.Store({
         //Return the data
         return response.data
       } catch(err) {
+        Sentry.captureException(err);
         console.log('Error opening dispatchById');
         console.log(err);
         return Promise.reject(err)
@@ -186,6 +192,7 @@ const store = new Vuex.Store({
         context.commit('setTemplates', response.data);
         return response.data;
       } catch (err) {
+        Sentry.captureException(err);
         return Promise.reject(err);
       }
     },
@@ -216,6 +223,7 @@ const store = new Vuex.Store({
         // Clear the loading modal
         context.commit('resetLoadingModal');
       } catch (err) {
+        Sentry.captureException(err);
         context.commit('resetLoadingModal');
         return Promise.reject(err);
       }
@@ -246,6 +254,7 @@ const store = new Vuex.Store({
         // Clear the loading modal
         context.commit('resetLoadingModal');
       } catch (err) {
+        Sentry.captureException(err);
         context.commit('resetLoadingModal');
         return Promise.reject(err);
       }
@@ -276,6 +285,7 @@ const store = new Vuex.Store({
         context.dispatch('getDispatches');
         return Promise.resolve();
       } catch (err) {
+        Sentry.captureException(err);
         context.commit('resetLoadingModal');
         context.commit('setModalError', err);
         return Promise.reject(err);
@@ -306,6 +316,7 @@ const store = new Vuex.Store({
         // Clear the loading modal
         context.commit('resetLoadingModal');
       } catch (err) {
+        Sentry.captureException(err);
         context.commit('setModalError', err);
         return Promise.reject(err);
       }
@@ -336,6 +347,7 @@ const store = new Vuex.Store({
         
       } catch(err) {
         context.commit('setModalError', err);
+        Sentry.captureException(err);
         return Promise.reject(err);
       }
     },
@@ -349,13 +361,15 @@ const store = new Vuex.Store({
 
         // Set the authorization header
         request.headers.authorization = `Bearer ${Vue.prototype.$accessToken.accessToken}`;
-        
+        console.log('== Making matrikkel request ==');
+        console.log(request);
         // Make request
         const response = await axios.request(request);
 
         // Return the response
         return response;
       } catch (err) {
+        Sentry.captureException(err);
         return Promise.reject(err);
       }
     }

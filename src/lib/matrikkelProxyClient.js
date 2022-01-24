@@ -71,15 +71,31 @@ export default class MatrikkelProxyClient {
     return response;
   }
 
-  async getMatrikkelEnheterFromPolygon(polygon, matrikkelContext) {
+  async getMatrikkelEnheterFromPolygon(polygon, epsg, matrikkelContext) {
     if(!polygon) { throw new ('Polygon cannot be empty'); }
     
+
+    // Translate from EPST to MatrikkelKoordinatSystemKodeId
+    if(!epsg) throw new AppError('Koordinatsystem mangler', 'Kan ikke kontakte matrikkelen uten å vite epsg-koden til koordinatene');
+
+    let koordinatsystemKodeId = undefined;
+    switch(epsg) {
+      case '4326':
+        koordinatsystemKodeId = 24;
+        break;
+      case '5972':
+      case '25832':
+        koordinatsystemKodeId = 10;
+        break;
+    }
+    if(!koordinatsystemKodeId) throw new AppError('Feil koordinatsystem', 'Kunne ikke finne passende koordinatsystem for koordinatene');
+
     // Construct the request
     let request = {
       method: 'post',
-      url: 'api/v1/matrikkelenheter',
+      url: 'matrikkelenheter',
       data: {
-        koordinatsystemKodeId: 10,
+        koordinatsystemKodeId: koordinatsystemKodeId,
         polygon: polygon,
       }
     }
@@ -98,7 +114,7 @@ export default class MatrikkelProxyClient {
     // Construct the request
     let request = {
       method: 'post',
-      url: 'api/v1/store',
+      url: 'store',
       headers: {
         'X-API-KEY': this.apiKey,
         'Content-Type': 'application/json'
@@ -156,6 +172,7 @@ export default class MatrikkelProxyClient {
    */
   static getMatrikkelEnheterOwnerCentric(matrikkelUnits, matrikkelOwners) {
     if(!matrikkelUnits) throw new AppError('MatrikkelEnheter missing', 'No MatrikkelEnheter is provided');
+    if(!matrikkelOwners) throw new AppError('matrikkelOwners missing', 'No matrikkelOwners is provided');
 
     // Object to store
     let returnedOwners = {};

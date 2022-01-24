@@ -5,9 +5,9 @@
     <!-- Loaders -->
     <Loading v-else-if="isLoadingTemplates" title="Laster inn maler" />
     <!-- Fil opplasting -->
-    <div v-else-if="mode === 'new' && !uploadedFile">
+    <div v-else-if="mode === 'new' && (!dispatch.polygons || !dispatch.polygons.polygons || dispatch.polygons.polygons.length === 0)">
       <h2>Last opp polygonet</h2>
-      <UploadField v-on:uploaded="(files) => parseFiles(files)" :convertDataToDataUrl="false"/>
+      <UploadField v-on:uploaded="(files) => parseFiles(files)" :convertDataToDataUrl="false" :allowedExtensions="['dxf', 'kml']"/>
     </div>
     <div v-else-if="isParsingFile" class="centeredColumn">
       <Loading title="Filen behandles" message="Dette kan ta noen sekunder" />
@@ -23,17 +23,23 @@
         <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
       </div>
       <div v-else-if="isContactingMatrikkel" class="shadow" style="margin-top: 1rem; padding: 1rem 1rem; border-radius: 20px; background-color: #CFEBF2;">
-        <Loading title="Kontaker matrikkelen" :message="matrikkelLoadingMessage" :submessage="matrikkelLoadingSubmessage"/>
+        <Loading title="Kontaker matrikkelen" :message="matrikkelLoadingMessage" :submessage="matrikkelLoadingSubmessage" :subsubmessage="matrikkelLoadingSubSubMessage"/>
       </div>
-      <div v-else class="centeredColumn" style="margin-top: 1rem;">
+      <div v-else class="centeredColumn" style="margin-top: 1rem; width: 100%; max-width: 1200px;">
         <!-- Cards som viser stats om informasjonen -->
-        <StatCards :items="statItems"/>
+        <StatCards v-if="statsCards" :items="statsCards"/>
         <!-- Matrikkel eiere -->
-        <h2>Eiere / Mottakere</h2>
-        <MatrikkelOwnerTable :items="dispatch.owners" item-key="id" @excludeOwner="(e) => excludeOwner(e)" />
+        <div style="width: 100%;">
+          <h2 style="margin-bottom: 0.5rem">Eiere / Mottakere</h2>
+          <MatrikkelOwnerTable :items="dispatch.owners" item-key="id" @excludeOwner="(e) => excludeOwner(e)" />
+        </div>
         <div v-if="dispatch.excludedOwners" style="width: 100%;">
-          <h2>Ekskluderte mottakere</h2>
-          <MatrikkelOwnerTable type="excluded" :items="dispatch.excludedOwners" item-key="id" @includeOwner="(e) => includeOwner(e)" style="margin-top: 1rem" />
+          <h2 style="margin-bottom: 0.5rem">Ekskluderte mottakere</h2>
+          <MatrikkelOwnerTable type="excluded" :items="dispatch.excludedOwners" item-key="id" @includeOwner="(e) => includeOwner(e)" />
+        </div>
+        <div v-if="dispatch.matrikkelUnitsWithoutOwners" style="width: 100%;">
+          <h2 style="margin-bottom: 0.5rem">Matrikkelenheter uten eierforhold</h2>
+          <v-data-table :headers="missingOwnersTableHeaders" :items="dispatch.matrikkelUnitsWithoutOwners" :items-per-page="5" item-key="id.value" class="shadow" />
         </div>
         <div v-if="mode === 'new'" class="centeredColumn">
           <!-- Angreknapp -->
@@ -43,11 +49,17 @@
         </div>
       </div>
       <!-- Prosjekt informasjon -->
-      <div v-if="isMatrikkelApproved || mode === 'edit'" class="card shadow centeredColumn" style="margin-top: 1rem;">
-        <div style="width: 60%">
+      <div v-if="isMatrikkelApproved || mode === 'edit'" class="card shadow centeredColumn center-content" style="margin-top: 1rem; width: 100%; max-width: 1200px;">
+        <div style="width: 60%" class="centeredColumn">
           <h1>Masseutsendelse</h1>
           <DispatchStatusSelect class="centeredColumn" v-if="mode === 'edit'" v-model="dispatch.status" :disabled="isLocked"/>
           <!-- En input for prosjekt navn, en for prosjekt nr -->
+          <v-btn v-if="dispatch.archiveUrl" @click="openUrl(dispatch.archiveUrl)" style="justify-self: flex-start; align-self: start;">
+            <v-icon right dark>
+              mdi-file-cabinet
+            </v-icon>
+            Åpne arkiv
+          </v-btn>
           <VTextField 
             v-model="dispatch.title"
             :disabled="isReadOnly"
@@ -78,7 +90,7 @@
             v-model="dispatch.archivenumber"
             :disabled="isReadOnly"
             placeholder="Angi et nummer"
-            hint="Angi et nummer"
+            hint="Angi et saksnummer som allerede eksiterer i P360"
             label="Arkivnummer"
             :required="true"
             style="max-width: 750px; width: 100%;"
@@ -87,18 +99,31 @@
               <span class="required"><strong>* </strong></span>Arkivnummer
             </template>
           </VTextField>
-          <VSelect
-            label="Velg mal"
-            placeholder="Velg mal"
+          <VTextField
+            :value="templateParagraph"
+            label="Paragraf"
+            placeholder="Hvis utsendelsen skal untas offentligheten legg inn paragrafen"
+            hint="Hvis utsendelsen skal untas offentligheten legg inn paragrafen"
             :disabled="isReadOnly"
-            :value="dispatch.template"
-            :items="this.templates"
-            item-text="name"
-            item-value="_id"
-            return-object
-            @change="(e) => onTemplateChanged(e)" 
+            @input="(e) => updateParagraph(e)"
             style="max-width: 750px; width: 100%;"
-          />
+          >
+          </VTextField>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; width: 100%; max-width: 750px;">
+            <VSelect
+              label="Velg mal"
+              placeholder="Velg mal"
+              :disabled="isReadOnly"
+              :value="dispatch.template"
+              :items="this.templates"
+              item-text="name"
+              item-value="_id"
+              return-object
+              @change="(e) => onTemplateChanged(e)" 
+              style="max-width: 750px; width: 100%;"
+            />
+            <VTFKButton v-if="dispatch.template && dispatch.template._id" :disabled="isReadOnly" :passedProps="{onClick: () => {onRemoveTemplate()}}" size="small" style="min-width: 200px;">Fjern mal</VTFKButton>
+          </div>
           <div v-if="selectedTemplateSchema && selectedTemplateSchema.properties && Object.keys(selectedTemplateSchema.properties).length > 0" style="max-width: 750px; width: 100%;">
             <h2>Flettefelter</h2>
             <SchemaFields
@@ -109,11 +134,11 @@
             />
           </div>
           <h3 style="margin-bottom: 0.2rem">Vedlegg</h3>
-          <upload-field v-model="dispatch.attachments" style="width: 100%" :downloadBaseUrl="`${$config.MASSEUTSENDELSEAPI_BASEURL}api/blobs/${dispatch._id}/`" />
-          <div v-if="mode === 'new'" class="centeredColumn" style="margin-top: 1rem">
+          <upload-field v-model="dispatch.attachments" :disabled="isReadOnly" style="width: 100%" :downloadBaseUrl="`${$config.MASSEUTSENDELSEAPI_BASEURL}blobs/${dispatch._id}/`" :allowedExtensions="['pdf', 'xlsx', 'xls', 'rtf', 'msg', 'ppt', 'pptx', 'docx', 'doc', 'png', 'jpg', 'jpeg']" />
+          <div class="centeredColumn" style="margin-top: 1rem">
             <VTFKButton
               class="mt-1"
-              :disabled="!isRequiredTemplateDataFilledIn"
+              :disabled="!dispatch.template || dispatch.template.template == undefined || !isRequiredTemplateDataFilledIn"
               :passedProps="{onClick: () => { previewPDF() }}">Se forhåndsvisning
             </VTFKButton>
           </div>
@@ -219,7 +244,7 @@
           attachments: [],
           owners: [],
           excludedOwners: [],
-          matrikkelEnheter: undefined,
+          matrikkelUnitsWithoutOwners: [],
           stats: {
             affectedCount: null,
             area: null,
@@ -232,7 +257,7 @@
             ESPG: '',
             coordinatesystem: '',
             filename: '',
-            areal: null,
+            area: null,
             extremes: {
               north: undefined,
               west: undefined,
@@ -243,12 +268,28 @@
             polygons: [],
           }
         },
+        missingOwnersTableHeaders: [
+          {
+            text: 'Bruksnavn',
+            value: 'bruksnavn'
+          },
+          {
+            text: 'Type',
+            value: '_type'
+          },
+          {
+            text: 'Etableringsdato',
+            value: 'etableringsdato'
+          }
+        ],
+        // MatrikkelUnits where no owners are specified
+        matrikkelUnitsWithoutOwners: [],
+        // Ownerships where ownerid is empty
+        ownershipsWithoutOwnerId: [],
         // The initial state of the dispatch (Used for not deactivating the save button when approving)
         initialDispatchStatus: undefined,
         // The file provided by the fileuploader
         uploadedFile: undefined,
-        // The genereated statistics from the MatrikkelAPI
-        statItems: [],
         // The templates received from the API
         templates: [],
         // The selected template in the template picker
@@ -257,6 +298,7 @@
         selectedTemplateSchema: undefined,
         matrikkelLoadingMessage: '',
         matrikkelLoadingSubmessage: '',
+        matrikkelLoadingSubSubMessage: '',
         /*
           Boolean state
         */
@@ -272,14 +314,12 @@
         isContactingMatrikkel: false,
         // Is the dispatch approved to be sent inn?
         isDispatchApproved: false,
-        // Has the file been loaded?
-        hasLoadedFile: false,
       }
     },
     computed: {
       isAllRequiredMatrikkelInfoRetreived() {
         const m = this.dispatch.stats;
-        if(m.affectedCount !== null && m.area !== null && m.totalOwners !== null) {
+        if(m.affectedCount !== null && m.totalOwners !== null) {
           return true;
         }
         return false;
@@ -304,6 +344,21 @@
         if(this.mode === 'new' && (!this.isDispatchApproved || !this.isMatrikkelApproved)) return false;
         return true;
       },
+      statsCards() {
+        if(!this.dispatch.stats) return undefined;
+        
+        let cards = [];
+        if(this.dispatch.stats.affectedCount) cards.push({ text: 'Enheter', value: this.dispatch.stats.affectedCount });
+        if(this.dispatch.stats.totalOwners ) cards.push({ text: 'Alle eiere', value: this.dispatch.stats.totalOwners });
+        if(this.dispatch.stats.businessOwners) cards.push({ text: 'Juridiske eiere', value: this.dispatch.stats.businessOwners });
+        if(this.dispatch.stats.privateOwners) cards.push({ text: 'Private eiere', value: this.dispatch.stats.privateOwners });
+
+        return cards;
+      },
+      templateParagraph() {
+        // Not the pretties solution, but just had to get it done
+        return this.dispatch.template?.data?.info?.paragraph || undefined
+      }
     },
     methods: {
       reInitialState() {
@@ -346,8 +401,6 @@
               },
               // The file provided by the fileuploader
               uploadedFile: undefined,
-              // The genereated statistics from the MatrikkelAPI
-              statItems: [],
               // The templates received from the API
               // Templates will not reload if you press the "Angre" or "Start på nytt" button, 
               // therefore we will not reset the templates array.
@@ -372,9 +425,12 @@
               isContactingMatrikkel: false,
               // Is the dispatch approved to be sent inn?
               isDispatchApproved: false,
-              // Has the file been loaded?
-              hasLoadedFile: false,
         }
+      },
+      updateParagraph(text) {
+        if(!this.dispatch.template.data) this.dispatch.template.data = {};
+        if(!this.dispatch.template.data.info) this.dispatch.template.data.info = {};
+        this.dispatch.template.data.info.paragraph = text;
       },
       reset(force = false) {
         // Validation
@@ -385,14 +441,16 @@
 
         // Action states
         this.state = 'initial';
-        this.hasLoadedFile = false;
         this.isParsingFile = false;
         this.isContactingMatrikkel = false;
 
         // Data
         this.uploadedFile = undefined;
-        this.statItems = [];
         this.error = undefined;
+      },
+      openUrl(url) {
+        if(!url) return;
+        window.open(url, '_blank');
       },
       async getDataFromMatrikkelAPI() {
         try {
@@ -410,164 +468,242 @@
           this.matrikkelLoadingSubmessage = `Spør om ${this.dispatch.polygons.polygons.length} polygoner med ${totalVerticesCount} vertiser`
           let matrikkelEnhetIds = [];
           for (const polygon of this.dispatch.polygons.polygons) {
-            let ids = await matrikkelClient.getMatrikkelEnheterFromPolygon(polygon.vertices, { query: { flatten: true, metadata: false } });
+            let ids = await matrikkelClient.getMatrikkelEnheterFromPolygon(polygon.vertices, polygon.EPSG, { query: { flatten: true, metadata: false } });
             // Add any ids that don't already exists
             for(const id of ids) {
               if(!matrikkelEnhetIds.includes(id)) matrikkelEnhetIds.push(id);
             }
           }
-          if(!matrikkelEnhetIds && matrikkelEnhetIds.length) {
+          if(!matrikkelEnhetIds || matrikkelEnhetIds.length === 0) {
             throw new AppError('Ingen MatrikkelIDer funnet', 'Vi klarte ikke å finne noen matrikkelinformasjon innenfor dette polygonet');
           }
 
           /*
-            Hent MatrikkelData på hver av IDene
+            Create batches of the id's and retreive data for each batch
           */
-          // Lag ett request for å kontakte store-service for informasjon om IDene
-          let matrikkelEnhetRequestItems = [];
-          matrikkelEnhetIds.forEach((item) => {
-            matrikkelEnhetRequestItems.push({
-              type: 'MatrikkelenhetId',
-              namespace: 'http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet',
-              value: item
-            })
-          })
-
-          // Hent ut data for alle matrikkel enhetene
-          this.matrikkelLoadingMessage = `Innhenter informasjon om ${matrikkelEnhetIds.length} Matrikkelenheter`;
-          this.matrikkelLoadingSubmessage = ``
-          let matrikkelEnheter = await matrikkelClient.getStoreItems(matrikkelEnhetRequestItems);
-
-          // Håndter feil
-          if(!matrikkelEnheter || matrikkelEnheter.length === 0) {
-            throw new AppError('Ingen MatrikkelEnheter funnet', 'Vi klarte ikke å finne noen matrikkelinformasjon for de ' + matrikkelEnhetIds.length + ' idene');
-          } else if (matrikkelEnhetIds.length > matrikkelEnheter.length) {
-            let deviation = matrikkelEnhetIds.length - matrikkelEnheter.length;
-            let notFoundIDs = [];
-            matrikkelEnhetIds.forEach((id) => {
-              let match = matrikkelEnheter.find((m) => m.id === id);
-              if(!match) { notFoundIDs.push(id); }
-            })
-            throw new AppError('Færre matrikkel enheter er returnert', 'MatrikkelAPIet returnerte ' + deviation + ' færre enheter enn det vi etterspurte \n' + notFoundIDs);
-          }
-          else if(matrikkelEnheter.length > matrikkelEnhetIds.length) {
-            throw new AppError('For mange matrikkelenheter er returnert', 'Vi fant ' + matrikkelEnheter.length + ' IDer, men skulle kun hatt ' + matrikkelEnheter.length + '.');
-          }
-
-          /*
-            Hent ut alle eierforhold innad for MatrikkelEnhetene
-          */
-          let matrikkelEierforhold = []
-          let matrikkelEnheterUtenEiere = [];
-          matrikkelEnheter.forEach((enhet) => {
-            // If the eierforhold is empty
-            if(!enhet.eierforhold) {
-              //TODO: Hør med SMM hvordan dette skal håndteres
-              matrikkelEnheterUtenEiere.push(enhet); 
-              return;
+          const batchSize = 100;
+          const batches = matrikkelEnhetIds.reduce((resultArray, item, index) => { 
+            const chunkIndex = Math.floor(index/batchSize)
+            if(!resultArray[chunkIndex]) {
+              resultArray[chunkIndex] = [] // start a new chunk
             }
-            // Convert the eierforhold to array if it is just an object
-            if(!Array.isArray(enhet.eierforhold)) enhet.eierforhold = [enhet.eierforhold];
-            if(enhet.eierforhold.length > 0) {
-              enhet.eierforhold.forEach((eierforhold) => {
-                matrikkelEierforhold.push(eierforhold)
+            resultArray[chunkIndex].push(item)
+            return resultArray
+          }, [])
+          if(!batches || batches.length === 0) throw new AppError('Problemer med å lage jobber', 'Vi klarte ikke å dele matrikkelIDene inn i mindre jobber');
+
+          let batchIndex = 0;                 // Keeps track of what bach is currently beeing worked on
+          let retreivedOwnerIds = [];         // Array of all the ownerIds that has already been retreived, used for optimizing not retreiving the same owners multiple times
+          let retreivedOwners = [];           // Array that stores all the retreived owners3
+          let retreivedMatrikkelUnits = [];   // Matrikkel
+          for(const batch of batches) {
+            // if(batches.length > 10 && (batchIndex < 5 || batchIndex > 6)) {
+            //   batchIndex++;
+            //   continue;
+            // }
+            this.matrikkelLoadingMessage = `Utfører jobb ${batchIndex + 1} av ${batches.length}`
+
+            // Lag ett request for å kontakte store-service for informasjon om IDene
+            let matrikkelEnhetRequestItems = [];
+            batch.forEach((item) => {
+              matrikkelEnhetRequestItems.push({
+                type: 'MatrikkelenhetId',
+                namespace: 'http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/matrikkelenhet',
+                value: item
               })
-            }
-          })
-
-          /*
-            Hent ut alle eier-informasjon for hver av eierforholdene
-          */
-          // Finn all unike eier IDer i alle eierforholdene
-          let unikeEierIDer = [];
-          matrikkelEierforhold.forEach((eierforhold) => {
-            if(!unikeEierIDer.find((id) => id === eierforhold.eierId)) {
-              unikeEierIDer.push(eierforhold.eierId);
-            }
-          })
-
-          // Lag en API request for de forskjellige eierne
-          let matrikkelEierRequestItems = [];
-          unikeEierIDer.forEach((id) => {
-            matrikkelEierRequestItems.push({
-              type: 'PersonId',
-              namespace: 'http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person',
-              value: id
             })
-          })
 
-          // Hent ut alle eiere fra Matrikkel API
-          this.matrikkelLoadingMessage = `Innhenter informasjon om ${unikeEierIDer.length} eiere av ${matrikkelEnhetIds.length} matrikkelenheter`
-          let matrikkelEiere = await matrikkelClient.getStoreItems(matrikkelEierRequestItems);
+            // Hent ut data for alle matrikkel enhetene
+            this.matrikkelLoadingSubmessage = `Innhenter informasjon om ${batch.length} Matrikkelenheter`;
+            let matrikkelEnheter = await matrikkelClient.getStoreItems(matrikkelEnhetRequestItems);
 
-          if(!matrikkelEiere || matrikkelEiere.length === 0) {
-            throw new AppError('Ingen eiere er funnet', 'Vi spurte matrikkelen om ' + matrikkelEierRequestItems.length + ' eiere, men fikk ingen tilbake');
-          } else if(matrikkelEierRequestItems.length > matrikkelEiere.length) {
-            throw new AppError('Ingen eiere er funnet', 'Vi spurte matrikkelen om ' + matrikkelEierRequestItems.length + ' eiere, men fikk kun ' + matrikkelEiere.length + ' tilbake');
+            // Håndter feil
+            if(!matrikkelEnheter || batch.length === 0) {
+              throw new AppError('Ingen MatrikkelEnheter funnet', 'Vi klarte ikke å finne noen matrikkelinformasjon for de ' + matrikkelEnhetIds.length + ' idene');
+            } else if (batch.length > matrikkelEnheter.length) {
+              let deviation = batch.length - matrikkelEnheter.length;
+              let notFoundIDs = [];
+              matrikkelEnhetIds.forEach((id) => {
+                let match = matrikkelEnheter.find((m) => m.id === id);
+                if(!match) { notFoundIDs.push(id); }
+              })
+              throw new AppError('Færre matrikkel enheter er returnert', 'MatrikkelAPIet returnerte ' + deviation + ' færre enheter enn det vi etterspurte \n' + notFoundIDs);
+            }
+            else if(matrikkelEnheter.length > batch.length) {
+              throw new AppError('For mange matrikkelenheter er returnert', 'Vi fant ' + matrikkelEnheter.length + ' IDer, men skulle kun hatt ' + batch.length + '.');
+            }
+
+            /*
+              Hent ut alle eierforhold innad for MatrikkelEnhetene
+            */
+            let matrikkelEierforhold = []
+            matrikkelEnheter.forEach((enhet) => {
+              // If the eierforhold is empty
+              // TODO: Hør med SMM hvordan dette skal håndteres
+              if(!enhet.eierforhold) {
+                this.dispatch.matrikkelUnitsWithoutOwners.push(enhet);
+                return;
+              }
+
+              // Convert the eierforhold to array if it is just an object
+              if(!Array.isArray(enhet.eierforhold)) enhet.eierforhold = [enhet.eierforhold];
+
+              // Remove any owners that does not have an eierId
+              let ownershipIdsToRemove = [];
+              enhet.eierforhold.forEach((ownership) => {
+                if(!ownership.eierId) {
+                  this.ownershipsWithoutOwnerId.push(ownership);
+                  ownershipIdsToRemove.push(ownership.id);
+                }
+              })
+              enhet.eierforhold = enhet.eierforhold.filter((o) => !ownershipIdsToRemove.includes(o.id))
+
+              // If the ownerships
+              if(enhet.eierforhold.length > 0) {
+                enhet.eierforhold.forEach((eierforhold) => {
+                  matrikkelEierforhold.push(eierforhold)
+                })
+              } else {
+                this.dispatch.matrikkelUnitsWithoutOwners.push(enhet);
+              }
+              retreivedMatrikkelUnits.push(enhet);
+            })
+
+            /*
+              Hent ut alle eier-informasjon for hver av eierforholdene
+            */
+            // Finn all unike eier IDer i alle eierforholdene
+            let unikeEierIDer = [];
+            matrikkelEierforhold.forEach((eierforhold) => {
+              if(!retreivedOwnerIds.find((id) => id === eierforhold.eierId)) {
+                unikeEierIDer.push(eierforhold.eierId);
+                retreivedOwnerIds.push(eierforhold.eierId);
+              }
+            })
+
+            // Lag en API request for de forskjellige eierne
+            let matrikkelEierRequestItems = [];
+            unikeEierIDer.forEach((id) => {
+              matrikkelEierRequestItems.push({
+                type: 'PersonId',
+                namespace: 'http://matrikkel.statkart.no/matrikkelapi/wsapi/v1/domain/person',
+                value: id
+              })
+            })
+
+            // Hent ut alle eiere fra Matrikkel API
+            this.matrikkelLoadingSubmessage = `Innhenter informasjon om ${unikeEierIDer.length} eiere av ${batch.length} matrikkelenheter`;
+            this.matrikkelLoadingSubSubMessage = 'Dette steget tar tid. Matrikkelen, Brønnøysund og Folkeregisteret kontaktes for hver eier'
+            let matrikkelEiere = await matrikkelClient.getStoreItems(matrikkelEierRequestItems);
+
+            if(!matrikkelEiere || matrikkelEiere.length === 0) {
+              throw new AppError('Ingen eiere er funnet', 'Vi spurte matrikkelen om ' + matrikkelEierRequestItems.length + ' eiere, men fikk ingen tilbake');
+            } else if(matrikkelEierRequestItems.length > matrikkelEiere.length) {
+              throw new AppError('Ingen eiere er funnet', 'Vi spurte matrikkelen om ' + matrikkelEierRequestItems.length + ' eiere, men fikk kun ' + matrikkelEiere.length + ' tilbake');
+            }
+
+            retreivedOwners.push(...matrikkelEiere);
+            batchIndex++;
           }
 
-          /*
-            Generer ett datasett hvor eiere er først med alle eierforhold under
-          */
-          let ownerCentric = MatrikkelProxyClient.getMatrikkelEnheterOwnerCentric(matrikkelEnheter, matrikkelEiere);
+            /*
+              Generer ett datasett hvor eiere er først med alle eierforhold under
+            */
+            let ownerCentric = MatrikkelProxyClient.getMatrikkelEnheterOwnerCentric(retreivedMatrikkelUnits, retreivedOwners);
 
-          // Remove any pre-removed users
-          if(config.EXCLUDED_OWNER_IDS && Array.isArray(config.EXCLUDED_OWNER_IDS)) {
-            this.dispatch.excludedOwners = ownerCentric.filter((o) => config.EXCLUDED_OWNER_IDS.includes(o.nummer));
-            this.dispatch.owners = ownerCentric.filter((o) => !config.EXCLUDED_OWNER_IDS.includes(o.nummer));
-          } else {
-            this.dispatch.owners = ownerCentric;
+            /*
+              Exclude owner that should not be contacted
+            */
+            let excludedOwners = [];
+            
+            // Exculde owners
+            for(let owner of ownerCentric) {
+              let excludedReason = undefined;
+              // Manually handle (Adresse sperre)
+              if(owner.dsf) {
+                const spesCode = parseInt(owner.dsf['SPES-KD'])
+                const statCode = parseInt(owner.dsf['STAT-KD'])
+                if(statCode) {
+                  if(statCode === 3) {
+                    excludedReason = 'Utvandret';
+                    owner.isHardExcluded = true;
+                  }
+                  if(statCode === 4) {
+                    excludedReason = 'Forsvunnet';
+                    owner.isHardExcluded = true;
+                  }
+                  if(statCode === 5) {
+                    excludedReason = 'Død';
+                    owner.isHardExcluded = true;
+                  }
+                }
+                if(spesCode && (spesCode === 4 || spesCode === 6 || spesCode === 7)) {
+                  excludedReason = 'Må håndteres manuelt';
+                  owner.isHardExcluded = true;
+                }
+              }
+
+              // Handle manually
+              if(owner.manuallyHandle === true || owner.handleManually === true) {
+                excludedReason = 'Må håndteres manuelt';
+                owner.isHardExcluded = true;
+              }
+
+              // Utvandret
+              if(owner.utvandret) {
+                excludedReason = 'Utvandret';
+                owner.isHardExcluded = true;
+              }
+
+              // Forsvunnet
+              if(owner.forsvunnet) {
+                excludedReason = 'Forsvunnet';
+                owner.isHardExcluded = true;
+              }
+
+              // Dead owners
+              if((owner.dead === true) || (owner && owner.name && owner.name.includes('DØDSBO'))) {
+                excludedReason = 'Død';
+                owner.isHardExcluded = true;
+              }
+
+              // Pre-excluded person or org numbers
+              if(config.EXCLUDED_OWNER_IDS && Array.isArray(config.EXCLUDED_OWNER_IDS) && config.EXCLUDED_OWNER_IDS.includes(owner.nummer)) {
+                excludedReason = 'Forhåndsekskludert';
+              }
+
+              if(excludedReason) {
+                owner.exclusionReason = excludedReason;
+                excludedOwners.push(owner);
+              }
+
+            if(excludedOwners.length !== 0) {
+              let excludedIds = excludedOwners.map((o) => o.nummer);
+              ownerCentric = ownerCentric.filter((o) => !excludedIds.includes(o.nummer));
+            }
           }
 
           // Hent ut juridiske eiere
-          let juridiskeEiere = matrikkelEiere.filter((e) => e._type.toLowerCase().includes('juridisk'));
+          let juridiskeEiere = retreivedOwners.filter((e) => e._type.toLowerCase().includes('juridisk'));
 
           /*
-            Fyll data inn i dispatch objekt
+            Handle statistics
           */
-          this.dispatch.stats.affectedCount = matrikkelEnhetIds.length;
-          this.dispatch.stats.privateOwners = matrikkelEiere.length - juridiskeEiere.length;
+          // Assign values to the dispatch object
+          this.dispatch.stats.affectedCount = retreivedMatrikkelUnits.length;
+          this.dispatch.stats.privateOwners = retreivedOwners.length - juridiskeEiere.length;
           this.dispatch.stats.businessOwners = juridiskeEiere.length;
-          this.dispatch.stats.totalOwners = matrikkelEiere.length;
-          this.dispatch.stats.area = this.dispatch.polygons.area;
+          this.dispatch.stats.totalOwners = retreivedOwners.length;
+          // this.dispatch.stats.area = this.dispatch.polygons.area;
 
-          /*
-            Legg til stat cards
-          */
-          this.statItems.push({ text: 'Enheter', value: matrikkelEnhetIds.length })
-          this.statItems.push({ text: 'Unike eiere', value: matrikkelEiere.length })
-          this.statItems.push({ text: 'Juridiske eiere', value: juridiskeEiere.length })
-          this.statItems.push({ text: 'Private eiere', value: matrikkelEiere.length - juridiskeEiere.length })
-          if(this.dispatch.stats.area > 1000) {
-            this.statItems.push({ text: 'Areal', value: Math.round(this.dispatch.stats.area / 1000), postvalue: ' KM²'})
-          } else {
-            this.statItems.push({ text: 'Areal', value: Math.round(this.dispatch.stats.area), postvalue: ' M²'})
-          }
-
-          matrikkelEnheter.forEach((enhet) => {
-            // Hent ut generell informasjon om matrikkel enheten som skal lagres i databasen
-            let matrikkelUnit = {
-              id: enhet.id,
-              type: enhet.type,
-              bruksnavn: enhet.bruksnavn,
-              bruksnummer: enhet.bruksnummer,
-              gardsnummer: enhet.gardsnummer,
-              festenummer: enhet.festenummer,
-              kommuneId: enhet.kommuneId,
-              utgatt: enhet.utgatt,
-              antallEiere: 1
-            }
-            // Kalkuler antall eiere
-            if(enhet.eierforhold && Array.isArray(enhet.eierforhold)) {
-              matrikkelUnit.antallEiere = enhet.eierforhold.length;
-            }
-            this.dispatch.stats.units.push(matrikkelUnit);
-          })
-
-          this.dispatch.matrikkelEnheter = matrikkelEnheter;
+          if(!this.dispatch.matrikkelEnheter) this.dispatch.matrikkelEnheter = [];
+          if(!this.dispatch.excludedOwners) this.dispatch.excludedOwners = [];
+          this.dispatch.owners.push(...ownerCentric);
+          this.dispatch.excludedOwners.push(...excludedOwners);
 
           this.isContactingMatrikkel = false;
         } catch(err) {
+          console.error(err);
           this.error = err;
         }
       },
@@ -600,7 +736,6 @@
           // Wait till complete
           reader.onloadend = function(e) {
             content = e.target.result;
-            // const result = content.split(/\r\n|\n/);
             resolve(content);
           };
           // Make sure to handle error states
@@ -612,6 +747,7 @@
       },
       async parseFiles(files) {
         try {
+          if(!files || !Array.isArray(files) || files.length === 0) return;
           this.uploadedFile = files;
           this.isParsingFile = true;
           let polygons = await PolyParser.parse(files[0], { inverseXY: true });
@@ -670,9 +806,9 @@
         let templateData = Sjablong.createObjectFromSchema(this.selectedTemplateSchema, false);
 
         // If the template already have data, attempt to overwrite the templateData with them
-        if(this.dispatch.template && this.dispatch.template.data) {
+        if(this.dispatch.template?.data) {
           // Get all the properties that exists in the schema
-          const matchingKeys = pick(this.dispatch.template.data, Object.keys(templateData));
+          const matchingKeys = pick(this.dispatch.template.data, [...Object.keys(templateData), 'info']);
           // Overwrite templatedata with the matching information in the matching keys
           templateData = merge(templateData, matchingKeys);
         }
@@ -701,6 +837,13 @@
       onTemplateDataChanged() {
         this.determineIfTemplateIsOk();
       },
+      onRemoveTemplate() {
+        if(!confirm('Er du helt sikker på at du vil fjerne malen?')) return;
+
+        this.selectedTemplate = undefined;
+        this.selectedTemplateSchema = undefined;
+        this.dispatch.template = {};
+      },
       async loadTemplates() {
         this.isLoadingTemplates = true;
 
@@ -712,9 +855,10 @@
         }
 
         // Attempt to match template with the dispatch, if applicable
-        if(this.dispatch.template) {
+        if(this.dispatch.template?.template) {
           let sameTemplate = this.$store.state.templates.find((t) => t._id === this.dispatch.template._id)
           if(sameTemplate) this.onTemplateChanged(sameTemplate);
+          else this.onTemplateChanged(this.dispatch.template);
         }
         
         this.isLoadingTemplates = false;
@@ -747,16 +891,6 @@
       this.onTemplateDataChanged();
 
       this.loadTemplates();
-    },
-    watch: {
-      // This will trigger any time something on the dispatch object has changed
-      dispatch: {
-        handler: function() {
-          // Check if all necessary template data is filled in
-          this.determineIfTemplateIsOk();
-        },
-        deep: true
-      }
     }
   }
 </script>
