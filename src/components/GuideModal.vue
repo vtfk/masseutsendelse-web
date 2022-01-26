@@ -4,14 +4,11 @@
       <div class="overflow" style="width: 100%; height: 100%; padding-left: 4rem; margin-top: -2rem;">
         <!-- Om siden -->
         <div class="header-part typography heading-two">Om siden</div>
-        <p class="typography paragraph">
-          Tekst om siden
-        </p>
-        <span class="error-text">Det er viktig at polygonet benytter koordinatsystem EUREF89 UTM Sone 32</span>
+        <span class="error-text">Det er viktig at polygonet benytter koordinatsystem EUREF89 UTM Sone 32 og er av et gyldig format.</span>
         <!-- Bruk av siden -->
         <div style="margin-top: 2rem;" class="header-part typography heading-two">Bruk av siden</div>
         <p>
-          1. Last opp polygon fil<br>
+          1. Last opp en polygon fil<br>
           2. Verifiser at polygonet treffer korrekt på kart<br>
           3. Trykk på Kontakt Matrikkel-knappen<br>
           4. Verifiser at innhentet informasjon ser korrekt ut<br>
@@ -19,7 +16,7 @@
           6. Trykk forhåndsvisning og kvitter ut at utsendelsen ser korrekt ut<br>
           7. Trykk Send inn<br>
           <br>
-          Utsendelsen vil så legges i en kø og sendes ut klokken 00:00
+          Utsendelsen vil så legges i en kø. Når utsendelsen er godkjent vil den sendes ut klokken 00:00
         </p>
         <!-- Se, endre, slette -->
         <div style="margin-top: 2rem;" class="header-part typography heading-two">Se, endre, slette</div>
