@@ -1,7 +1,7 @@
 <template>
   <div style="text-align: left; height: 100rem;">
     <VTFKModal title="Guide" :open="true" :onDismiss="() => { this.$store.commit('resetGuideModal') }">
-      <div class="overflow" style="width: 100%; padding-left: 4rem; margin-top: -2rem;">
+      <div class="overflow" style="width: 100%; height: 100%; padding-left: 4rem; margin-top: -2rem;">
         <!-- Om siden -->
         <div class="header-part typography heading-two">Om siden</div>
         <p class="typography paragraph">
@@ -76,6 +76,5 @@ export default {
  }
  .overflow {
    overflow: auto;
-   height: 100%;
  }
 </style>
