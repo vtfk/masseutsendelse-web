@@ -1,7 +1,7 @@
 <template>
-  <div style="text-align: left;">
-    <VTFKModal title="Guide" :open="true" :onDismiss="() => { this.$store.commit('resetGuideModal') }" style="z-index: 1000;">
-      <div style="width: 100%; padding-left: 4rem; margin-top: -2rem;">
+  <div style="text-align: left; height: 100rem;">
+    <VTFKModal title="Guide" :open="true" :onDismiss="() => { this.$store.commit('resetGuideModal') }">
+      <div class="overflow" style="width: 100%; padding-left: 4rem; margin-top: -2rem;">
         <!-- Om siden -->
         <div class="header-part typography heading-two">Om siden</div>
         <p class="typography paragraph">
@@ -72,6 +72,10 @@ export default {
 
 <style scoped>
  .error-text{
-   color: red
+   color: red;
+ }
+ .overflow {
+   overflow: auto;
+   height: 100%;
  }
 </style>
