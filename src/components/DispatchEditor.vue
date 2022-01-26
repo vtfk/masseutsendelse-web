@@ -19,7 +19,7 @@
         :polygons="dispatch.polygons"
         />  
       <div v-if="!isAllRequiredMatrikkelInfoRetreived && !isContactingMatrikkel" class="centeredColumn" style="margin-top: 1rem;">
-        <VTFKButton :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel infromasjon</VTFKButton>
+        <VTFKButton :passedProps="{ onClick: () => getDataFromMatrikkelAPI() }">Hent matrikkel informasjon</VTFKButton>
         <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
       </div>
       <div v-else-if="isContactingMatrikkel" class="shadow" style="margin-top: 1rem; padding: 1rem 1rem; border-radius: 20px; background-color: #CFEBF2;">
@@ -91,15 +91,15 @@
             :disabled="isReadOnly"
             placeholder="Angi et nummer"
             hint="Angi et saksnummer som allerede eksiterer i P360"
-            label="Arkivnummer"
+            label="P360 saksnummer"
             :required="true"
             style="max-width: 750px; width: 100%;"
           >
             <template #label>
-              <span class="required"><strong>* </strong></span>Arkivnummer
+              <span class="required"><strong>* </strong></span>P360 saksnummer
             </template>
           </VTextField>
-          <VTextField
+          <!-- <VTextField
             :value="templateParagraph"
             label="Paragraf"
             placeholder="Hvis utsendelsen skal untas offentligheten legg inn paragrafen"
@@ -107,8 +107,8 @@
             :disabled="isReadOnly"
             @input="(e) => updateParagraph(e)"
             style="max-width: 750px; width: 100%;"
-          >
-          </VTextField>
+          > 
+          </VTextField>-->
           <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; width: 100%; max-width: 750px;">
             <VSelect
               label="Velg mal"
@@ -671,6 +671,16 @@
               // Pre-excluded person or org numbers
               if(config.EXCLUDED_OWNER_IDS && Array.isArray(config.EXCLUDED_OWNER_IDS) && config.EXCLUDED_OWNER_IDS.includes(owner.nummer)) {
                 excludedReason = 'Forhåndsekskludert';
+              }
+
+              if(owner.avviklet) {
+                excludedReason = 'Firma er avviklet'
+                owner.isHardExcluded = true;
+              }
+
+              if(owner._type?.toLowerCase().includes('juridisk') && !owner.brreg) {
+                excludedReason = 'Finnes ikke i Brønnøysund'
+                owner.isHardExcluded = true;
               }
 
               if(excludedReason) {
