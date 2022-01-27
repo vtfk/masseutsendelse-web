@@ -23,7 +23,7 @@
         <VTFKButton v-if="!isMatrikkelApproved" :passedProps="{onClick: () => {reset()}}">Angre</VTFKButton>
       </div>
       <div v-else-if="isContactingMatrikkel" class="shadow" style="margin-top: 1rem; padding: 1rem 1rem; border-radius: 20px; background-color: #CFEBF2;">
-        <Loading title="Kontaker matrikkelen" :message="matrikkelLoadingMessage" :submessage="matrikkelLoadingSubmessage" :subsubmessage="matrikkelLoadingSubSubMessage"/>
+        <Loading title="Kontakter matrikkelen" :message="matrikkelLoadingMessage" :submessage="matrikkelLoadingSubmessage" :subsubmessage="matrikkelLoadingSubSubMessage"/>
       </div>
       <div v-else class="centeredColumn" style="margin-top: 1rem; width: 100%; max-width: 1200px;">
         <!-- Cards som viser stats om informasjonen -->
@@ -498,10 +498,6 @@
           let retreivedOwners = [];           // Array that stores all the retreived owners3
           let retreivedMatrikkelUnits = [];   // Matrikkel
           for(const batch of batches) {
-            // if(batches.length > 10 && (batchIndex < 5 || batchIndex > 6)) {
-            //   batchIndex++;
-            //   continue;
-            // }
             this.matrikkelLoadingMessage = `Utfører jobb ${batchIndex + 1} av ${batches.length}`
 
             // Lag ett request for å kontakte store-service for informasjon om IDene
@@ -540,7 +536,6 @@
             let matrikkelEierforhold = []
             matrikkelEnheter.forEach((enhet) => {
               // If the eierforhold is empty
-              // TODO: Hør med SMM hvordan dette skal håndteres
               if(!enhet.eierforhold) {
                 this.dispatch.matrikkelUnitsWithoutOwners.push(enhet);
                 return;
