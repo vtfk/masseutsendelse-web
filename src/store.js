@@ -330,7 +330,7 @@ const store = new Vuex.Store({
         if(!options.blobId) throw new AppError('options.dispatchId', 'Du kan ikke laste ned en fil uten å sende med blodId');
         
         // Define the URL to download
-        let url = options.url || `${config.MASSEUTSENDELSEAPI_BASEURL}blobs/${options.dispatchId}/${options.blobId}/?code=${config.MASSEUTSENDELSEAPI_APICODE}`;
+        let url = options.url || `${config.MASSEUTSENDELSEAPI_BASEURL}blobs/${options.dispatchId}/${options.blobId}/`;
         
         // Handle authentication
         await handleAuthentication();
