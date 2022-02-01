@@ -855,7 +855,6 @@
         this.determineIfTemplateIsOk();
       },
       getMatchingTemplate() {
-        if(!this.dispatch.template?._id) return undefined;
         if(!this.dispatch.template || !this.dispatch.template._id) return undefined;
         if(!this.templates) return undefined;
         
