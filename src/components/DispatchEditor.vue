@@ -344,6 +344,7 @@
       isReadyToSave() {
         if(this.isReadOnly) return false;
         if(!this.isRequiredTemplateDataFilledIn || !this.dispatch.title || !this.dispatch.projectnumber || !this.dispatch.archivenumber) return false;
+        if((!this.dispatch.template || !this.dispatch.template._id) && (!this.dispatch.attachments || !Array.isArray(this.dispatch.attachments) || this.dispatch.attachments.length === 0)) return false;
         if(this.mode === 'new' && (!this.isDispatchApproved || !this.isMatrikkelApproved)) return false;
         return true;
       },
@@ -855,8 +856,9 @@
       },
       getMatchingTemplate() {
         if(!this.dispatch.template?._id) return undefined;
+        if(!this.dispatch.template || !this.dispatch.template._id) return undefined;
         if(!this.templates) return undefined;
-
+        
         let match = this.templates.find((t) => t._id === this.dispatch.template._id);
 
         if(match) return match;
