@@ -30,7 +30,7 @@
         <StatCards v-if="statsCards" :items="statsCards"/>
         <!-- Matrikkel eiere -->
         <div v-if="dispatch.owners === null" style="width: 100%; padding-top: 1rem;">
-          <h2 style="margin-bottom: 0.5rem">Eiere / Mottakere er fjernet. For å se disse kan du trykke på "Åpne Arkiv" og navigere til "Kontakter"</h2>
+          <h2 style="margin-bottom: 0.5rem">Utsendelsen er ferdigstilt. Eiere og mottakere er fjernet av personvernhensyn. <br> For å se disse kan du trykke på "Åpne Arkiv" og navigere til "Kontakter"</h2>
         </div>
         <div v-if="dispatch.owners" style="width: 100%;">
           <h2 style="margin-bottom: 0.5rem">Eiere / Mottakere</h2>
