@@ -29,7 +29,7 @@
         <!-- Cards som viser stats om informasjonen -->
         <StatCards v-if="statsCards" :items="statsCards"/>
         <!-- Matrikkel eiere -->
-        <div style="width: 100%;">
+        <div v-if="dispatch.owners" style="width: 100%;">
           <h2 style="margin-bottom: 0.5rem">Eiere / Mottakere</h2>
           <MatrikkelOwnerTable :items="dispatch.owners" :disableinputs="isReadOnly" item-key="id" @excludeOwner="(e) => excludeOwner(e)" />
         </div>
@@ -778,7 +778,13 @@
           return;
         }
         // User confirmation
-        if(!confirm('Er du helt sikker på at du vil sende inn?')) return;
+        // TODO Sette en timestamp på når utsendelsen vil gå til p360
+        if(this.dispatch.status === 'approved'){
+          (!confirm(`Er du helt sikker på at du vil lagre?\n\nStatus er nå satt til "Godkjent", dette betyr at du vil sende ut brev til totalt: ${this.dispatch.stats.totalOwners} eiere.\nAv disse er ${this.dispatch.stats.businessOwners} juridiske eiere og ${this.dispatch.stats.privateOwners} private eiere.\n\nUtsendelsen vil bli sendt til arkivering og bli sendt til ${this.dispatch.stats.totalOwners} mottakere.\nTidspunkt for utsendelse: "Klokkeslett"`)); return;
+        }
+        if(this.dispatch.status !== 'approved'){
+          (!confirm('Er du helt sikker på at du vil sende inn?')); return;
+        }
 
         // Make a copy of the dispatch object before sending in
         var postObject = Object.assign(this.dispatch)
