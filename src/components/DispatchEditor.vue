@@ -29,20 +29,22 @@
         <!-- Cards som viser stats om informasjonen -->
         <StatCards v-if="statsCards" :items="statsCards"/>
         <!-- Matrikkel eiere -->
-        <div v-if="dispatch.owners === null" style="width: 100%; padding-top: 1rem;">
+        <div v-if="dispatch.status === 'completed'" style="width: 100%; padding-top: 1rem;">
           <h2 style="margin-bottom: 0.5rem">Utsendelsen er ferdigstilt. Eiere og mottakere er fjernet av personvernhensyn. <br> For å se disse kan du trykke på "Åpne Arkiv" og navigere til "Kontakter"</h2>
         </div>
-        <div v-if="dispatch.owners" style="width: 100%;">
-          <h2 style="margin-bottom: 0.5rem">Eiere / Mottakere</h2>
-          <MatrikkelOwnerTable :items="dispatch.owners" :disableinputs="isReadOnly" item-key="id" @excludeOwner="(e) => excludeOwner(e)" />
-        </div>
-        <div v-if="dispatch.excludedOwners" style="width: 100%;">
-          <h2 style="margin-bottom: 0.5rem">Ekskluderte mottakere</h2>
-          <MatrikkelOwnerTable type="excluded" :items="dispatch.excludedOwners" :disableinputs="isReadOnly" item-key="id" @includeOwner="(e) => includeOwner(e)" />
-        </div>
-        <div v-if="dispatch.matrikkelUnitsWithoutOwners" style="width: 100%;">
-          <h2 style="margin-bottom: 0.5rem">Matrikkelenheter uten eierforhold</h2>
-          <v-data-table :headers="missingOwnersTableHeaders" :items="dispatch.matrikkelUnitsWithoutOwners" :items-per-page="5" item-key="id.value" class="shadow" />
+        <div v-else>
+          <div v-if="dispatch.owners && Array.isArray(dispatch.owners) && dispatch.owners.length > 0" style="width: 100%;">
+            <h2 style="margin-bottom: 0.5rem">Eiere / Mottakere</h2>
+            <MatrikkelOwnerTable :items="dispatch.owners" :disableinputs="isReadOnly" item-key="id" @excludeOwner="(e) => excludeOwner(e)" />
+          </div>
+          <div v-if="dispatch.excludedOwners && Array.isArray(dispatch.excludedOwners) && dispatch.excludedOwners.length > 0" style="width: 100%;">
+            <h2 style="margin-bottom: 0.5rem">Ekskluderte mottakere</h2>
+            <MatrikkelOwnerTable type="excluded" :items="dispatch.excludedOwners" :disableinputs="isReadOnly" item-key="id" @includeOwner="(e) => includeOwner(e)" />
+          </div>
+          <div v-if="dispatch.matrikkelUnitsWithoutOwners && Array.isArray(dispatch.matrikkelUnitsWithoutOwners) && dispatch.matrikkelUnitsWithoutOwners.length > 0" style="width: 100%;">
+            <h2 style="margin-bottom: 0.5rem">Matrikkelenheter uten eierforhold</h2>
+            <v-data-table :headers="missingOwnersTableHeaders" :items="dispatch.matrikkelUnitsWithoutOwners" :items-per-page="5" item-key="id.value" class="shadow" />
+          </div>
         </div>
         <div v-if="mode === 'new'" class="centeredColumn">
           <!-- Angreknapp -->

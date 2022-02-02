@@ -33,7 +33,7 @@
             </template>
             Rediger
           </v-tooltip>
-          <v-tooltip top>
+          <!-- <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-btn icon v-bind="attrs" v-on="on">
                 <v-icon medium @click="openTemplateEditor(item)" >
@@ -42,7 +42,7 @@
               </v-btn>
             </template>
             Slett
-          </v-tooltip>
+          </v-tooltip> -->
         </template>
       </VDataTable>
     </div>
