@@ -784,7 +784,7 @@
         // User confirmation
         // TODO Sette en timestamp på når utsendelsen vil gå til p360
         if(this.dispatch.status === 'approved'){
-          if(!confirm(`Er du helt sikker på at du vil lagre?\n\nStatus er nå satt til "Godkjent", dette betyr at du vil sende ut brev til totalt: ${this.dispatch.stats.totalOwners} eiere.\nAv disse er ${this.dispatch.stats.businessOwners} juridiske eiere og ${this.dispatch.stats.privateOwners} private eiere.\n\nUtsendelsen vil bli sendt til arkivering og bli sendt til ${this.dispatch.stats.totalOwners} mottakere.`)) return;
+          if(!confirm(`Er du helt sikker på at du vil lagre?\n\nStatus er nå satt til "Godkjent", dette betyr at du vil sende ut brev til totalt: ${this.dispatch.stats.totalOwners} eiere.\nAv disse er ${this.dispatch.stats.businessOwners} juridiske eiere og ${this.dispatch.stats.privateOwners} private eiere.\n\nUtsendelsen vil bli sendt til arkivering og bli sendt til ${this.dispatch.stats.totalOwners} mottakere.\nUtsendelsen vil skje påfølgende dag mellom kl 12.00 og kl 13.00.`)) return;
         }
         else{
           if(!confirm('Er du helt sikker på at du vil sende inn?')) return;
