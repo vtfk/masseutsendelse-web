@@ -38,9 +38,8 @@ async function prepareEnvironment() {
   /*
     Sentry
   */
-  if(config.SENTRY_DSN)
   if(config.SENTRY_TRACINGORIGINS && typeof config.SENTRY_TRACINGORIGINS === 'string') config.SENTRY_TRACINGORIGINS = config.SENTRY_TRACINGORIGINS.split(',');
-  // ["localhost", "my-site-url.com", /^\//]
+
   Sentry.init({
     Vue,
     dsn: config.SENTRY_DSN,
@@ -83,7 +82,7 @@ async function prepareEnvironment() {
     // Define the request
     const currentAccounts = Vue.prototype.$msal.getAllAccounts();
     const request = {
-      scopes: ['ffd9d6ce-d313-4d5d-a758-0affa6dadd0a/.default'],
+      scopes: [`${config.AZUREAD_CLIENTID}/.default`],
       account: currentAccounts && currentAccounts[0] ? currentAccounts[0] : undefined
     }
 
@@ -105,7 +104,7 @@ async function prepareEnvironment() {
     // Define the request
     const currentAccounts = Vue.prototype.$msal.getAllAccounts();
     const request = {
-      scopes: ['ffd9d6ce-d313-4d5d-a758-0affa6dadd0a/.default'],
+      scopes: [`${config.AZUREAD_CLIENTID}/.default`],
       account: currentAccounts && currentAccounts[0] ? currentAccounts[0] : undefined
     }
 

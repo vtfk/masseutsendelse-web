@@ -13,6 +13,8 @@ import * as Sentry from '@sentry/vue';
 Vue.use(Vuex)
 
 if(process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+  console.log('== Environment ==');
+  console.log(process.env);
   console.log('== Configuration ==');
   console.log(config);
 }
