@@ -17,7 +17,7 @@
     "@turf/helpers": "6.5.0",
     "@vtfk/components": "0.8.0",
     "@vtfk/utilities": "1.0.0",
-    "@xmldom/xmldom": "0.8.1",
+    "@xmldom/xmldom": "0.8.2",
     "axios": "0.25.0",
     "core-js": "3.19.3",
     "dxf-parser": "1.1.2",
