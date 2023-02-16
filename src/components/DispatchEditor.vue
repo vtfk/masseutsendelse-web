@@ -623,10 +623,19 @@
               Exclude owner that should not be contacted
             */
             let excludedOwners = [];
-            
+      
             // Exculde owners
             for(let owner of ownerCentric) {
               let excludedReason = undefined;
+              /*
+                AnnenPerson; Andre personer/enheter enn de som kommer fra folkeregisteret/Enhetsregisteret. 
+                Identen består av dato + løpenr, et løpenummer kan også bli tildelt av den kommunen der identen er registrert.
+                En "AnnenPerson" kan være av typen: IkkeOppgitt, Aksjeselskap, BoligbyggelagBorettslag, AnsvarligSelskap, Enkeltperson, Fylkeskommunen, AnnenEiendom, Kommunen, LegatStiftelseOL, Bruksrettshaver, Staten, Utenlandsk, AnnenEiertype
+              */
+              if(owner._type?.toLowerCase().includes('annenperson')) {
+                excludedReason = 'Må håndteres manuelt';
+                owner.isHardExcluded = true;
+              }
               // Manually handle (Adresse sperre)
               if(owner.dsf) {
                 const spesCode = parseInt(owner.dsf['SPES-KD'])
@@ -682,6 +691,12 @@
 
               if(owner.avviklet) {
                 excludedReason = 'Firma er avviklet'
+                owner.isHardExcluded = true;
+              }
+
+              // Organisasjonen er slettet fra brønnlysund
+              if(owner._type?.toLowerCase().includes('juridisk') && owner.slettetDato) {
+                excludedReason = 'Slettet fra Brønnøysund'
                 owner.isHardExcluded = true;
               }
 
