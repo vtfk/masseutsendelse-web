@@ -30,20 +30,23 @@
         <StatCards v-if="statsCards" :items="statsCards"/>
         <!-- Matrikkel eiere -->
         <div v-if="dispatch.status === 'completed'" style="width: 100%; padding-top: 1rem;">
-          <h2 style="margin-bottom: 0.5rem">Utsendelsen er ferdigstilt. Eiere og mottakere er fjernet av personvernhensyn. <br> For å se disse kan du trykke på "Åpne Arkiv" og navigere til "Kontakter"</h2>
+          <h2 style="margin: 0.5rem">Utsendelsen er ferdigstilt. Eiere og mottakere er fjernet av personvernhensyn. <br> For å se disse kan du trykke på "Åpne Arkiv" og navigere til "Kontakter"</h2>
         </div>
         <div v-else>
           <div v-if="dispatch.owners && Array.isArray(dispatch.owners) && dispatch.owners.length > 0" style="width: 100%;">
-            <h2 style="margin-bottom: 0.5rem">Eiere / Mottakere</h2>
+            <h2 style="margin: 0.5rem">Eiere / Mottakere</h2>
             <MatrikkelOwnerTable :items="dispatch.owners" :disableinputs="isReadOnly" item-key="id" @excludeOwner="(e) => excludeOwner(e)" />
           </div>
           <div v-if="dispatch.excludedOwners && Array.isArray(dispatch.excludedOwners) && dispatch.excludedOwners.length > 0" style="width: 100%;">
-            <h2 style="margin-bottom: 0.5rem">Ekskluderte mottakere</h2>
+            <h2 style="margin: 0.5rem">Ekskluderte mottakere</h2>
             <MatrikkelOwnerTable type="excluded" :items="dispatch.excludedOwners" :disableinputs="isReadOnly" item-key="id" @includeOwner="(e) => includeOwner(e)" />
           </div>
           <div v-if="dispatch.matrikkelUnitsWithoutOwners && Array.isArray(dispatch.matrikkelUnitsWithoutOwners) && dispatch.matrikkelUnitsWithoutOwners.length > 0" style="width: 100%;">
-            <h2 style="margin-bottom: 0.5rem">Matrikkelenheter uten eierforhold</h2>
+            <h2 style="margin: 0.5rem">Matrikkelenheter uten eierforhold</h2>
             <v-data-table :headers="missingOwnersTableHeaders" :items="dispatch.matrikkelUnitsWithoutOwners" :items-per-page="5" item-key="id.value" class="shadow" />
+          </div>
+          <div v-if="dispatch.owners && Array.isArray(dispatch.owners) && dispatch.owners.length > 0" style="width: 100%; margin-top: 1rem;"  class="centeredColumn">
+            <VTFKButton :passedProps="{ onClick: () => exportOwners(dispatch.owners, dispatch.excludedOwners, dispatch.matrikkelUnitsWithoutOwners) }">Eksporter eierforhold til excel</VTFKButton>
           </div>
         </div>
         <div v-if="mode === 'new'" class="centeredColumn">
@@ -207,6 +210,7 @@
   import merge from 'lodash.merge'
   import pick from 'lodash.pick';
   import PolyParser from '../lib/polyparser/polyparser';
+  import exportFromJSON from 'export-from-json'
  
   // Config
   import config from '../../config';
@@ -287,6 +291,18 @@
           {
             text: 'Type',
             value: '_type'
+          },
+          {
+            text: 'gNr',
+            value: 'matrikkelnummer.gardsnummer'
+          },
+          {
+            text: 'bNr',
+            value: 'matrikkelnummer.bruksnummer'
+          },
+          {
+            text: 'fNr',
+            value: 'matrikkelnummer.festenummer'
           },
           {
             text: 'Etableringsdato',
@@ -950,15 +966,130 @@
 
         // Request the PDF preview
         this.$store.dispatch('getPDFPreview', { ...this.dispatch, preview: true })
-      }
+      },
+      getPostAddress(person) {
+        let address = '';
+
+        if(person.dsf !== undefined) {
+          address += `${person.dsf.ADR} ${person.dsf.POSTN} ${person.dsf.POSTS}`
+        } else if(person.brreg && person.brreg.postadresse) {
+          address += `${person.brreg.postadresse.adresse} ${person.brreg.postadresse.postnummer} ${person.brreg.postadresse.poststed}`
+        } else {
+          if(person.postadresse.adresselinje) address += person.postadresse.adresselinje + ' ';
+          if(person.postadresse.adresselinje1) address += person.postadresse.adresselinje1 + ' ';
+          if(person.postadresse.adresselinje2) address += person.postadresse.adresselinje2 + ' ';
+          if(person.postadresse.adresselinje3) address += person.postadresse.adresselinje3 + ' ';
+          address += '(Matrikkel)'
+        }
+
+        return address.trim();
+      },
+      async exportOwners(owners, excluded, without) {
+        let arr = []
+        // Properties with owners
+        owners.forEach(owner => {
+          let owners = {
+            tableType: 'Eier/Mottakere',
+            navn: '',
+            type: '',
+            antallEierSkap: '', 
+            adresse: '',
+            bruksnavn: '',
+            fraDato: '', 
+            gNr: '',
+            bNr: '',
+            fNr: '',
+            type_eierforhold: '',
+            andel: ''
+          }
+
+          owners.navn = owner.navn,
+          owners.type = owner._type,
+          owners.antallEierSkap = owner.ownerships.length
+          owners.adresse = this.getPostAddress(owner)
+          
+          owner.ownerships.forEach(unit => {
+            owners.bruksnavn = unit.unit.bruksnavn,
+            owners.fraDato = unit.datoFra,
+            owners.gNr = unit.unit.matrikkelnummer.gardsnummer,
+            owners.bNr = unit.unit.matrikkelnummer.bruksnummer,
+            owners.fNr = unit.unit.matrikkelnummer.festenummer,
+            owners.type_eierforhold = unit._type,
+            owners.andel = `${unit.andel.teller}/${unit.andel.nevner}`
+          })
+
+          arr.push(owners)
+        })
+
+        // Properties with owners, but they are excluded
+        excluded.forEach(owner => {
+          let excluded = {
+            tableType: 'Ekskluderte mottakere',
+            navn: '',
+            type: '',
+            antallEierSkap: '', 
+            adresse: '',
+            bruksnavn: '',
+            fraDato: '', 
+            gNr: '',
+            bNr: '',
+            fNr: '',
+            type_eierforhold: '',
+            andel: ''
+          }
+
+          excluded.navn = owner.navn,
+          excluded.type = owner._type,
+          excluded.antallEierSkap = owner.ownerships.length
+          excluded.adresse = this.getPostAddress(owner)
+          
+          owner.ownerships.forEach(unit => {
+            excluded.bruksnavn = unit.unit.bruksnavn,
+            excluded.fraDato = unit.datoFra,
+            excluded.gNr = unit.unit.matrikkelnummer.gardsnummer,
+            excluded.bNr = unit.unit.matrikkelnummer.bruksnummer,
+            excluded.fNr = unit.unit.matrikkelnummer.festenummer,
+            excluded.type_eierforhold = unit._type
+            excluded.andel = `${unit.andel?.teller}/${unit.andel?.nevner}`
+          })
+          arr.push(excluded)
+        })
+
+        // Properties without owners
+        without.forEach(owner => {
+          let without= {
+            tableType: 'Matrikkelenheter uten eierforhold',
+            bruksnavn: '',
+            type: '',
+            gNr: '',
+            bNr: '',
+            fNr: '',
+            etableringsdato: ''
+          }
+
+          without.bruksnavn = owner.bruksnavn,
+          without.type = owner._type,
+          without.gNr = owner.matrikkelnummer.gardsnummer
+          without.bNr = owner.matrikkelnummer.bruksnummer
+          without.fNr = owner.matrikkelnummer.festenummer
+          without.etableringsdato = owner.etableringsdato
+
+          arr.push(without)
+        })
+
+        const data = arr
+        const fileName= `${this.dispatch.title}_Eiere`
+        const exportType = exportFromJSON.types.csv
+        exportFromJSON({ data, fileName:fileName, exportType: exportType })
+      },
     },
     created() {
       if(this.$props.dispatchObject) {
         this.$set(this, 'dispatch', this.$props.dispatchObject)
         this.initialDispatchStatus = this.$props.dispatchObject.status;
       }
-      this.onTemplateDataChanged();
 
+      this.onTemplateDataChanged();
       this.loadTemplates();
       this.updateAttachmentTags();
     }
