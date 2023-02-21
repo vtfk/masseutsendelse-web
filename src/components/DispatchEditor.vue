@@ -293,6 +293,10 @@
             value: '_type'
           },
           {
+            text: 'Kommune',
+            value: 'matrikkelnummer.kommuneId'
+          },
+          {
             text: 'Gnr',
             value: 'matrikkelnummer.gardsnummer'
           },
@@ -1007,6 +1011,7 @@
               adresse: '',
               bruksnavn: '',
               fraDato: '', 
+              kommune: '',
               Gnr: '',
               Bnr: '',
               Fnr: '',
@@ -1021,6 +1026,7 @@
           
             owners.bruksnavn = unit.unit.bruksnavn,
             owners.fraDato = unit.datoFra,
+            owners.kommune = unit.kommuneId,
             owners.Gnr = unit.unit.matrikkelnummer.gardsnummer,
             owners.Bnr = unit.unit.matrikkelnummer.bruksnummer,
             owners.Fnr = unit.unit.matrikkelnummer.festenummer,
@@ -1041,7 +1047,8 @@
               antallEierSkap: '', 
               adresse: '',
               bruksnavn: '',
-              fraDato: '', 
+              fraDato: '',
+              kommune: '', 
               Gnr: '',
               Bnr: '',
               Fnr: '',
@@ -1056,6 +1063,7 @@
           
             excluded.bruksnavn = unit.unit.bruksnavn,
             excluded.fraDato = unit.datoFra,
+            excluded.kommune = unit.kommuneId,
             excluded.Gnr = unit.unit.matrikkelnummer.gardsnummer,
             excluded.Bnr = unit.unit.matrikkelnummer.bruksnummer,
             excluded.Fnr = unit.unit.matrikkelnummer.festenummer,
@@ -1068,10 +1076,12 @@
 
         // Properties without owners
         without.forEach(owner => {
+          console.log(owner)
           let without= {
             tableType: 'Matrikkelenheter uten eierforhold',
             bruksnavn: '',
             type: '',
+            kommune: '',
             Gnr: '',
             Bnr: '',
             Fnr: '',
@@ -1080,6 +1090,7 @@
 
           without.bruksnavn = owner.bruksnavn,
           without.type = owner._type,
+          without.kommune = owner.matrikkelnummer.kommuneId
           without.Gnr = owner.matrikkelnummer.gardsnummer
           without.Bnr = owner.matrikkelnummer.bruksnummer
           without.Fnr = owner.matrikkelnummer.festenummer

@@ -120,6 +120,10 @@
             value: 'datoFra'
           },
           {
+            text: 'Kommune',
+            value: 'unit.matrikkelnummer.kommuneId'
+          },
+          {
             text: 'Gnr',
             value: 'unit.matrikkelnummer.gardsnummer'
           },
