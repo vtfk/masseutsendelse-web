@@ -702,7 +702,6 @@
 
               // Pre-excluded person or org numbers
               if(config.EXCLUDED_OWNER_IDS && Array.isArray(config.EXCLUDED_OWNER_IDS) && config.EXCLUDED_OWNER_IDS.includes(owner.nummer)) {
-                console.log(config.EXCLUDED_OWNER_IDS)
                 excludedReason = 'Forhåndsekskludert';
               }
 
