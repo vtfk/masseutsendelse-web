@@ -120,15 +120,15 @@
             value: 'datoFra'
           },
           {
-            text: 'gNr',
+            text: 'Gnr',
             value: 'unit.matrikkelnummer.gardsnummer'
           },
           {
-            text: 'bNr',
+            text: 'Bnr',
             value: 'unit.matrikkelnummer.bruksnummer'
           },
           {
-            text: 'fNr',
+            text: 'Fnr',
             value: 'unit.matrikkelnummer.festenummer'
           },
           {

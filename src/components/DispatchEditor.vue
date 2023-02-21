@@ -293,15 +293,15 @@
             value: '_type'
           },
           {
-            text: 'gNr',
+            text: 'Gnr',
             value: 'matrikkelnummer.gardsnummer'
           },
           {
-            text: 'bNr',
+            text: 'Bnr',
             value: 'matrikkelnummer.bruksnummer'
           },
           {
-            text: 'fNr',
+            text: 'Fnr',
             value: 'matrikkelnummer.festenummer'
           },
           {
@@ -702,6 +702,7 @@
 
               // Pre-excluded person or org numbers
               if(config.EXCLUDED_OWNER_IDS && Array.isArray(config.EXCLUDED_OWNER_IDS) && config.EXCLUDED_OWNER_IDS.includes(owner.nummer)) {
+                console.log(config.EXCLUDED_OWNER_IDS)
                 excludedReason = 'Forhåndsekskludert';
               }
 
@@ -996,9 +997,9 @@
             adresse: '',
             bruksnavn: '',
             fraDato: '', 
-            gNr: '',
-            bNr: '',
-            fNr: '',
+            Gnr: '',
+            Bnr: '',
+            Fnr: '',
             type_eierforhold: '',
             andel: ''
           }
@@ -1011,11 +1012,11 @@
           owner.ownerships.forEach(unit => {
             owners.bruksnavn = unit.unit.bruksnavn,
             owners.fraDato = unit.datoFra,
-            owners.gNr = unit.unit.matrikkelnummer.gardsnummer,
-            owners.bNr = unit.unit.matrikkelnummer.bruksnummer,
-            owners.fNr = unit.unit.matrikkelnummer.festenummer,
+            owners.Gnr = unit.unit.matrikkelnummer.gardsnummer,
+            owners.Bnr = unit.unit.matrikkelnummer.bruksnummer,
+            owners.Fnr = unit.unit.matrikkelnummer.festenummer,
             owners.type_eierforhold = unit._type,
-            owners.andel = `${unit.andel.teller}/${unit.andel.nevner}`
+            owners.andel = `${unit.andel?.teller}/${unit.andel?.nevner}`
           })
 
           arr.push(owners)
@@ -1031,9 +1032,9 @@
             adresse: '',
             bruksnavn: '',
             fraDato: '', 
-            gNr: '',
-            bNr: '',
-            fNr: '',
+            Gnr: '',
+            Bnr: '',
+            Fnr: '',
             type_eierforhold: '',
             andel: ''
           }
@@ -1046,9 +1047,9 @@
           owner.ownerships.forEach(unit => {
             excluded.bruksnavn = unit.unit.bruksnavn,
             excluded.fraDato = unit.datoFra,
-            excluded.gNr = unit.unit.matrikkelnummer.gardsnummer,
-            excluded.bNr = unit.unit.matrikkelnummer.bruksnummer,
-            excluded.fNr = unit.unit.matrikkelnummer.festenummer,
+            excluded.Gnr = unit.unit.matrikkelnummer.gardsnummer,
+            excluded.Bnr = unit.unit.matrikkelnummer.bruksnummer,
+            excluded.Fnr = unit.unit.matrikkelnummer.festenummer,
             excluded.type_eierforhold = unit._type
             excluded.andel = `${unit.andel?.teller}/${unit.andel?.nevner}`
           })
@@ -1061,17 +1062,17 @@
             tableType: 'Matrikkelenheter uten eierforhold',
             bruksnavn: '',
             type: '',
-            gNr: '',
-            bNr: '',
-            fNr: '',
+            Gnr: '',
+            Bnr: '',
+            Fnr: '',
             etableringsdato: ''
           }
 
           without.bruksnavn = owner.bruksnavn,
           without.type = owner._type,
-          without.gNr = owner.matrikkelnummer.gardsnummer
-          without.bNr = owner.matrikkelnummer.bruksnummer
-          without.fNr = owner.matrikkelnummer.festenummer
+          without.Gnr = owner.matrikkelnummer.gardsnummer
+          without.Bnr = owner.matrikkelnummer.bruksnummer
+          without.Fnr = owner.matrikkelnummer.festenummer
           without.etableringsdato = owner.etableringsdato
 
           arr.push(without)
