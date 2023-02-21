@@ -46,7 +46,7 @@
             <v-data-table :headers="missingOwnersTableHeaders" :items="dispatch.matrikkelUnitsWithoutOwners" :items-per-page="5" item-key="id.value" class="shadow" />
           </div>
           <div v-if="dispatch.owners && Array.isArray(dispatch.owners) && dispatch.owners.length > 0" style="width: 100%; margin-top: 1rem;"  class="centeredColumn">
-            <VTFKButton :passedProps="{ onClick: () => exportOwners(dispatch.owners, dispatch.excludedOwners, dispatch.matrikkelUnitsWithoutOwners) }">Eksporter eierforhold til excel</VTFKButton>
+            <VTFKButton :passedProps="{ onClick: () => exportOwners(dispatch.owners, dispatch.excludedOwners, dispatch.matrikkelUnitsWithoutOwners) }">Eksporter eierforhold til CSV</VTFKButton>
           </div>
         </div>
         <div v-if="mode === 'new'" class="centeredColumn">
@@ -1076,7 +1076,6 @@
 
         // Properties without owners
         without.forEach(owner => {
-          console.log(owner)
           let without= {
             tableType: 'Matrikkelenheter uten eierforhold',
             bruksnavn: '',
