@@ -639,7 +639,13 @@
               Exclude owner that should not be contacted
             */
             let excludedOwners = [];
-      
+            
+            // config.EXCLUDED_OWNER_IDS.forEach(ex => {
+            //   ownerCentric.forEach(owner => {
+            //     console.log(owner.nummer.includes(ex))
+            //   });
+            // });
+
             // Exculde owners
             for(let owner of ownerCentric) {
               let excludedReason = undefined;
@@ -700,10 +706,14 @@
                 owner.isHardExcluded = true;
               }
 
-              // Pre-excluded person or org numbers
-              if(config.EXCLUDED_OWNER_IDS && Array.isArray(config.EXCLUDED_OWNER_IDS) && config.EXCLUDED_OWNER_IDS.includes(owner.nummer)) {
-                excludedReason = 'Forhåndsekskludert';
+              if(config.EXCLUDED_OWNER_IDS && Array.isArray(config.EXCLUDED_OWNER_IDS)) {
+                // Pre-excluded person or org numbers if they already exist inside the polygon
+                if(config.EXCLUDED_OWNER_IDS.includes(owner.nummer)) {
+                  excludedReason = 'Forhåndsekskludert';
+                }
               }
+
+              
 
               if(owner.avviklet) {
                 excludedReason = 'Firma er avviklet'
@@ -988,27 +998,27 @@
         let arr = []
         // Properties with owners
         owners.forEach(owner => {
-          let owners = {
-            tableType: 'Eier/Mottakere',
-            navn: '',
-            type: '',
-            antallEierSkap: '', 
-            adresse: '',
-            bruksnavn: '',
-            fraDato: '', 
-            Gnr: '',
-            Bnr: '',
-            Fnr: '',
-            type_eierforhold: '',
-            andel: ''
-          }
-
-          owners.navn = owner.navn,
-          owners.type = owner._type,
-          owners.antallEierSkap = owner.ownerships.length
-          owners.adresse = this.getPostAddress(owner)
-          
           owner.ownerships.forEach(unit => {
+            let owners = {
+              tableType: 'Eier/Mottakere',
+              navn: '',
+              type: '',
+              antallEierSkap: '', 
+              adresse: '',
+              bruksnavn: '',
+              fraDato: '', 
+              Gnr: '',
+              Bnr: '',
+              Fnr: '',
+              type_eierforhold: '',
+              andel: ''
+            }
+
+            owners.navn = owner.navn,
+            owners.type = owner._type,
+            owners.antallEierSkap = owner.ownerships.length
+            owners.adresse = this.getPostAddress(owner)
+          
             owners.bruksnavn = unit.unit.bruksnavn,
             owners.fraDato = unit.datoFra,
             owners.Gnr = unit.unit.matrikkelnummer.gardsnummer,
@@ -1016,34 +1026,34 @@
             owners.Fnr = unit.unit.matrikkelnummer.festenummer,
             owners.type_eierforhold = unit._type,
             owners.andel = `${unit.andel?.teller}/${unit.andel?.nevner}`
-          })
 
-          arr.push(owners)
+            arr.push(owners)
+          })
         })
 
         // Properties with owners, but they are excluded
         excluded.forEach(owner => {
-          let excluded = {
-            tableType: 'Ekskluderte mottakere',
-            navn: '',
-            type: '',
-            antallEierSkap: '', 
-            adresse: '',
-            bruksnavn: '',
-            fraDato: '', 
-            Gnr: '',
-            Bnr: '',
-            Fnr: '',
-            type_eierforhold: '',
-            andel: ''
-          }
-
-          excluded.navn = owner.navn,
-          excluded.type = owner._type,
-          excluded.antallEierSkap = owner.ownerships.length
-          excluded.adresse = this.getPostAddress(owner)
-          
           owner.ownerships.forEach(unit => {
+            let excluded = {
+              tableType: 'Ekskluderte mottakere',
+              navn: '',
+              type: '',
+              antallEierSkap: '', 
+              adresse: '',
+              bruksnavn: '',
+              fraDato: '', 
+              Gnr: '',
+              Bnr: '',
+              Fnr: '',
+              type_eierforhold: '',
+              andel: ''
+            }
+          
+            excluded.navn = owner.navn,
+            excluded.type = owner._type,
+            excluded.antallEierSkap = owner.ownerships.length
+            excluded.adresse = this.getPostAddress(owner)
+          
             excluded.bruksnavn = unit.unit.bruksnavn,
             excluded.fraDato = unit.datoFra,
             excluded.Gnr = unit.unit.matrikkelnummer.gardsnummer,
@@ -1051,8 +1061,9 @@
             excluded.Fnr = unit.unit.matrikkelnummer.festenummer,
             excluded.type_eierforhold = unit._type
             excluded.andel = `${unit.andel?.teller}/${unit.andel?.nevner}`
+
+            arr.push(excluded)
           })
-          arr.push(excluded)
         })
 
         // Properties without owners
