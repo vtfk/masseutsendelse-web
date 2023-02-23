@@ -39,6 +39,7 @@ const store = new Vuex.Store({
     previewPDFBase64: undefined,
     isShowGuideModal: false,
     dispatches: undefined,
+    brreg: undefined,
     templates: undefined,
     loadingModal: undefined,
   },
@@ -73,6 +74,9 @@ const store = new Vuex.Store({
     },
     setTemplates (state, templates) {
       state.templates = templates;
+    },
+    setBrreg (state, brreg) {
+      state.breg = brreg
     }
   },
   actions: {
@@ -144,6 +148,30 @@ const store = new Vuex.Store({
         return response.data;
       } catch (err) {
         Sentry.captureException(err);
+        return Promise.reject(err)
+      }
+    },
+    async getBrreg (context, id) {
+      try {
+        if(!id) throw new AppError ('ID cannot be empty, must provide an ID to make the reqeust.')
+    
+        let request = {
+          method: 'GET',
+          url: config.MASSEUTSENDELSEAPI_BASEURL + 'brreg/' + id,
+          headers: {
+            authorization: `Bearer ${Vue.prototype.$accessToken.accessToken}`
+          }
+        }
+        // Make the request
+        const response = await axios.request(request)
+        
+        // Return the respose
+        return response.data;
+        
+      } catch (err) {
+        Sentry.captureException(err);
+        console.log('Error getting orgbyId for pre included orgs');
+        console.log(err);
         return Promise.reject(err)
       }
     },
