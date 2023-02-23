@@ -618,7 +618,7 @@
                 value: id
               })
             })
-
+           
             // Hent ut alle eiere fra Matrikkel API
             this.matrikkelLoadingSubmessage = `Innhenter informasjon om ${unikeEierIDer.length} eiere av ${batch.length} matrikkelenheter`;
             this.matrikkelLoadingSubSubMessage = 'Dette steget tar tid. Matrikkelen, Brønnøysund og Folkeregisteret kontaktes for hver eier'
@@ -634,117 +634,142 @@
             batchIndex++;
           }
 
-            /*
-              Generer ett datasett hvor eiere er først med alle eierforhold under
-            */
-            let ownerCentric = MatrikkelProxyClient.getMatrikkelEnheterOwnerCentric(retreivedMatrikkelUnits, retreivedOwners);
+          /*
+            Generer ett datasett hvor eiere er først med alle eierforhold under
+          */
+          let ownerCentric = MatrikkelProxyClient.getMatrikkelEnheterOwnerCentric(retreivedMatrikkelUnits, retreivedOwners);
 
-            /*
-              Exclude owner that should not be contacted
-            */
-            let excludedOwners = [];
-            
-            // config.EXCLUDED_OWNER_IDS.forEach(ex => {
-            //   ownerCentric.forEach(owner => {
-            //     console.log(owner.nummer.includes(ex))
-            //   });
-            // });
+          /*
+            Exclude owner that should not be contacted
+          */
+          let excludedOwners = [];
+          
+          // Handle unit without any ownerships, but needs to be contacted.
+          let preExcludedUnits = []
+          for (const id of config.EXCLUDED_OWNER_IDS) {
+            let brreg = await this.$store.dispatch('getBrreg', id)
+            let orgObj = {
+              brreg: {...brreg},
+              _type: 'JuridiskPerson',
+              id: (Math.floor(Math.random() * 10000000)).toString(),
+              nummer: brreg.organisasjonsnummer,
+              forretningsadresse: brreg.forretningsadresse,
+              postadresse: brreg?.postadresse,
+              navn: brreg.navn,
+              exclusionReason: 'Etat uten eierforhold',
+              ownerships: []
+            }
+            preExcludedUnits.push(orgObj)
+          }
 
             // Exculde owners
-            for(let owner of ownerCentric) {
-              let excludedReason = undefined;
-              /*
-                AnnenPerson; Andre personer/enheter enn de som kommer fra folkeregisteret/Enhetsregisteret. 
-                Identen består av dato + løpenr, et løpenummer kan også bli tildelt av den kommunen der identen er registrert.
-                En "AnnenPerson" kan være av typen: IkkeOppgitt, Aksjeselskap, BoligbyggelagBorettslag, AnsvarligSelskap, Enkeltperson, Fylkeskommunen, AnnenEiendom, Kommunen, LegatStiftelseOL, Bruksrettshaver, Staten, Utenlandsk, AnnenEiertype
-              */
-              if(owner._type?.toLowerCase().includes('annenperson')) {
-                excludedReason = 'Må håndteres manuelt';
-                owner.isHardExcluded = true;
-              }
-              // Manually handle (Adresse sperre)
-              if(owner.dsf) {
-                const spesCode = parseInt(owner.dsf['SPES-KD'])
-                const statCode = parseInt(owner.dsf['STAT-KD'])
-                if(statCode) {
-                  if(statCode === 3) {
-                    excludedReason = 'Utvandret';
-                    owner.isHardExcluded = true;
-                  }
-                  if(statCode === 4) {
-                    excludedReason = 'Forsvunnet';
-                    owner.isHardExcluded = true;
-                  }
-                  if(statCode === 5) {
-                    excludedReason = 'Død';
-                    owner.isHardExcluded = true;
-                  }
+          for(let owner of ownerCentric) {
+            let excludedReason = undefined;
+            /*
+              AnnenPerson; Andre personer/enheter enn de som kommer fra folkeregisteret/Enhetsregisteret. 
+              Identen består av dato + løpenr, et løpenummer kan også bli tildelt av den kommunen der identen er registrert.
+              En "AnnenPerson" kan være av typen: IkkeOppgitt, Aksjeselskap, BoligbyggelagBorettslag, AnsvarligSelskap, Enkeltperson, Fylkeskommunen, AnnenEiendom, Kommunen, LegatStiftelseOL, Bruksrettshaver, Staten, Utenlandsk, AnnenEiertype
+            */
+            if(owner._type?.toLowerCase().includes('annenperson')) {
+              excludedReason = 'Må håndteres manuelt';
+              owner.isHardExcluded = true;
+            }
+            // Manually handle (Adresse sperre)
+            if(owner.dsf) {
+              const spesCode = parseInt(owner.dsf['SPES-KD'])
+              const statCode = parseInt(owner.dsf['STAT-KD'])
+              if(statCode) {
+                if(statCode === 3) {
+                  excludedReason = 'Utvandret';
+                  owner.isHardExcluded = true;
                 }
-                if(spesCode && (spesCode === 4 || spesCode === 6 || spesCode === 7)) {
-                  excludedReason = 'Må håndteres manuelt';
+                if(statCode === 4) {
+                  excludedReason = 'Forsvunnet';
+                  owner.isHardExcluded = true;
+                }
+                if(statCode === 5) {
+                  excludedReason = 'Død';
                   owner.isHardExcluded = true;
                 }
               }
-
-              // Handle manually
-              if(owner.manuallyHandle === true || owner.handleManually === true) {
+              if(spesCode && (spesCode === 4 || spesCode === 6 || spesCode === 7)) {
                 excludedReason = 'Må håndteres manuelt';
                 owner.isHardExcluded = true;
               }
+            }
 
-              // Utvandret
-              if(owner.utvandret) {
-                excludedReason = 'Utvandret';
-                owner.isHardExcluded = true;
+            // Handle manually
+            if(owner.manuallyHandle === true || owner.handleManually === true) {
+              excludedReason = 'Må håndteres manuelt';
+              owner.isHardExcluded = true;
+            }
+
+            // Utvandret
+            if(owner.utvandret) {
+              excludedReason = 'Utvandret';
+              owner.isHardExcluded = true;
+            }
+
+            // Forsvunnet
+            if(owner.forsvunnet) {
+              excludedReason = 'Forsvunnet';
+              owner.isHardExcluded = true;
+            }
+
+            // Dead owners
+            if((owner.dead === true) || (owner && owner.name && owner.name.includes('DØDSBO'))) {
+              excludedReason = 'Død';
+              owner.isHardExcluded = true;
+            }
+
+            if(config.EXCLUDED_OWNER_IDS && Array.isArray(config.EXCLUDED_OWNER_IDS)) {
+              // Pre-excluded person or orgs if they already exist inside the polygon
+              if(config.EXCLUDED_OWNER_IDS.includes(owner.nummer)) {
+                excludedReason = 'Forhåndsekskludert';
               }
 
-              // Forsvunnet
-              if(owner.forsvunnet) {
-                excludedReason = 'Forsvunnet';
-                owner.isHardExcluded = true;
-              }
-
-              // Dead owners
-              if((owner.dead === true) || (owner && owner.name && owner.name.includes('DØDSBO'))) {
-                excludedReason = 'Død';
-                owner.isHardExcluded = true;
-              }
-
-              if(config.EXCLUDED_OWNER_IDS && Array.isArray(config.EXCLUDED_OWNER_IDS)) {
-                // Pre-excluded person or org numbers if they already exist inside the polygon
-                if(config.EXCLUDED_OWNER_IDS.includes(owner.nummer)) {
-                  excludedReason = 'Forhåndsekskludert';
+              // Remove orgs that exist inside the polygon from the preExcludedUnits list.
+              preExcludedUnits.forEach(function(ex, i) {
+                if(ex.nummer === owner.nummer) {
+                  if (i > -1) { 
+                    preExcludedUnits.splice(i, 1); 
+                  }
                 }
-              }
+              })
+            }
 
-              
+            if(owner.avviklet) {
+              excludedReason = 'Firma er avviklet'
+              owner.isHardExcluded = true;
+            }
 
-              if(owner.avviklet) {
-                excludedReason = 'Firma er avviklet'
-                owner.isHardExcluded = true;
-              }
+            // Organisasjonen er slettet fra brønnlysund
+            if(owner._type?.toLowerCase().includes('juridisk') && owner.slettetDato) {
+              excludedReason = 'Slettet fra Brønnøysund'
+              owner.isHardExcluded = true;
+            }
 
-              // Organisasjonen er slettet fra brønnlysund
-              if(owner._type?.toLowerCase().includes('juridisk') && owner.slettetDato) {
-                excludedReason = 'Slettet fra Brønnøysund'
-                owner.isHardExcluded = true;
-              }
+            if(owner._type?.toLowerCase().includes('juridisk') && !owner.brreg) {
+              excludedReason = 'Finnes ikke i Brønnøysund'
+              owner.isHardExcluded = true;
+            }
 
-              if(owner._type?.toLowerCase().includes('juridisk') && !owner.brreg) {
-                excludedReason = 'Finnes ikke i Brønnøysund'
-                owner.isHardExcluded = true;
-              }
-
-              if(excludedReason) {
-                owner.exclusionReason = excludedReason;
-                excludedOwners.push(owner);
-              }
+            if(excludedReason) {
+              owner.exclusionReason = excludedReason;
+              excludedOwners.push(owner);
+            }
 
             if(excludedOwners.length !== 0) {
               let excludedIds = excludedOwners.map((o) => o.nummer);
               ownerCentric = ownerCentric.filter((o) => !excludedIds.includes(o.nummer));
             }
           }
+
+          // preExcludedUnits.forEach(unit => {
+          //   excludedOwners.push(unit)
+          // })
+          
+          excludedOwners = excludedOwners.concat(preExcludedUnits)
 
           // Hent ut juridiske eiere
           let juridiskeEiere = retreivedOwners.filter((e) => e._type.toLowerCase().includes('juridisk'));
@@ -989,10 +1014,10 @@
         } else if(person.brreg && person.brreg.postadresse) {
           address += `${person.brreg.postadresse.adresse} ${person.brreg.postadresse.postnummer} ${person.brreg.postadresse.poststed}`
         } else {
-          if(person.postadresse.adresselinje) address += person.postadresse.adresselinje + ' ';
-          if(person.postadresse.adresselinje1) address += person.postadresse.adresselinje1 + ' ';
-          if(person.postadresse.adresselinje2) address += person.postadresse.adresselinje2 + ' ';
-          if(person.postadresse.adresselinje3) address += person.postadresse.adresselinje3 + ' ';
+          if(person.postadresse?.adresselinje) address += person.postadresse.adresselinje + ' ';
+          if(person.postadresse?.adresselinje1) address += person.postadresse.adresselinje1 + ' ';
+          if(person.postadresse?.adresselinje2) address += person.postadresse.adresselinje2 + ' ';
+          if(person.postadresse?.adresselinje3) address += person.postadresse.adresselinje3 + ' ';
           address += '(Matrikkel)'
         }
 
@@ -1002,9 +1027,10 @@
         let arr = []
         // Properties with owners
         owners.forEach(owner => {
-          owner.ownerships.forEach(unit => {
+          if(owner.ownerships.length === 0) {
+            // Handle the manualy added orgs
             let owners = {
-              tableType: 'Eier/Mottakere',
+              tableType: 'Eier/Mottakere - Etat uten eierforhold',
               navn: '',
               type: '',
               antallEierSkap: '', 
@@ -1023,55 +1049,106 @@
             owners.type = owner._type,
             owners.antallEierSkap = owner.ownerships.length
             owners.adresse = this.getPostAddress(owner)
-          
-            owners.bruksnavn = unit.unit.bruksnavn,
-            owners.fraDato = unit.datoFra,
-            owners.kommune = unit.kommuneId,
-            owners.Gnr = unit.unit.matrikkelnummer.gardsnummer,
-            owners.Bnr = unit.unit.matrikkelnummer.bruksnummer,
-            owners.Fnr = unit.unit.matrikkelnummer.festenummer,
-            owners.type_eierforhold = unit._type,
-            owners.andel = `${unit.andel?.teller}/${unit.andel?.nevner}`
 
             arr.push(owners)
-          })
+          } else {
+            owner.ownerships.forEach(unit => {
+              let owners = {
+                tableType: 'Eier/Mottakere',
+                navn: '',
+                type: '',
+                antallEierSkap: '', 
+                adresse: '',
+                bruksnavn: '',
+                fraDato: '', 
+                kommune: '',
+                Gnr: '',
+                Bnr: '',
+                Fnr: '',
+                type_eierforhold: '',
+                andel: ''
+              }
+
+              owners.navn = owner.navn,
+              owners.type = owner._type,
+              owners.antallEierSkap = owner.ownerships.length
+              owners.adresse = this.getPostAddress(owner)
+            
+              owners.bruksnavn = unit.unit.bruksnavn,
+              owners.fraDato = unit.datoFra,
+              owners.kommune = unit.kommuneId,
+              owners.Gnr = unit.unit.matrikkelnummer.gardsnummer,
+              owners.Bnr = unit.unit.matrikkelnummer.bruksnummer,
+              owners.Fnr = unit.unit.matrikkelnummer.festenummer,
+              owners.type_eierforhold = unit._type,
+              owners.andel = `${unit.andel?.teller}/${unit.andel?.nevner}`
+
+              arr.push(owners)
+            })
+          }
         })
 
         // Properties with owners, but they are excluded
         excluded.forEach(owner => {
-          owner.ownerships.forEach(unit => {
+          if(owner.ownerships.length === 0) {
+            // Handle the manualy added orgs
             let excluded = {
-              tableType: 'Ekskluderte mottakere',
+              tableType: 'Ekskluderte mottakere - Etat uten eierforhold',
               navn: '',
               type: '',
               antallEierSkap: '', 
               adresse: '',
               bruksnavn: '',
-              fraDato: '',
-              kommune: '', 
+              fraDato: '', 
+              kommune: '',
               Gnr: '',
               Bnr: '',
               Fnr: '',
               type_eierforhold: '',
               andel: ''
             }
-          
+
             excluded.navn = owner.navn,
             excluded.type = owner._type,
             excluded.antallEierSkap = owner.ownerships.length
             excluded.adresse = this.getPostAddress(owner)
-          
-            excluded.bruksnavn = unit.unit.bruksnavn,
-            excluded.fraDato = unit.datoFra,
-            excluded.kommune = unit.kommuneId,
-            excluded.Gnr = unit.unit.matrikkelnummer.gardsnummer,
-            excluded.Bnr = unit.unit.matrikkelnummer.bruksnummer,
-            excluded.Fnr = unit.unit.matrikkelnummer.festenummer,
-            excluded.type_eierforhold = unit._type
-            excluded.andel = `${unit.andel?.teller}/${unit.andel?.nevner}`
 
             arr.push(excluded)
-          })
+          } else {
+            owner.ownerships.forEach(unit => {
+              let excluded = {
+                tableType: 'Ekskluderte mottakere',
+                navn: '',
+                type: '',
+                antallEierSkap: '', 
+                adresse: '',
+                bruksnavn: '',
+                fraDato: '',
+                kommune: '', 
+                Gnr: '',
+                Bnr: '',
+                Fnr: '',
+                type_eierforhold: '',
+                andel: ''
+              }
+            
+              excluded.navn = owner.navn,
+              excluded.type = owner._type,
+              excluded.antallEierSkap = owner.ownerships.length
+              excluded.adresse = this.getPostAddress(owner)
+            
+              excluded.bruksnavn = unit.unit.bruksnavn,
+              excluded.fraDato = unit.datoFra,
+              excluded.kommune = unit.kommuneId,
+              excluded.Gnr = unit.unit.matrikkelnummer.gardsnummer,
+              excluded.Bnr = unit.unit.matrikkelnummer.bruksnummer,
+              excluded.Fnr = unit.unit.matrikkelnummer.festenummer,
+              excluded.type_eierforhold = unit._type
+              excluded.andel = `${unit.andel?.teller}/${unit.andel?.nevner}`
+
+              arr.push(excluded)
+            })
+          }
         })
 
         // Properties without owners
