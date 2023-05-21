@@ -22,7 +22,7 @@
     "core-js": "3.19.3",
     "dxf-parser": "1.1.2",
     "export-from-json": "^1.7.2",
-    "leaflet": "1.7.1",
+    "leaflet": "1.9.4",
     "lodash.get": "4.4.2",
     "lodash.keys": "4.2.0",
     "lodash.merge": "4.6.2",
