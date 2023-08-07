@@ -50,7 +50,7 @@ async function readFileAsText(file) {
     const reader = new FileReader();                  // Create the reader
     reader.onloadend = () => resolve(reader.result);  // onLoaded event for the reader
     reader.onerror = (e) => reject(e);                // onError event for the reader
-    reader.readAsText(file);                       // Start the reader
+    reader.readAsText(file);                          // Start the reader
   });
 }
 
@@ -182,12 +182,27 @@ export default {
           lastModifiedDate: file.lastModifiedDate,
           data: data,
         }
-        
-        if(existingIndex > -1) tmpFiles[existingIndex] = fileObject;
-        else tmpFiles.push(fileObject);
-        uploadedCounter++;
+
+        //16 000 000 = 16mb 
+        const allowedSize = 16000000
+        let totalFileSize = 0
+        //Check if one single file is bigger than the allowed filesize.
+        if(fileObject.size > allowedSize) {
+          alert(`Navn: ${fileObject.name}\nStørrelse: ${Math.round(fileObject.size/1000000)}mb\n\nFilen er for stor, filen kan ikke være større enn ${Math.round(allowedSize/1000000)}`)
+        } else {
+          //Check if the total filesize of the files added is bigger than the allowed filezie
+          tmpFiles.forEach(file => {
+            totalFileSize = file.size + totalFileSize
+          })
+          if(totalFileSize + fileObject.size > allowedSize) {
+            alert(`Størrelsen på filene du har lastet opp er for stor.\n\nDu har lastet opp: ${Math.round(totalFileSize/1000000)} mb av ${Math.round(allowedSize/1000000)} mb \n\nFilen du prøver å laste opp er ${Math.round(file.size/1000000)} mb \n\nOm du øsnker å laste opp flere filer bør du komprimere filene du alt har lastet opp.`)
+          } else {
+            if(existingIndex > -1) tmpFiles[existingIndex] = fileObject;
+            else tmpFiles.push(fileObject);
+            uploadedCounter++;
+          }
+        }
       }
-      
       // Reset dragged over
       this.isDropAreaDraggedOver = false;
       // If no files was uploaded, don't emit that it was

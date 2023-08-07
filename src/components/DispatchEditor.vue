@@ -6,7 +6,52 @@
     <Loading v-else-if="isLoadingTemplates" title="Laster inn maler" />
     <!-- Fil opplasting -->
     <div v-else-if="mode === 'new' && (!dispatch.polygons || !dispatch.polygons.polygons || dispatch.polygons.polygons.length === 0)">
-      <h2>Last opp polygonet</h2>
+      <div style="display: flex; flex-direction: column; align-items: stretch;">
+        <h2>Last opp polygonet (Tillatte filtyper: '.dxf' og '.kml')</h2>
+        <button v-on:click="isHidden = !isHidden">Vis tillatte soner</button>
+      </div>
+      <h5 v-if="!isHidden">
+        <div class="rec">
+          <h3>For best resultat anbefales: EUREF89 UTM Sone 32</h3>
+        </div>
+        <div class="list">
+          <ul>
+            <li>NGO1948 Gauss-K. Akse 1</li>
+            <li>NGO1948 Gauss-K. Akse 2</li>
+            <li>NGO1948 Gauss-K. Akse 3</li>
+            <li>NGO1948 Gauss-K. Akse 4</li>
+            <li>NGO1948 Gauss-K. Akse 5</li>
+            <li>NGO1948 Gauss-K. Akse 6</li>
+            <li>NGO1948 Gauss-K. Akse 7</li>
+            <li>NGO1948 Gauss-K. Akse 8</li>
+            <li>NGO1948 Geografisk</li>
+          </ul>
+          <ul>
+            <li>EDM UTM Sone 31</li>
+            <li>EDM UTM Sone 32</li>
+            <li>EDM UTM Sone 33</li>
+            <li>EDM UTM Sone 34</li>
+            <li>EDM UTM Sone 35</li>
+            <li>EDM UTM Sone 36</li>
+          </ul>
+          <ul>
+            <li>EUREF89 UTM Sone 31</li>
+            <li style="background-color: lightgreen;">EUREF89 UTM Sone 32</li>
+            <li>EUREF89 UTM Sone 33</li>
+            <li>EUREF89 UTM Sone 34</li>
+            <li>EUREF89 UTM Sone 35</li>
+            <li>EUREF89 UTM Sone 36</li>
+          </ul>
+          <ul>
+            <li>ED50 Geografisk</li>
+            <li>Møre A</li>
+            <li>Møre B</li>
+            <li>EUREF89 Geografisk (Long, lat)</li>
+            <li>NGO 56A (Møre)</li>
+            <li>NGO 56B (Møre)</li>
+          </ul>
+        </div>
+      </h5>
       <UploadField v-on:uploaded="(files) => parseFiles(files)" :convertDataToDataUrl="false" :allowedExtensions="['dxf', 'kml']"/>
     </div>
     <div v-else-if="isParsingFile" class="centeredColumn">
@@ -142,6 +187,7 @@
             />
           </div>
           <h3 style="margin-bottom: 0.2rem">Vedlegg</h3>
+          <h5 style="margin-bottom: 0.2rem">NB! Filene kan ikke være større enn 16mb tilsammen.</h5>
           <upload-field
             v-model="dispatch.attachments"
             :disabled="isReadOnly" style="width: 100%"
@@ -345,6 +391,8 @@
         isContactingMatrikkel: false,
         // Is the dispatch approved to be sent inn?
         isDispatchApproved: false,
+        // Show valid zones
+        isHidden : true
       }
     },
     computed: {
@@ -866,11 +914,10 @@
         // User confirmation
         // TODO Sette en timestamp på når utsendelsen vil gå til p360
         if(this.dispatch.status === 'approved'){
-          let totalOwners = 0;
-          if(this.dispatch?.owners && Array.isArray(this.dispatch.owners)) totalOwners = this.dispatch.owners.length;
-          if(this.dispatch.excludedOwners && Array.isArray(this.dispatch.excludedOwners)) totalOwners -= this.dispatch.excludedOwners.length;
-
-          if(!confirm(`Er du helt sikker på at du vil lagre?\n\nStatus vil nå settes til "Godkjent"\nDette betyr at du vil sende ut brev til totalt: ${totalOwners} eiere.\n\nDu vil ha muligheten til å trekke tilbake godkjennelsen frem til 00:00 i dag.\nEtter dette vil masseutsendelsen låses og sendes ut.\nUtsendelsen vil skje påfølgende dag mellom kl 12.00 og kl 13.00.`)) return;
+          // let totalOwners = 0;
+          // if(this.dispatch?.owners && Array.isArray(this.dispatch.owners)) totalOwners = this.dispatch.owners.length;
+          // if(this.dispatch.excludedOwners && Array.isArray(this.dispatch.excludedOwners)) totalOwners -= this.dispatch.excludedOwners.length;
+          if(!confirm(`Er du helt sikker på at du vil lagre?\n\nStatus vil nå settes til "Godkjent"\nDette betyr at du vil sende ut brev til totalt: ${this.dispatch.owners.length} eiere.\n\nDu vil ha muligheten til å trekke tilbake godkjennelsen frem til 00:00 i dag.\nEtter dette vil masseutsendelsen låses og sendes ut.\nUtsendelsen vil skje påfølgende dag mellom kl 12.00 og kl 13.00.`)) return;
         }
         else{
           if(!confirm('Er du helt sikker på at du vil sende inn?')) return;
@@ -1205,5 +1252,32 @@
 
   .mt-1 {
     margin-top: 1rem;
+  }
+
+  .list {
+    background-color: #F8F6F0;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom-right-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+  }
+
+  .rec {
+    background-color: #F8F6F0;
+    display: flex;
+    justify-content: center;
+    margin-top: -1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  button {
+    background-color: #F8F6F0;
+    padding: 0.2rem;
+    margin-bottom: 0.4rem;
+    margin-top: 0.2rem;
+    border-radius: 0.3rem;
   }
 </style>
