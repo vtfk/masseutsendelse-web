@@ -16,7 +16,7 @@
     "@turf/area": "6.5.0",
     "@turf/helpers": "6.5.0",
     "@vtfk/components": "0.8.0",
-    "@vtfk/utilities": "1.0.0",
+    "@vtfk/utilities": "1.4.0",
     "@xmldom/xmldom": "0.8.4",
     "axios": "0.25.0",
     "core-js": "3.19.3",
