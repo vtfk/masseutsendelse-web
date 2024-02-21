@@ -18,7 +18,7 @@
     "@vtfk/components": "0.8.0",
     "@vtfk/utilities": "1.0.0",
     "@xmldom/xmldom": "0.8.4",
-    "axios": "0.25.0",
+    "axios": "0.28.0",
     "core-js": "3.19.3",
     "dxf-parser": "1.1.2",
     "export-from-json": "^1.7.2",
